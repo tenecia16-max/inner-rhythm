@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Inner Rhythm — Know your cycle. Know yourself.</title>
+<meta name="description" content="Inner Rhythm learns how your cycle shapes how you feel — before you even realise it.">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif;}
+body{
+  background:linear-gradient(180deg,#0A0F1E 0%,#151D35 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+}
+.wrap{
+  width:100%;max-width:480px;
+  height:100vh;height:100dvh;
+  display:flex;flex-direction:column;
+  position:relative;overflow:hidden;
+}
+.star{position:absolute;border-radius:50%;background:white;animation:tw var(--d,3s) ease-in-out infinite;pointer-events:none;}
+@keyframes tw{0%,100%{opacity:var(--o,.5)}50%{opacity:.1}}
+
+/* Header */
+.hdr{padding:52px 28px 0;text-align:center;flex-shrink:0;position:relative;z-index:2;}
+.wm{font-family:'Playfair Display',serif;font-size:28px;color:white;font-weight:700;letter-spacing:.3px;}
+.tl{font-size:13px;color:rgba(255,255,255,.45);margin-top:5px;font-weight:600;}
+
+/* Stack area — fills all remaining space */
+.stack-area{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:2;padding:16px 24px 0;}
+.stack{position:relative;width:100%;max-width:420px;height:100%;max-height:420px;}
+
+/* Cards */
+.card{
+  position:absolute;inset:0;
+  border-radius:28px;
+  padding:32px 30px 28px;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;
+  transition:transform .45s cubic-bezier(.4,0,.2,1),opacity .45s,box-shadow .45s;
+  will-change:transform;
+}
+.c4{background:linear-gradient(135deg,#E8A840,#C07820);transform:rotate(-8deg) translateY(22px) scale(.87);box-shadow:0 8px 40px rgba(232,168,64,.3);z-index:1;}
+.c3{background:linear-gradient(135deg,#D4709A,#9B4A7A);transform:rotate(-5deg) translateY(14px) scale(.91);box-shadow:0 8px 40px rgba(212,112,154,.3);z-index:2;}
+.c2{background:linear-gradient(135deg,#9B7EC8,#6B4A98);transform:rotate(-2.5deg) translateY(7px) scale(.95);box-shadow:0 8px 40px rgba(155,126,200,.3);z-index:3;}
+.c1{background:linear-gradient(135deg,#4AAAC4,#2A7A9C);transform:rotate(0) scale(1);box-shadow:0 20px 60px rgba(74,170,196,.45);z-index:4;}
+.card.gone{transform:rotate(-20deg) translateX(-140%) translateY(-5%) !important;opacity:0;pointer-events:none;}
+
+.card-icon{font-size:48px;margin-bottom:16px;line-height:1;flex-shrink:0;}
+.card-title{font-family:'Playfair Display',serif;font-size:26px;color:white;font-weight:700;line-height:1.2;margin-bottom:12px;flex-shrink:0;}
+.card-body{font-size:16px;color:rgba(255,255,255,.88);line-height:1.65;flex:1;}
+.card-btn{
+  margin-top:20px;flex-shrink:0;
+  background:white;color:#1A3A45;
+  border:none;border-radius:16px;padding:17px;
+  font-family:'Nunito',sans-serif;font-size:17px;font-weight:800;
+  cursor:pointer;width:100%;
+  -webkit-tap-highlight-color:transparent;
+  transition:transform .15s;
+}
+.card-btn:active{transform:scale(.97);}
+.card-btn-sub{font-size:12px;color:rgba(255,255,255,.45);text-align:center;margin-top:9px;font-weight:600;flex-shrink:0;}
+
+/* Bottom */
+.bottom{flex-shrink:0;padding:14px 0 max(28px,env(safe-area-inset-bottom));position:relative;z-index:2;}
+.hint{text-align:center;font-size:12px;color:rgba(255,255,255,.3);font-weight:700;letter-spacing:.4px;margin-bottom:12px;}
+.pips{display:flex;justify-content:center;gap:7px;}
+.pip{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.25);transition:all .3s;}
+.pip.on{background:white;width:24px;border-radius:4px;}
+</style>
+</head>
+<body>
+<div class="wrap" id="wrap">
+
+  <div class="hdr">
+    <div class="wm">Inner Rhythm</div>
+    <div class="tl">Understand your cycle</div>
+  </div>
+
+  <div class="stack-area">
+    <div class="stack" id="stack">
+
+      <div class="card c4" id="card-4">
+        <div class="card-icon">&#127800;</div>
+        <div class="card-title">You deserve to understand yourself</div>
+        <div class="card-body">Not just track dates. Actually understand why some days feel impossible and others feel like yours.</div>
+        <button class="card-btn" onclick="goApp()">Try Inner Rhythm free &#8594;</button>
+        <div class="card-btn-sub">Free to try &#183; Takes 30 seconds to start</div>
+      </div>
+
+      <div class="card c3" id="card-3">
+        <div class="card-icon">&#128274;</div>
+        <div class="card-title">Your data never leaves your phone</div>
+        <div class="card-body">Your logs stay on your device. We will never sell your data.</div>
+      </div>
+
+      <div class="card c2" id="card-2">
+        <div class="card-icon">&#10024;</div>
+        <div class="card-title">Daily insights for exactly where you are</div>
+        <div class="card-body">Messages matched to your phase and your day &#8212; and over time, your patterns specifically.</div>
+      </div>
+
+      <div class="card c1" id="card-1">
+        <div class="card-icon">&#127754;</div>
+        <div class="card-title">Ever felt off for no reason?</div>
+        <div class="card-body">That heavy, foggy feeling that hits out of nowhere &#8212; that is your cycle. Inner Rhythm helps you see it coming.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="bottom">
+    <div class="hint" id="hint">Tap to explore &#8594;</div>
+    <div class="pips">
+      <div class="pip on" id="p1"></div>
+      <div class="pip" id="p2"></div>
+      <div class="pip" id="p3"></div>
+      <div class="pip" id="p4"></div>
+    </div>
+  </div>
+
+</div>
+<script>
+// Stars
+(function(){
+  var w=document.getElementById('wrap');
+  for(var i=0;i<70;i++){
+    var s=document.createElement('div');s.className='star';
+    var sz=Math.random()*3+1;
+    s.style.cssText='width:'+sz+'px;height:'+sz+'px;top:'+Math.random()*100+'%;left:'+Math.random()*100+'%;--o:'+(Math.random()*.7+.15)+';--d:'+(Math.random()*4+2)+'s;animation-delay:'+(Math.random()*4)+'s;position:absolute;z-index:1;';
+    w.insertBefore(s,w.firstChild);
+  }
+})();
+
+function goApp(){
+  window.location.href='/inner-rhythm.html';
+}
+
+var cur=1,total=4;
+function dismiss(){
+  if(cur>=total)return;  // never dismiss the last card — it has the Try button
+  var card=document.getElementById('card-'+cur);
+  if(!card)return;
+  card.classList.add('gone');
+  document.getElementById('p'+cur).classList.remove('on');
+  cur++;
+  if(cur<=total){
+    document.getElementById('p'+cur).classList.add('on');
+    setTimeout(function(){
+      var rots=[0,-2.5,-5,-8];
+      var tys=[0,7,14,22];
+      var scs=[1,.95,.91,.87];
+      for(var i=0;i<(total-cur+1)&&i<4;i++){
+        var c=document.getElementById('card-'+(cur+i));
+        if(c)c.style.transform='rotate('+rots[i]+'deg) translateY('+tys[i]+'px) scale('+scs[i]+')';
+      }
+    },50);
+  }
+  if(cur>=total){
+    var h=document.getElementById('hint');
+    if(h)h.textContent='Tap the button below to begin \u2193';
+  }
+}
+
+for(var i=1;i<=total;i++){
+  (function(idx){
+    var c=document.getElementById('card-'+idx);if(!c)return;
+    c.addEventListener('click',function(e){
+      if(e.target.classList.contains('card-btn'))return;
+      if(cur===idx&&cur<total)dismiss();
+    });
+    var sx=0;
+    c.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;},{passive:true});
+    c.addEventListener('touchend',function(e){
+      if(e.changedTouches[0].clientX-sx<-50&&cur===idx&&cur<total)dismiss();
+    },{passive:true});
+  })(i);
+}
+</script>
+</body>
+</html>
