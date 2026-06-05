@@ -947,6 +947,16 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
       </div>
 
       <!-- MOOD — tap to log with smart chips -->
+      <div id="home-period-alert" style="display:none;background:linear-gradient(135deg,#FFF0F6,#FFE4F0);border-radius:18px;padding:16px;margin-bottom:14px;border:1.5px solid #F4C0D1;position:relative;">
+        <button onclick="document.getElementById('home-period-alert').style.display='none'" style="position:absolute;top:10px;right:12px;background:none;border:none;font-size:14px;color:#C0A0B0;cursor:pointer;line-height:1;">&#x2715;</button>
+        <div style="display:flex;align-items:flex-start;gap:11px;">
+          <div style="font-size:22px;flex-shrink:0;margin-top:2px;">&#129768;</div>
+          <div>
+            <div style="font-size:12px;font-weight:800;color:#C05080;margin-bottom:5px;" id="home-period-title">Period approaching</div>
+            <div style="font-size:12px;color:#7A3050;line-height:1.7;" id="home-period-msg">Your body is winding down. That heavy, tired feeling is your hormones shifting &#8212; right on schedule.</div>
+          </div>
+        </div>
+      </div>
       <div class="mood-tap-row" id="ci-card-home">
         <div class="mood-tap-label" style="text-align:center;">How are you feeling?</div>
         <div style="font-size:11px;color:#C0CDD6;text-align:center;margin:4px 0 14px;">Tap to log · add detail anytime</div>
@@ -1008,6 +1018,22 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
       </div>
 
       <!-- Vibe -->
+      <div id="period-alert" style="display:none;background:linear-gradient(135deg,#FFF0F6,#FFE4F0);border-radius:16px;padding:15px 16px;margin-bottom:0;border:1.5px solid #F4C0D1;position:relative;">
+        <button onclick="document.getElementById('period-alert').style.display='none'" style="position:absolute;top:10px;right:12px;background:none;border:none;font-size:14px;color:#C0A0B0;cursor:pointer;line-height:1;">&#x2715;</button>
+        <div style="display:flex;align-items:flex-start;gap:11px;">
+          <div style="font-size:22px;flex-shrink:0;margin-top:2px;">&#129768;</div>
+          <div>
+            <div style="font-size:12px;font-weight:800;color:#C05080;margin-bottom:5px;" id="period-alert-title">Period in 3 days</div>
+            <div style="font-size:12px;color:#7A3050;line-height:1.7;" id="period-alert-msg">Your body is winding down. If you are feeling heavier, more tired, or just done with everything &#8212; that is why. You are right on schedule.</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;">
+              <div style="background:rgba(192,80,128,.1);border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;color:#C05080;">&#x1F6C1; Rest where you can</div>
+              <div style="background:rgba(192,80,128,.1);border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;color:#C05080;">&#x1F375; Warm drinks help</div>
+              <div style="background:rgba(192,80,128,.1);border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;color:#C05080;">&#x1F48A; Prep supplies</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div style="background:white;border-radius:16px;padding:15px 16px;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 10px rgba(0,0,0,.04);">
         <div style="font-size:11px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.5px;margin-bottom:13px;">Overall vibe</div>
         <div class="mood-grid" id="mood-grid">
@@ -2495,6 +2521,32 @@ function initHome(){
   buildTomorrowCard();
   checkCycleSetupNudge();buildUCDays();checkFeedbackNudge();updateProfileDisplay();updateStreakDisplay();buildWeeklySummary();buildMorningMessage();learnCycleFromLogs();showCycleLearningBadge();updateTodaySummary();
   document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:false});
+
+  // Period alert on home
+  try{
+    var setup2=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+    var hAlert=document.getElementById('home-period-alert');
+    var hTitle=document.getElementById('home-period-title');
+    var hMsg=document.getElementById('home-period-msg');
+    if(hAlert&&setup2.start){
+      var dLeft=userCycleLen-cd(TODAY);
+      if(dLeft>=1&&dLeft<=4){
+        hAlert.style.display='block';
+        var htitles={1:'Period likely starting tomorrow',2:'Period in 2 days',3:'Period in 3 days',4:'Period in 4 days'};
+        var hmsgs={
+          1:'Your body is almost there. Heaviness and fatigue right now is real &#8212; you are right at the end.',
+          2:'Your body is winding down. Feeling heavier or more emotional makes complete sense right now.',
+          3:'Your body is winding down. That heavy, tired feeling is your hormones shifting &#8212; right on schedule.',
+          4:'Late luteal. The fog and fatigue creeping in makes sense &#8212; your hormones are shifting.'
+        };
+        if(hTitle)hTitle.textContent=htitles[dLeft]||htitles[3];
+        if(hMsg)hMsg.innerHTML=hmsgs[dLeft]||hmsgs[3];
+      }else{
+        if(hAlert)hAlert.style.display='none';
+      }
+    }
+  }catch(e){}
+
 }
 function buildWeek(){
   const s=document.getElementById('wstrip');s.innerHTML='';
@@ -4726,3 +4778,28 @@ function exportData(){
 </script>
 </body>
 </html>
+  // Show period alert if period is 1-4 days away
+  try{
+    var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+    var alertEl=document.getElementById('period-alert');
+    var alertTitle=document.getElementById('period-alert-title');
+    var alertMsg=document.getElementById('period-alert-msg');
+    if(alertEl&&setup.start){
+      var daysLeft=userCycleLen-cd(TODAY);
+      if(daysLeft>=1&&daysLeft<=4){
+        alertEl.style.display='block';
+        var msgs={
+          1:{title:'Period likely starting tomorrow',msg:'Your body is almost there. The heaviness and fatigue you might be feeling right now is real &#8212; you are right at the end of your cycle.'},
+          2:{title:'Period in 2 days',msg:'Your body is winding down. If you are feeling heavier, more emotional, or just done with everything &#8212; that is exactly why.'},
+          3:{title:'Period in 3 days',msg:'Your body is winding down. If you are feeling heavier, more tired, or just done with everything &#8212; that is why. You are right on schedule.'},
+          4:{title:'Period in about 4 days',msg:'Late luteal. The fog and fatigue creeping in makes complete sense right now &#8212; your hormones are shifting.'}
+        };
+        var m=msgs[daysLeft]||msgs[3];
+        if(alertTitle)alertTitle.textContent=m.title;
+        if(alertMsg)alertMsg.innerHTML=m.msg;
+      }else{
+        alertEl.style.display='none';
+      }
+    }
+  }catch(e){}
+
