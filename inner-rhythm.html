@@ -811,6 +811,19 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
 .pat-card{background:white;border-radius:16px;padding:15px 16px;box-shadow:0 1px 0 rgba(0,0,0,.05),0 2px 8px rgba(0,0,0,.04);margin-bottom:0;}
 .pat-phase-bar{display:flex;border-radius:6px;overflow:hidden;height:9px;margin-bottom:7px;}
 
+
+.ccell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:11px;font-weight:700;cursor:pointer;position:relative;font-family:'Nunito',sans-serif;-webkit-tap-highlight-color:transparent;transition:transform .15s;}
+.ccell:active{transform:scale(.9);}
+.cdname{font-size:10px;font-weight:800;color:#A8C0CC;text-align:center;padding:4px 0;}
+.cother{color:#D0DAE0;}
+.ctoday{background:#1A3A45!important;color:white!important;font-weight:800;}
+.cperiod{background:#FFF0F6;color:#C05080;}
+.cfollicular{background:#EEF8FF;color:#2A6A8A;}
+.covulation{background:#FFFAF0;color:#8A6000;}
+.cluteal{background:#F8F4FF;color:#6A4A8A;}
+.cpredict{border:1.5px dashed #F4C0D1;border-radius:50%;color:#F4C0D1;background:transparent;}
+.cemoji{font-size:18px;border-radius:10px;}
+
 </style>
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
 </head>
@@ -1471,33 +1484,42 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
 
   <!-- ======= CALENDAR ======= -->
   <div class="screen" id="screen-calendar">
-    <div class="scroll">
-      <div style="padding:20px 0 14px"><div style="font-family:Playfair Display,serif;font-size:30px">Calendar</div></div>
-      <div class="calnav">
-        <button class="cnbtn" onclick="chM(-1)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg></button>
-        <div class="cmonth" id="cmlbl">March 2026</div>
-        <button class="cnbtn" onclick="chM(1)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg></button>
-      </div>
-      <div id="cal-info" style="display:flex;flex-direction:column;gap:6px;background:var(--card);border-radius:14px;padding:12px 16px;border:0.5px solid var(--border);margin-bottom:12px;font-size:13px;font-weight:600"></div>
-      <div class="calgrid" id="cgrid"></div>
-      <div class="calleg">
-        <div class="cli"><div class="cldot" style="background:#FFCDD2;border:1px solid #EF9A9A"></div>Period</div>
-        <div class="cli"><div class="cldot" style="background:#C8E6C9;border:1px solid #A5D6A7"></div>Follicular</div>
-        <div class="cli"><div class="cldot" style="background:#FFE0B2;border:1px solid #FFCC80"></div>Ovulation</div>
-        <div class="cli"><div class="cldot" style="background:#C5D8F0;border:1px solid #90CAF9"></div>Luteal</div>
-        <div class="cli"><div class="cldot" style="background:var(--sky)"></div>Today</div>
-        <div class="cli"><div class="cldot" style="background:white;border:2px solid #C62828"></div>Next period</div>
+    <div class="scroll" style="padding-bottom:20px;">
+
+      <!-- Header -->
+      <div style="padding:8px 2px 16px;display:flex;justify-content:space-between;align-items:center;">
+        <div style="font-family:Playfair Display,serif;font-size:24px;color:var(--text);font-weight:700;">Calendar</div>
       </div>
 
-      <!-- DAILY LOG OVERVIEW -->
-      <div style="margin-top:22px">
-        <div style="font-family:Playfair Display,serif;font-size:20px;margin-bottom:14px">This month</div>
-        <div id="cal-log-overview"></div>
-        <div id="cal-log-empty" style="display:none;background:var(--card);border-radius:16px;padding:24px;text-align:center;border:0.5px solid var(--border)">
-          <div style="font-size:28px;margin-bottom:8px">✍️</div>
-          <div style="font-size:14px;color:var(--text2);line-height:1.6">No check-ins yet this month.<br>Start logging to see your entries here.</div>
-        </div>
+      <!-- Month nav -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <button class="cnbtn" onclick="chM(-1)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <div style="font-size:15px;font-weight:800;color:var(--text);" id="cmlbl">June 2026</div>
+        <button class="cnbtn" onclick="chM(1)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg></button>
       </div>
+
+      <!-- Legend -->
+      <div style="display:flex;justify-content:space-between;margin-bottom:14px;padding:0 2px;">
+        <div style="display:flex;align-items:center;gap:3px;"><div style="width:8px;height:8px;border-radius:50%;background:#F4C0D1;"></div><div style="font-size:10px;color:#A8C0CC;font-weight:700;">Period</div></div>
+        <div style="display:flex;align-items:center;gap:3px;"><div style="width:8px;height:8px;border-radius:50%;background:#A8D8EC;"></div><div style="font-size:10px;color:#A8C0CC;font-weight:700;">Follicular</div></div>
+        <div style="display:flex;align-items:center;gap:3px;"><div style="width:8px;height:8px;border-radius:50%;background:#F5DFA0;"></div><div style="font-size:10px;color:#A8C0CC;font-weight:700;">Ovulation</div></div>
+        <div style="display:flex;align-items:center;gap:3px;"><div style="width:8px;height:8px;border-radius:50%;background:#C8B8E8;"></div><div style="font-size:10px;color:#A8C0CC;font-weight:700;">Luteal</div></div>
+      </div>
+
+      <!-- Calendar grid -->
+      <div id="cgrid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:14px;"></div>
+
+      <!-- Mini legend for emoji/dashes -->
+      <div style="display:flex;gap:14px;margin-bottom:14px;padding:0 2px;">
+        <div style="font-size:10px;color:#A8C0CC;font-weight:600;">😊 = your logged mood</div>
+        <div style="font-size:10px;color:#A8C0CC;font-weight:600;">- - = predicted period</div>
+      </div>
+
+      <!-- Day detail card (shown on tap) -->
+      <div id="cal-day-detail" style="display:none;background:white;border-radius:16px;padding:15px 16px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:14px;border:0.5px solid rgba(0,0,0,.07);"></div>
+
+      <!-- Month overview -->
+      <div id="cal-overview" style="display:none;"></div>
 
     </div>
   </div>
@@ -2578,54 +2600,117 @@ function getNextPeriodStart() {
 }
 
 function renderCal(){
-  updateCalInfo(getNextPeriodStart(), userLP);
-  document.getElementById('cmlbl').textContent=new Date(calY,calM,1).toLocaleDateString('en-US',{month:'long',year:'numeric'});
-  const g=document.getElementById('cgrid');g.innerHTML='';
-  ['S','M','T','W','T','F','S'].forEach(d=>{const el=document.createElement('div');el.className='cdname';el.textContent=d;g.appendChild(el)});
-  const first=new Date(calY,calM,1),sd=first.getDay(),dim=new Date(calY,calM+1,0).getDate(),prev=new Date(calY,calM,0).getDate();
+  var lbl=document.getElementById('cmlbl');
+  if(lbl)lbl.textContent=new Date(calY,calM,1).toLocaleDateString('en-US',{month:'long',year:'numeric'});
+  var g=document.getElementById('cgrid');
+  if(!g)return;
+  g.innerHTML='';
 
-  // Calculate last period start and next period start
-  const lastPeriodStart=new Date(userLP);
-  const nextPeriodStart=new Date(userLP);
-  nextPeriodStart.setDate(nextPeriodStart.getDate()+userCycleLen);
-  const lastPeriodEnd=new Date(userLP);
-  lastPeriodEnd.setDate(lastPeriodEnd.getDate()+userPeriodDur-1);
+  // Day name headers
+  ['S','M','T','W','T','F','S'].forEach(function(d){
+    var el=document.createElement('div');
+    el.className='cdname';el.textContent=d;g.appendChild(el);
+  });
 
-  for(let i=sd-1;i>=0;i--){const el=document.createElement('div');el.className='ccell cother';el.textContent=prev-i;g.appendChild(el)}
-  for(let d=1;d<=dim;d++){
-    const date=new Date(calY,calM,d),c=cd(date),p=ph(c);
-    const el=document.createElement('div');
-    const isT=date.toDateString()===TODAY.toDateString();
-    el.className='ccell '+(isT?'ctoday':'c'+p);
-    const k=date.toISOString().slice(0,10);
-    if(logs[k])el.classList.add('clog');
+  var first=new Date(calY,calM,1),sd=first.getDay();
+  var dim=new Date(calY,calM+1,0).getDate();
+  var prev=new Date(calY,calM,0).getDate();
 
-    // Check if this is a notable date
-    const isLastStart=date.toDateString()===lastPeriodStart.toDateString();
-    const isLastEnd=date.toDateString()===lastPeriodEnd.toDateString();
-    const isNextStart=date.toDateString()===nextPeriodStart.toDateString();
+  // Next period prediction
+  var nextPS=new Date(userLP);
+  nextPS.setDate(nextPS.getDate()+userCycleLen);
+  var nextPE=new Date(nextPS);
+  nextPE.setDate(nextPE.getDate()+userPeriodDur-1);
 
-    if(isNextStart && !isT){
-      el.style.outline='2px solid #C62828';
-      el.style.outlineOffset='-2px';
-      el.style.borderRadius='10px';
-      el.title='Next period expected';
-    }
+  // Mood emojis map
+  var moodEmoji={'Amazing':'\ud83e\udd29','Good':'\ud83d\ude0a','Meh':'\ud83d\ude10','Off':'\ud83d\ude14','Rough':'\ud83d\ude23'};
 
-    // Just the number — no text labels
-    // Dots: bottom-left dot for period start, bottom-right dot for next period
-    el.innerHTML=d
-      + (isLastStart ? '<span style="position:absolute;bottom:3px;left:4px;width:5px;height:5px;background:#C62828;border-radius:50%;display:block"></span>' : '')
-      + (isNextStart && !isT ? '<span style="position:absolute;bottom:3px;right:4px;width:5px;height:5px;background:#C62828;border-radius:50%;opacity:.7;display:block"></span>' : '');
-
-    el.onclick=()=>openDayDetail(date, c, p, isLastStart, isLastEnd, isNextStart, k);
+  // Previous month filler
+  for(var i=sd-1;i>=0;i--){
+    var el=document.createElement('div');
+    el.className='ccell cother';
+    el.textContent=prev-i;
     g.appendChild(el);
   }
-  const rem=7-((sd+dim)%7);if(rem<7)for(let d=1;d<=rem;d++){const el=document.createElement('div');el.className='ccell cother';el.textContent=d;g.appendChild(el)}
 
-  // Update calendar info strip
-  updateCalInfo(getNextPeriodStart(), userLP);
-  buildCalOverview();
+  // Current month days
+  for(var d=1;d<=dim;d++){
+    var date=new Date(calY,calM,d);
+    var c=cd(date),p=ph(c);
+    var el=document.createElement('div');
+    var isT=date.toDateString()===TODAY.toDateString();
+    var k=date.toISOString().slice(0,10);
+    var log=logs[k];
+
+    // Predicted period days
+    var isPred=date>=nextPS&&date<=nextPE;
+
+    if(isT){
+      el.className='ccell ctoday';
+      el.textContent=d;
+    } else if(isPred&&!log){
+      el.className='ccell cpredict';
+      el.textContent=d;
+      el.style.fontSize='11px';
+    } else if(log&&log.mood&&moodEmoji[log.mood]){
+      // Show mood emoji for logged days
+      el.className='ccell c'+p+' cemoji';
+      el.textContent=moodEmoji[log.mood];
+    } else {
+      el.className='ccell c'+p;
+      el.textContent=d;
+    }
+
+    // Click to show detail
+    (function(date,d,c,p,k,log,isPred){
+      el.onclick=function(){showCalDay(date,d,c,p,k,log,isPred);};
+    })(date,d,c,p,k,log,isPred);
+
+    g.appendChild(el);
+  }
+
+  // Next month filler
+  var rem=7-((sd+dim)%7);
+  if(rem<7){for(var d2=1;d2<=rem;d2++){var el2=document.createElement('div');el2.className='ccell cother';el2.textContent=d2;g.appendChild(el2);}}
+
+  // Hide detail card on month change
+  var dd=document.getElementById('cal-day-detail');
+  if(dd)dd.style.display='none';
+}
+
+function showCalDay(date,d,c,p,k,log,isPred){
+  var dd=document.getElementById('cal-day-detail');
+  if(!dd)return;
+  var moodEmoji={'Amazing':'\ud83e\udd29','Good':'\ud83d\ude0a','Meh':'\ud83d\ude10','Off':'\ud83d\ude14','Rough':'\ud83d\ude23'};
+  var phaseNames={period:'Period',follicular:'Follicular',ovulation:'Ovulation',luteal:'Luteal'};
+  var phaseColors={period:'#C05080',follicular:'#4AAAC4',ovulation:'#A06800',luteal:'#9B7EC8'};
+  var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var col=phaseColors[p]||'#4AAAC4';
+  var html='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">';
+  html+='<div style="font-size:11px;font-weight:800;color:'+col+';text-transform:uppercase;letter-spacing:.5px;">'+months[date.getMonth()]+' '+d+'</div>';
+  html+='<div style="background:'+col+'22;border-radius:8px;padding:3px 9px;font-size:10px;font-weight:700;color:'+col+';">'+phaseNames[p]+'</div>';
+  html+='</div>';
+  if(log&&log.mood){
+    html+='<div style="display:flex;align-items:center;gap:12px;">';
+    html+='<div style="font-size:32px;">'+(moodEmoji[log.mood]||'')+'</div>';
+    html+='<div>';
+    html+='<div style="font-size:13px;font-weight:800;color:#1A3A45;margin-bottom:2px;">Felt '+log.mood+'</div>';
+    if(log.driver)html+='<div style="font-size:12px;color:#6A8A9A;">'+log.driver+'</div>';
+    if(log.energies&&log.energies.length)html+='<div style="font-size:11px;color:#8AAAB4;margin-top:2px;">'+log.energies.join(', ')+'</div>';
+    if(log.syms&&log.syms.length)html+='<div style="font-size:11px;color:#8AAAB4;margin-top:2px;">'+log.syms.join(', ')+'</div>';
+    if(log.note)html+='<div style="font-size:12px;color:#5A7A8A;margin-top:6px;font-style:italic;">"'+log.note+'"</div>';
+    html+='</div></div>';
+  } else if(isPred){
+    html+='<div style="font-size:13px;color:#C05080;font-weight:600;">Period predicted to start around this day.</div>';
+  } else {
+    html+='<div style="display:flex;align-items:center;justify-content:space-between;">';
+    html+='<div style="font-size:13px;color:#8AAAB4;">No log for this day.</div>';
+    html+='<button onclick="nav(\"checkin\")" style="background:#F0F8FC;border:none;border-radius:10px;padding:7px 12px;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;color:#4AAAC4;cursor:pointer;">Log this day</button>';
+    html+='</div>';
+  }
+  dd.innerHTML=html;
+  dd.style.display='block';
+  dd.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
 function updateCalInfo(nextStart, lastStart) {
