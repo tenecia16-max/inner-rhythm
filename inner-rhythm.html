@@ -251,10 +251,10 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
 .cdname{text-align:center;font-size:10px;font-weight:800;color:var(--text3);padding:6px 0;text-transform:uppercase}
 .ccell{aspect-ratio:unset;height:46px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:10px;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;transition:all .15s;position:relative;padding:2px 0}
 .ccell.ctoday{background:var(--sky);color:white}
-.ccell.cperiod{background:#FFF0F6;color:#C05080;font-weight:500;border:0.5px solid #F4C0D1;}
-.ccell.cluteal{background:#F8F4FF;color:var(--text);border:0.5px solid #DDD0F5;}
-.ccell.cfollicular{background:#F0F8FF;color:var(--text);border:0.5px solid #C8E4F0;}
-.ccell.covulation{background:#FFFAF0;color:#A06800;border:0.5px solid #F5DFA0;}
+.ccell.cperiod{background:#F9C8D8;color:#9A1040;font-weight:700;}
+.ccell.cluteal{background:#D8C8F0;color:#4A2A8A;font-weight:600;}
+.ccell.cfollicular{background:#B8E0F0;color:#0A5A7A;font-weight:600;}
+.ccell.covulation{background:#FFE08A;color:#7A4800;font-weight:700;}
 .ccell.cother{opacity:.3}
 .ccell.clog::after{content:'';position:absolute;bottom:1px;width:4px;height:4px;background:currentColor;border-radius:50%;opacity:.5}
 .calleg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
@@ -982,13 +982,97 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
 
   <!-- ======= NOTIFICATIONS ======= -->
   <div class="screen" id="screen-notifs">
-    <div class="scroll">
-      <div style="padding:20px 0 18px">
-        <button class="back-btn" onclick="nav('home')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>Back</button>
-        <div style="font-family:Playfair Display,serif;font-size:30px">Messages</div>
-        <div style="font-size:13px;color:var(--text2);margin-top:4px">Insights sent throughout your cycle</div>
+    <div class="scroll" style="padding-bottom:24px;">
+      <div style="padding:8px 2px 16px;display:flex;align-items:center;gap:10px;">
+        <button class="back-btn" onclick="nav('settings')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg></button>
+        <div style="font-family:Playfair Display,serif;font-size:24px;color:var(--text);font-weight:700;">Notifications</div>
       </div>
-      <div id="nlist"></div>
+
+      <!-- Daily reminder -->
+      <div style="background:white;border-radius:16px;margin-bottom:12px;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 8px rgba(0,0,0,.04);">
+        <div style="padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:34px;height:34px;border-radius:10px;background:#EEF8FC;display:flex;align-items:center;justify-content:center;font-size:16px;">&#9997;&#65039;</div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#1A3A45;">Daily check-in reminder</div>
+              <div style="font-size:11px;color:#8AAAB4;margin-top:2px;">Gentle nudge to log each day</div>
+            </div>
+          </div>
+          <label style="position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0;">
+            <input type="checkbox" id="notif-daily" onchange="togNotif('daily',this.checked)" style="opacity:0;width:0;height:0;">
+            <span style="position:absolute;cursor:pointer;inset:0;background:#D0D8E0;border-radius:24px;transition:.3s;" id="notif-daily-track"></span>
+          </label>
+        </div>
+        <div style="height:0.5px;background:#F0F4F8;margin:0 16px;"></div>
+        <div style="padding:12px 16px;display:flex;align-items:center;justify-content:space-between;" id="notif-time-row" style="display:none;">
+          <div style="font-size:12px;color:#5A7A8A;font-weight:600;">Reminder time</div>
+          <input type="time" id="notif-time" value="20:00" style="border:1.5px solid #D0E8F0;border-radius:8px;padding:5px 10px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;color:#1A3A45;outline:none;">
+        </div>
+      </div>
+
+      <!-- Period alert -->
+      <div style="background:white;border-radius:16px;margin-bottom:12px;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 8px rgba(0,0,0,.04);">
+        <div style="padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:34px;height:34px;border-radius:10px;background:#FFF0F6;display:flex;align-items:center;justify-content:center;font-size:16px;">&#129768;</div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#1A3A45;">Period approaching alert</div>
+              <div style="font-size:11px;color:#8AAAB4;margin-top:2px;">3 days before your period</div>
+            </div>
+          </div>
+          <label style="position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0;">
+            <input type="checkbox" id="notif-period" onchange="togNotif('period',this.checked)" checked style="opacity:0;width:0;height:0;">
+            <span style="position:absolute;cursor:pointer;inset:0;background:#4AAAC4;border-radius:24px;transition:.3s;" id="notif-period-track"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Phase change -->
+      <div style="background:white;border-radius:16px;margin-bottom:12px;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 8px rgba(0,0,0,.04);">
+        <div style="padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:34px;height:34px;border-radius:10px;background:#F0EAF8;display:flex;align-items:center;justify-content:center;font-size:16px;">&#127769;</div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#1A3A45;">Phase change notification</div>
+              <div style="font-size:11px;color:#8AAAB4;margin-top:2px;">When you enter a new phase</div>
+            </div>
+          </div>
+          <label style="position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0;">
+            <input type="checkbox" id="notif-phase" onchange="togNotif('phase',this.checked)" checked style="opacity:0;width:0;height:0;">
+            <span style="position:absolute;cursor:pointer;inset:0;background:#4AAAC4;border-radius:24px;transition:.3s;" id="notif-phase-track"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Quiet hours -->
+      <div style="background:white;border-radius:16px;margin-bottom:12px;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 8px rgba(0,0,0,.04);">
+        <div style="padding:14px 16px;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+            <div style="width:34px;height:34px;border-radius:10px;background:#EEF8FC;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128344;</div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#1A3A45;">Quiet hours</div>
+              <div style="font-size:11px;color:#8AAAB4;margin-top:2px;">No notifications during this time</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:center;">
+            <div style="flex:1;text-align:center;">
+              <div style="font-size:10px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">From</div>
+              <input type="time" value="22:00" style="width:100%;border:1.5px solid #D0E8F0;border-radius:10px;padding:8px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;color:#1A3A45;outline:none;text-align:center;">
+            </div>
+            <div style="font-size:16px;color:#A8C0CC;font-weight:700;padding-top:18px;">—</div>
+            <div style="flex:1;text-align:center;">
+              <div style="font-size:10px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Until</div>
+              <input type="time" value="08:00" style="width:100%;border:1.5px solid #D0E8F0;border-radius:10px;padding:8px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;color:#1A3A45;outline:none;text-align:center;">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Note about push notifs -->
+      <div style="background:#F8F4FF;border-radius:14px;padding:13px 15px;border:1.5px solid #E4D8F4;">
+        <div style="font-size:12px;color:#7B5EA8;line-height:1.65;">&#128274; All notifications appear inside Inner Rhythm only. No push notifications are sent to your phone &#8212; your data stays private.</div>
+      </div>
+
     </div>
   </div>
 
@@ -1036,19 +1120,29 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
 
       <div style="background:white;border-radius:16px;padding:15px 16px;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 10px rgba(0,0,0,.04);">
         <div style="font-size:11px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.5px;margin-bottom:13px;">Overall vibe</div>
-        <div class="mood-grid" id="mood-grid">
-          <div class="mopt" onclick="pm(this,'Amazing')" style="position:relative"><span class="moji">&#129321;</span><span class="mlbl">Amazing</span></div>
-          <div class="mopt" onclick="pm(this,'Happy')" style="position:relative"><span class="moji">&#128522;</span><span class="mlbl">Happy</span></div>
-          <div class="mopt" onclick="pm(this,'Good')" style="position:relative"><span class="moji">&#128522;</span><span class="mlbl">Good</span></div>
-          <div class="mopt" onclick="pm(this,'Meh')" style="position:relative"><span class="moji">&#128529;</span><span class="mlbl">Meh</span></div>
-          <div class="mopt" onclick="pm(this,'Sensitive')" style="position:relative"><span class="moji">&#129394;</span><span class="mlbl">Sensitive</span></div>
-          <div class="mopt" onclick="pm(this,'Irritated')" style="position:relative"><span class="moji">&#128530;</span><span class="mlbl">Irritated</span></div>
-          <div class="mopt" onclick="pm(this,'Anxious')" style="position:relative"><span class="moji">&#128543;</span><span class="mlbl">Anxious</span></div>
-          <div class="mopt" onclick="pm(this,'Sad')" style="position:relative"><span class="moji">&#128542;</span><span class="mlbl">Sad</span></div>
-          <div class="mopt" onclick="pm(this,'Angry')" style="position:relative"><span class="moji">&#128545;</span><span class="mlbl">Angry</span></div>
-          <div class="mopt" onclick="pm(this,'Numb')" style="position:relative"><span class="moji">&#128566;</span><span class="mlbl">Numb</span></div>
-          <div class="mopt" onclick="pm(this,'Rough')" style="position:relative"><span class="moji">&#128553;</span><span class="mlbl">Rough</span></div>
-          <div class="mopt" onclick="pm(this,'Weepy')" style="position:relative"><span class="moji">&#128557;</span><span class="mlbl">Weepy</span></div>
+        <div id="mood-grid">
+          <!-- Top 5 always visible -->
+          <div style="display:flex;justify-content:space-between;margin-bottom:10px;" id="mood-top-row">
+            <div class="mopt" onclick="pm(this,'Amazing')" style="text-align:center;flex:1;cursor:pointer;padding:6px 2px;border-radius:12px;"><span style="font-size:26px;display:block;">&#129321;</span><span style="font-size:10px;font-weight:700;color:#6A8A9A;display:block;margin-top:3px;">Amazing</span></div>
+            <div class="mopt" onclick="pm(this,'Good')" style="text-align:center;flex:1;cursor:pointer;padding:6px 2px;border-radius:12px;"><span style="font-size:26px;display:block;">&#128522;</span><span style="font-size:10px;font-weight:700;color:#6A8A9A;display:block;margin-top:3px;">Good</span></div>
+            <div class="mopt" onclick="pm(this,'Meh')" style="text-align:center;flex:1;cursor:pointer;padding:6px 2px;border-radius:12px;"><span style="font-size:26px;display:block;">&#128529;</span><span style="font-size:10px;font-weight:700;color:#6A8A9A;display:block;margin-top:3px;">Meh</span></div>
+            <div class="mopt" onclick="pm(this,'Off')" style="text-align:center;flex:1;cursor:pointer;padding:6px 2px;border-radius:12px;"><span style="font-size:26px;display:block;">&#128532;</span><span style="font-size:10px;font-weight:700;color:#6A8A9A;display:block;margin-top:3px;">Off</span></div>
+            <div class="mopt" onclick="pm(this,'Rough')" style="text-align:center;flex:1;cursor:pointer;padding:6px 2px;border-radius:12px;"><span style="font-size:26px;display:block;">&#128542;</span><span style="font-size:10px;font-weight:700;color:#6A8A9A;display:block;margin-top:3px;">Rough</span></div>
+          </div>
+          <!-- More moods collapsed -->
+          <div id="mood-extra" style="display:none;margin-bottom:8px;">
+            <div style="display:flex;flex-wrap:wrap;gap:6px;">
+              <div class="mopt" onclick="pm(this,'Happy')" style="display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:12px;cursor:pointer;background:#F8F9FB;"><span style="font-size:18px;">&#128522;</span><span style="font-size:12px;font-weight:700;color:#5A7A8A;">Happy</span></div>
+              <div class="mopt" onclick="pm(this,'Sensitive')" style="display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:12px;cursor:pointer;background:#F8F9FB;"><span style="font-size:18px;">&#129394;</span><span style="font-size:12px;font-weight:700;color:#5A7A8A;">Sensitive</span></div>
+              <div class="mopt" onclick="pm(this,'Irritated')" style="display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:12px;cursor:pointer;background:#F8F9FB;"><span style="font-size:18px;">&#128530;</span><span style="font-size:12px;font-weight:700;color:#5A7A8A;">Irritated</span></div>
+              <div class="mopt" onclick="pm(this,'Anxious')" style="display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:12px;cursor:pointer;background:#F8F9FB;"><span style="font-size:18px;">&#128543;</span><span style="font-size:12px;font-weight:700;color:#5A7A8A;">Anxious</span></div>
+              <div class="mopt" onclick="pm(this,'Sad')" style="display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:12px;cursor:pointer;background:#F8F9FB;"><span style="font-size:18px;">&#128542;</span><span style="font-size:12px;font-weight:700;color:#5A7A8A;">Sad</span></div>
+              <div class="mopt" onclick="pm(this,'Angry')" style="display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:12px;cursor:pointer;background:#F8F9FB;"><span style="font-size:18px;">&#128545;</span><span style="font-size:12px;font-weight:700;color:#5A7A8A;">Angry</span></div>
+              <div class="mopt" onclick="pm(this,'Numb')" style="display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:12px;cursor:pointer;background:#F8F9FB;"><span style="font-size:18px;">&#128566;</span><span style="font-size:12px;font-weight:700;color:#5A7A8A;">Numb</span></div>
+              <div class="mopt" onclick="pm(this,'Weepy')" style="display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:12px;cursor:pointer;background:#F8F9FB;"><span style="font-size:18px;">&#128557;</span><span style="font-size:12px;font-weight:700;color:#5A7A8A;">Weepy</span></div>
+            </div>
+          </div>
+          <button onclick="var e=document.getElementById('mood-extra');var b=this;if(e.style.display==='none'){e.style.display='block';b.textContent='Less moods &#8593;';}else{e.style.display='none';b.textContent='More moods &#8595;';}" style="background:none;border:none;font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;color:#A8C0CC;cursor:pointer;padding:4px 0;width:100%;text-align:center;">More moods &#8595;</button>
         </div>
         <div class="add-custom" style="margin-top:10px;">
           <input class="custom-inp" id="mood-custom" placeholder="Add your own mood..." onkeydown="if(event.key==='Enter'){addCustomMood()}">
@@ -1065,6 +1159,18 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
       </div>
 
       <!-- Energy -->
+      <div id="flow-section" style="background:white;border-radius:16px;padding:15px 16px;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 10px rgba(0,0,0,.04);">
+        <div style="font-size:11px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Period flow</div>
+        <div class="qsub" id="flow-sub" style="margin-bottom:10px;">Are you on your period today?</div>
+        <div class="flow-row">
+          <div class="flow-opt" onclick="pickFlow(this,'None')"><span class="ficon">&#8203;</span><span class="flbl">None</span></div>
+          <div class="flow-opt" onclick="pickFlow(this,'Spotting')"><span class="ficon" style="font-size:12px;color:#D4709A;">&#9679;</span><span class="flbl">Spotting</span></div>
+          <div class="flow-opt" onclick="pickFlow(this,'Light')"><span class="ficon" style="font-size:12px;color:#C05080;">&#9679;&#9679;</span><span class="flbl">Light</span></div>
+          <div class="flow-opt" onclick="pickFlow(this,'Medium')"><span class="ficon" style="font-size:12px;color:#A03060;">&#9679;&#9679;&#9679;</span><span class="flbl">Medium</span></div>
+          <div class="flow-opt" onclick="pickFlow(this,'Heavy')"><span class="ficon" style="font-size:12px;color:#80204A;">&#9679;&#9679;&#9679;&#9679;</span><span class="flbl">Heavy</span></div>
+        </div>
+      </div>
+
       <div style="background:white;border-radius:16px;padding:15px 16px;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 10px rgba(0,0,0,.04);">
         <div style="font-size:11px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Energy today</div>
         <div class="erow" id="energy-row">
@@ -1130,17 +1236,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
       </div>
 
       <!-- Flow -->
-      <div id="flow-section" style="background:white;border-radius:16px;padding:15px 16px;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 10px rgba(0,0,0,.04);">
-        <div style="font-size:11px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Period flow</div>
-        <div class="qsub" id="flow-sub" style="margin-bottom:10px;">Are you on your period today?</div>
-        <div class="flow-row">
-          <div class="flow-opt" onclick="pickFlow(this,'Not on period')"><span class="ficon">&#10007;</span><span class="flbl">None</span></div>
-          <div class="flow-opt" onclick="pickFlow(this,'Spotting')"><span class="ficon">&#129768;</span><span class="flbl">Spotting</span></div>
-          <div class="flow-opt" onclick="pickFlow(this,'Light')"><span class="ficon">&#129768;&#129768;</span><span class="flbl">Light</span></div>
-          <div class="flow-opt" onclick="pickFlow(this,'Medium')"><span class="ficon">&#129768;&#129768;&#129768;</span><span class="flbl">Medium</span></div>
-          <div class="flow-opt" onclick="pickFlow(this,'Heavy')"><span class="ficon">&#129768;&#129768;&#129768;&#129768;</span><span class="flbl">Heavy</span></div>
-        </div>
-      </div>
+      
 
       <!-- ★ Body intuition — phase-specific question -->
       <div style="background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-radius:16px;padding:15px 16px;border:1.5px solid #E4D8F4;">
@@ -2834,27 +2930,32 @@ function showCalDay(date,d,c,p,k,log,isPred){
   var phaseColors={period:'#C05080',follicular:'#4AAAC4',ovulation:'#A06800',luteal:'#9B7EC8'};
   var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   var col=phaseColors[p]||'#4AAAC4';
+  var isT=date.toDateString()===TODAY.toDateString();
   var html='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">';
-  html+='<div style="font-size:11px;font-weight:800;color:'+col+';text-transform:uppercase;letter-spacing:.5px;">'+months[date.getMonth()]+' '+d+'</div>';
+  html+='<div style="font-size:12px;font-weight:800;color:'+col+';text-transform:uppercase;letter-spacing:.5px;">'+months[date.getMonth()]+' '+d+(isT?' · Today':'')+'</div>';
   html+='<div style="background:'+col+'22;border-radius:8px;padding:3px 9px;font-size:10px;font-weight:700;color:'+col+';">'+phaseNames[p]+'</div>';
   html+='</div>';
   if(log&&log.mood){
-    html+='<div style="display:flex;align-items:center;gap:12px;">';
+    html+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">';
     html+='<div style="font-size:32px;">'+(moodEmoji[log.mood]||'')+'</div>';
     html+='<div>';
-    html+='<div style="font-size:13px;font-weight:800;color:#1A3A45;margin-bottom:2px;">Felt '+log.mood+'</div>';
-    if(log.driver)html+='<div style="font-size:12px;color:#6A8A9A;">'+log.driver+'</div>';
-    if(log.energies&&log.energies.length)html+='<div style="font-size:11px;color:#8AAAB4;margin-top:2px;">'+log.energies.join(', ')+'</div>';
-    if(log.syms&&log.syms.length)html+='<div style="font-size:11px;color:#8AAAB4;margin-top:2px;">'+log.syms.join(', ')+'</div>';
+    html+='<div style="font-size:14px;font-weight:800;color:#1A3A45;margin-bottom:2px;">Felt '+log.mood+'</div>';
+    if(log.driver)html+='<div style="font-size:12px;color:#6A8A9A;margin-bottom:2px;">'+log.driver+'</div>';
+    if(log.energies&&log.energies.length)html+='<div style="font-size:11px;color:#8AAAB4;margin-bottom:2px;">&#9889; '+log.energies.join(', ')+'</div>';
+    if(log.flow&&log.flow!=='None')html+='<div style="font-size:11px;color:#C05080;margin-bottom:2px;">&#129768; '+log.flow+'</div>';
+    if(log.feels&&log.feels.length)html+='<div style="font-size:11px;color:#8AAAB4;margin-bottom:2px;">'+log.feels.join(' · ')+'</div>';
+    if(log.syms&&log.syms.length)html+='<div style="font-size:11px;color:#8AAAB4;margin-bottom:2px;">'+log.syms.join(' · ')+'</div>';
     if(log.note)html+='<div style="font-size:12px;color:#5A7A8A;margin-top:6px;font-style:italic;">"'+log.note+'"</div>';
     html+='</div></div>';
+    html+='<button onclick="checkInDate=new Date('+date.getFullYear()+','+date.getMonth()+','+d+');initCheckin();nav(\'checkin\');" style="width:100%;background:#F0F8FC;border:none;border-radius:11px;padding:11px;font-family:Nunito,sans-serif;font-size:13px;font-weight:800;color:#4AAAC4;cursor:pointer;margin-top:8px;">Edit this log &#8594;</button>';
   } else if(isPred){
-    html+='<div style="font-size:13px;color:#C05080;font-weight:600;">Period predicted to start around this day.</div>';
+    html+='<div style="font-size:13px;color:#C05080;font-weight:600;margin-bottom:10px;">Period predicted around this day.</div>';
+    html+='<button onclick="checkInDate=new Date('+date.getFullYear()+','+date.getMonth()+','+d+');initCheckin();nav(\'checkin\');" style="width:100%;background:linear-gradient(135deg,#D4709A,#C05080);color:white;border:none;border-radius:11px;padding:11px;font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer;">Log this day &#8594;</button>';
   } else {
     html+='<div style="display:flex;align-items:center;justify-content:space-between;">';
     html+='<div style="font-size:13px;color:#8AAAB4;">No log for this day.</div>';
-    html+='<button onclick="nav(\"checkin\")" style="background:#F0F8FC;border:none;border-radius:10px;padding:7px 12px;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;color:#4AAAC4;cursor:pointer;">Log this day</button>';
     html+='</div>';
+    html+='<button onclick="checkInDate=new Date('+date.getFullYear()+','+date.getMonth()+','+d+');initCheckin();nav(\'checkin\');" style="width:100%;background:linear-gradient(135deg,#4AAAC4,#7DC8E0);color:white;border:none;border-radius:11px;padding:11px;font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer;margin-top:10px;">Log this day &#8594;</button>';
   }
   dd.innerHTML=html;
   dd.style.display='block';
