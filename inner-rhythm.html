@@ -824,6 +824,11 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
 .cpredict{border:1.5px dashed #F4C0D1;border-radius:50%;color:#F4C0D1;background:transparent;}
 .cemoji{font-size:18px;border-radius:10px;}
 
+
+.bi-chip{border-radius:20px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid #E4D8F4;color:#7B5EA8;background:white;font-family:'Nunito',sans-serif;-webkit-tap-highlight-color:transparent;transition:all .15s;}
+.bi-chip.sel{background:#9B7EC8;border-color:#9B7EC8;color:white;}
+#ci-header{transition:background .4s ease;}
+
 </style>
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
 </head>
@@ -979,76 +984,81 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
 
   <!-- ======= CHECK-IN ======= -->
   <div class="screen" id="screen-checkin">
-    <div class="scroll">
-      <div style="padding:20px 0 14px">
-        <button class="back-btn" onclick="nav('home')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>Back</button>
-        <div style="display:flex;align-items:flex-start;justify-content:space-between">
-          <div style="font-family:Playfair Display,serif;font-size:28px;line-height:1.2" id="ci-title-label">How's today going?</div>
-          <button id="log-diff-day-btn" onclick="openDayPicker()" style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:6px 12px;font-family:'Nunito',sans-serif;font-size:11px;font-weight:800;color:var(--text2);cursor:pointer;margin-top:4px;white-space:nowrap">Log a past day</button>
-        </div>
-        <div style="font-size:13px;font-weight:700;color:var(--sky);margin-top:5px" id="ci-date-label"></div>
-        <div id="ci-already-logged" style="display:none;background:var(--sky-soft);border-radius:12px;padding:10px 14px;margin-top:10px;font-size:13px;color:var(--steel);font-weight:600">
-          ✏️ Already logged this day — filling in what you saved. Edit and save to update it.
-        </div>
-        <!-- Day picker dropdown -->
-        <div id="day-picker" style="display:none;background:var(--card);border-radius:16px;border:1px solid var(--border);padding:8px;margin-top:10px;box-shadow:0 4px 20px rgba(0,0,0,.1)">
-          <div style="font-size:11px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;padding:6px 8px 8px">Which day?</div>
-          <div id="day-picker-options"></div>
-        </div>
+
+    <!-- Phase-tinted header — colour changes with phase -->
+    <div id="ci-header" style="background:linear-gradient(160deg,#4AAAC4,#7DC8E0);padding:max(48px,env(safe-area-inset-top)) 20px 30px;flex-shrink:0;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <button onclick="nav('home')" style="background:rgba(255,255,255,.2);border:none;border-radius:50%;width:34px;height:34px;color:white;font-size:18px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;">&#8592;</button>
+        <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.85);" id="ci-date-label">Today</div>
+        <button id="log-diff-day-btn" onclick="openDayPicker()" style="margin-left:auto;background:rgba(255,255,255,.18);border:none;border-radius:10px;padding:5px 12px;font-family:'Nunito',sans-serif;font-size:11px;font-weight:800;color:white;cursor:pointer;">Past day</button>
       </div>
-      <div class="qblock">
-        <div class="qlbl">Overall vibe today?</div>
+      <div style="font-family:Playfair Display,serif;font-size:26px;color:white;font-weight:700;margin-bottom:4px;" id="ci-title-label">How are you today?</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.75);">Take a moment. I am listening.</div>
+      <div id="day-picker" style="display:none;background:rgba(255,255,255,.15);border-radius:14px;padding:10px;margin-top:12px;">
+        <div style="font-size:11px;font-weight:800;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.6px;padding:4px 6px 8px;">Which day?</div>
+        <div id="day-picker-options"></div>
+      </div>
+    </div>
+
+    <!-- White scroll content -->
+    <div class="scroll" style="background:#F7F5FA;border-radius:26px 26px 0 0;margin-top:-18px;padding:20px 18px max(28px,env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:11px;position:relative;z-index:1;">
+
+      <div id="ci-already-logged" style="display:none;background:#EEF8FC;border-radius:12px;padding:10px 14px;font-size:13px;color:#2A6A8A;font-weight:600;">
+        &#9999;&#65039; Already logged today &#8212; editing your saved entry.
+      </div>
+
+      <!-- Vibe -->
+      <div style="background:white;border-radius:16px;padding:15px 16px;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 10px rgba(0,0,0,.04);">
+        <div style="font-size:11px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.5px;margin-bottom:13px;">Overall vibe</div>
         <div class="mood-grid" id="mood-grid">
-          <div class="mopt" onclick="pm(this,'Amazing')" style="position:relative"><span class="moji">🤩</span><span class="mlbl">Amazing</span><span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();if(mood==='Amazing')mood='';">×</span></div>
-          <div class="mopt" onclick="pm(this,'Happy')" style="position:relative"><span class="moji">😊</span><span class="mlbl">Happy</span><span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();if(mood==='Happy')mood='';">×</span></div>
-          <div class="mopt" onclick="pm(this,'Good')" style="position:relative"><span class="moji">🙂</span><span class="mlbl">Good</span><span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();if(mood==='Good')mood='';">×</span></div>
-          <div class="mopt" onclick="pm(this,'Meh')" style="position:relative"><span class="moji">😑</span><span class="mlbl">Meh</span><span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();if(mood==='Meh')mood='';">×</span></div>
-          <div class="mopt" onclick="pm(this,'Sensitive')" style="position:relative"><span class="moji">🥺</span><span class="mlbl">Sensitive</span><span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();if(mood==='Sensitive')mood='';">×</span></div>
-          <div class="mopt" onclick="pm(this,'Irritated')" style="position:relative"><span class="moji">😒</span><span class="mlbl">Irritated</span><span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();if(mood==='Irritated')mood='';">×</span></div>
-          <div class="mopt" onclick="pm(this,'Anxious')" style="position:relative"><span class="moji">😟</span><span class="mlbl">Anxious</span><span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();if(mood==='Anxious')mood='';">×</span></div>
-          <div class="mopt" onclick="pm(this,'Sad')" style="position:relative"><span class="moji">😞</span><span class="mlbl">Sad</span><span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();if(mood==='Sad')mood='';">×</span></div>
-          <div class="mopt" onclick="pm(this,'Angry')" style="position:relative"><span class="moji">😡</span><span class="mlbl">Angry</span><span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();if(mood==='Angry')mood='';">×</span></div>
-          <div class="mopt" onclick="pm(this,'Numb')" style="position:relative"><span class="moji">😶</span><span class="mlbl">Numb</span><span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();if(mood==='Numb')mood='';">×</span></div>
-          <div class="mopt" onclick="pm(this,'Weepy')" style="position:relative"><span class="moji">😭</span><span class="mlbl">Weepy</span><span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();if(mood==='Weepy')mood='';">×</span></div>
-          <div class="mopt" onclick="pm(this,'Rough')" style="position:relative"><span class="moji">😩</span><span class="mlbl">Rough</span><span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();if(mood==='Rough')mood='';">×</span></div>
+          <div class="mopt" onclick="pm(this,'Amazing')" style="position:relative"><span class="moji">&#129321;</span><span class="mlbl">Amazing</span></div>
+          <div class="mopt" onclick="pm(this,'Happy')" style="position:relative"><span class="moji">&#128522;</span><span class="mlbl">Happy</span></div>
+          <div class="mopt" onclick="pm(this,'Good')" style="position:relative"><span class="moji">&#128522;</span><span class="mlbl">Good</span></div>
+          <div class="mopt" onclick="pm(this,'Meh')" style="position:relative"><span class="moji">&#128529;</span><span class="mlbl">Meh</span></div>
+          <div class="mopt" onclick="pm(this,'Sensitive')" style="position:relative"><span class="moji">&#129394;</span><span class="mlbl">Sensitive</span></div>
+          <div class="mopt" onclick="pm(this,'Irritated')" style="position:relative"><span class="moji">&#128530;</span><span class="mlbl">Irritated</span></div>
+          <div class="mopt" onclick="pm(this,'Anxious')" style="position:relative"><span class="moji">&#128543;</span><span class="mlbl">Anxious</span></div>
+          <div class="mopt" onclick="pm(this,'Sad')" style="position:relative"><span class="moji">&#128542;</span><span class="mlbl">Sad</span></div>
+          <div class="mopt" onclick="pm(this,'Angry')" style="position:relative"><span class="moji">&#128545;</span><span class="mlbl">Angry</span></div>
+          <div class="mopt" onclick="pm(this,'Numb')" style="position:relative"><span class="moji">&#128566;</span><span class="mlbl">Numb</span></div>
+          <div class="mopt" onclick="pm(this,'Rough')" style="position:relative"><span class="moji">&#128553;</span><span class="mlbl">Rough</span></div>
+          <div class="mopt" onclick="pm(this,'Weepy')" style="position:relative"><span class="moji">&#128557;</span><span class="mlbl">Weepy</span></div>
         </div>
-                <div class="add-custom" style="margin-top:10px">
+        <div class="add-custom" style="margin-top:10px;">
           <input class="custom-inp" id="mood-custom" placeholder="Add your own mood..." onkeydown="if(event.key==='Enter'){addCustomMood()}">
           <button class="add-btn" onclick="addCustomMood()">+ Add</button>
         </div>
       </div>
 
-      <div class="qblock" id="flow-section">
-        <div class="qlbl">Period flow</div>
-        <div class="qsub" id="flow-sub">Are you on your period today?</div>
-        <div class="flow-row">
-          <div class="flow-opt" onclick="pickFlow(this,'Not on period')"><span class="ficon">✗</span><span class="flbl">Not on period</span></div>
-          <div class="flow-opt" onclick="pickFlow(this,'Spotting')"><span class="ficon">🩸</span><span class="flbl">Spotting</span></div>
-          <div class="flow-opt" onclick="pickFlow(this,'Light')"><span class="ficon">🩸🩸</span><span class="flbl">Light</span></div>
-          <div class="flow-opt" onclick="pickFlow(this,'Medium')"><span class="ficon">🩸🩸🩸</span><span class="flbl">Medium</span></div>
-          <div class="flow-opt" onclick="pickFlow(this,'Heavy')"><span class="ficon">🩸🩸🩸🩸</span><span class="flbl">Heavy</span></div>
+      <!-- ★ IR responds to mood + phase -->
+      <div id="ci-ir-response" style="display:none;border-radius:14px;padding:13px 14px;border-left:3px solid #4AAAC4;background:linear-gradient(135deg,#EEF8FF,#E0F2FA);">
+        <div style="display:flex;gap:9px;align-items:flex-start;">
+          <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#4AAAC4,#2A8AAC);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;">IR</div>
+          <div style="font-size:12px;color:#1A4A6A;line-height:1.65;" id="ci-ir-text"></div>
         </div>
       </div>
 
-      <div class="qblock">
-        <div class="qlbl">Energy level</div>
-        <div class="qsub">Pick everything that fits — energy can be complicated</div>
+      <!-- Energy -->
+      <div style="background:white;border-radius:16px;padding:15px 16px;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 10px rgba(0,0,0,.04);">
+        <div style="font-size:11px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Energy today</div>
         <div class="erow" id="energy-row">
-          <div class="eopt" onclick="pe(this,'Full energy')" style="position:relative"><span class="ei">🔋</span>Full energy<span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();energies=energies.filter(function(x){return x!=='Full energy';})" >×</span></div>
-          <div class="eopt" onclick="pe(this,'Wired but tired')" style="position:relative"><span class="ei">🫠</span>Wired but tire<span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();energies=energies.filter(function(x){return x!=='Wired but tired';})" >×</span></div>
-          <div class="eopt" onclick="pe(this,'Running on empty')" style="position:relative"><span class="ei">🪫</span>Running on empty<span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();energies=energies.filter(function(x){return x!=='Running on empty';})" >×</span></div>
-          <div class="eopt" onclick="pe(this,'Foggy')" style="position:relative"><span class="ei">💤</span>Foggy<span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();energies=energies.filter(function(x){return x!=='Foggy';})" >×</span></div>
-          <div class="eopt" onclick="pe(this,'Cozy low')" style="position:relative"><span class="ei">😌</span>Cozy low<span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();energies=energies.filter(function(x){return x!=='Cozy low';})" >×</span></div>
-          <div class="eopt" onclick="pe(this,'Just okay')" style="position:relative"><span class="ei">🔆</span>Just okay<span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();energies=energies.filter(function(x){return x!=='Just okay';})" >×</span></div>
+          <div class="eopt" onclick="pe(this,'Full energy')" style="position:relative"><span class="ei">&#128267;</span>Full energy</div>
+          <div class="eopt" onclick="pe(this,'Wired but tired')" style="position:relative"><span class="ei">&#129760;</span>Wired but tired</div>
+          <div class="eopt" onclick="pe(this,'Running on empty')" style="position:relative"><span class="ei">&#128251;</span>Running on empty</div>
+          <div class="eopt" onclick="pe(this,'Foggy')" style="position:relative"><span class="ei">&#128164;</span>Foggy</div>
+          <div class="eopt" onclick="pe(this,'Cozy low')" style="position:relative"><span class="ei">&#128524;</span>Cozy low</div>
+          <div class="eopt" onclick="pe(this,'Just okay')" style="position:relative"><span class="ei">&#128262;</span>Just okay</div>
         </div>
-                <div class="add-custom" style="margin-top:10px">
+        <div class="add-custom" style="margin-top:10px;">
           <input class="custom-inp" id="energy-custom" placeholder="Add your own..." onkeydown="if(event.key==='Enter'){addCustomEnergy()}">
           <button class="add-btn" onclick="addCustomEnergy()">+ Add</button>
         </div>
       </div>
-      <div class="qblock">
-        <div class="qlbl">What feelings are showing up?</div>
-        <div class="qsub">Pick anything that feels true — even if it doesn't make sense yet</div>
+
+      <!-- Feelings -->
+      <div style="background:white;border-radius:16px;padding:15px 16px;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 10px rgba(0,0,0,.04);">
+        <div style="font-size:11px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">What feelings are showing up?</div>
+        <div style="font-size:11px;color:#C0CDD6;margin-bottom:10px;">Pick anything that feels true</div>
         <div class="icon-grid" id="feel-chips">
           <div class="icon-tile" onclick="tfi(this,'Overwhelmed','p')"><i class="ph ph-waves"></i><div class="icon-tile-label">Overwhelmed</div></div>
           <div class="icon-tile" onclick="tfi(this,'Anxious','p')"><i class="ph ph-heartbeat"></i><div class="icon-tile-label">Anxious</div></div>
@@ -1057,23 +1067,22 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
           <div class="icon-tile" onclick="tfi(this,'Craving connection','p')"><i class="ph ph-hand-heart"></i><div class="icon-tile-label">Craving connection</div></div>
           <div class="icon-tile" onclick="tfi(this,'Wanting space','p')"><i class="ph ph-arrows-in"></i><div class="icon-tile-label">Wanting space</div></div>
           <div class="icon-tile" onclick="tfi(this,'Unmotivated','p')"><i class="ph ph-battery-low"></i><div class="icon-tile-label">Unmotivated</div></div>
-          <div class="icon-tile" onclick="tfi(this,'Weepy','p')"><i class="ph ph-drop"></i><div class="icon-tile-label">Weepy</div></div>
           <div class="icon-tile" onclick="tfi(this,'Confident','p')"><i class="ph ph-sparkle"></i><div class="icon-tile-label">Confident</div></div>
           <div class="icon-tile" onclick="tfi(this,'Creative','p')"><i class="ph ph-paint-brush"></i><div class="icon-tile-label">Creative</div></div>
           <div class="icon-tile" onclick="tfi(this,'Peaceful','p')"><i class="ph ph-moon-stars"></i><div class="icon-tile-label">Peaceful</div></div>
           <div class="icon-tile" onclick="tfi(this,'Disconnected','p')"><i class="ph ph-cloud-fog"></i><div class="icon-tile-label">Disconnected</div></div>
           <div class="icon-tile" onclick="tfi(this,'Hopeful','p')"><i class="ph ph-plant"></i><div class="icon-tile-label">Hopeful</div></div>
-          <div class="icon-tile" onclick="tfi(this,'Lonely','p')"><i class="ph ph-user"></i><div class="icon-tile-label">Lonely</div></div>
-          <div class="icon-tile" onclick="tfi(this,'Resentful','p')"><i class="ph ph-fire"></i><div class="icon-tile-label">Resentful</div></div>
-          <div class="icon-tile" onclick="tfi(this,'Foggy','p')"><i class="ph ph-wind"></i><div class="icon-tile-label">Foggy</div></div>
         </div>
-                <div class="add-custom" style="margin-top:8px">
+        <div class="add-custom" style="margin-top:8px;">
           <input class="custom-inp" id="feel-custom" placeholder="Add something more specific..." onkeydown="if(event.key==='Enter'){addCustomFeel()}">
           <button class="add-btn" onclick="addCustomFeel()">+ Add</button>
         </div>
       </div>
-      <div class="qblock">
-        <div class="qlbl">Body check (optional)</div>
+
+      <!-- Body -->
+      <div style="background:white;border-radius:16px;padding:15px 16px;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 10px rgba(0,0,0,.04);">
+        <div style="font-size:11px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Body check</div>
+        <div style="font-size:11px;color:#C0CDD6;margin-bottom:10px;">Optional</div>
         <div class="icon-grid" id="sym-chips">
           <div class="icon-tile" onclick="tfi(this,'Cramps','s')"><i class="ph ph-smiley-nervous"></i><div class="icon-tile-label">Cramps</div></div>
           <div class="icon-tile" onclick="tfi(this,'Headache','s')"><i class="ph ph-brain"></i><div class="icon-tile-label">Headache</div></div>
@@ -1088,17 +1097,52 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
           <div class="icon-tile" onclick="tfi(this,'Insomnia','s')"><i class="ph ph-bed"></i><div class="icon-tile-label">Insomnia</div></div>
           <div class="icon-tile" onclick="tfi(this,'Hot flashes','s')"><i class="ph ph-thermometer-hot"></i><div class="icon-tile-label">Hot flashes</div></div>
         </div>
-                <div class="add-custom" style="margin-top:8px">
+        <div class="add-custom" style="margin-top:8px;">
           <input class="custom-inp" id="sym-custom" placeholder="Add your own symptom..." onkeydown="if(event.key==='Enter'){addCustomSym()}">
           <button class="add-btn" onclick="addCustomSym()">+ Add</button>
         </div>
       </div>
 
-      <div class="qblock">
-        <div class="qlbl">Anything you want to say? (optional)</div>
-        <textarea class="notebox" id="ci-note" placeholder="Vent. Ramble. Say the thing you can't say out loud. It's just us."></textarea>
+      <!-- Flow -->
+      <div id="flow-section" style="background:white;border-radius:16px;padding:15px 16px;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 10px rgba(0,0,0,.04);">
+        <div style="font-size:11px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Period flow</div>
+        <div class="qsub" id="flow-sub" style="margin-bottom:10px;">Are you on your period today?</div>
+        <div class="flow-row">
+          <div class="flow-opt" onclick="pickFlow(this,'Not on period')"><span class="ficon">&#10007;</span><span class="flbl">None</span></div>
+          <div class="flow-opt" onclick="pickFlow(this,'Spotting')"><span class="ficon">&#129768;</span><span class="flbl">Spotting</span></div>
+          <div class="flow-opt" onclick="pickFlow(this,'Light')"><span class="ficon">&#129768;&#129768;</span><span class="flbl">Light</span></div>
+          <div class="flow-opt" onclick="pickFlow(this,'Medium')"><span class="ficon">&#129768;&#129768;&#129768;</span><span class="flbl">Medium</span></div>
+          <div class="flow-opt" onclick="pickFlow(this,'Heavy')"><span class="ficon">&#129768;&#129768;&#129768;&#129768;</span><span class="flbl">Heavy</span></div>
+        </div>
       </div>
-      <button class="savebtn" onclick="saveCI()" id="ci-save-btn">Save today's check-in</button>
+
+      <!-- ★ Body intuition — phase-specific question -->
+      <div style="background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-radius:16px;padding:15px 16px;border:1.5px solid #E4D8F4;">
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:11px;">
+          <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;">IR</div>
+          <div style="font-size:12px;font-weight:800;color:#7B5EA8;" id="body-intuition-q">What is your body asking for today?</div>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:7px;" id="body-intuition-chips">
+          <div class="bi-chip" onclick="pickBI(this,'Rest')">&#128564; Rest</div>
+          <div class="bi-chip" onclick="pickBI(this,'Movement')">&#127939; Movement</div>
+          <div class="bi-chip" onclick="pickBI(this,'Connection')">&#129309; Connection</div>
+          <div class="bi-chip" onclick="pickBI(this,'Solitude')">&#127807; Solitude</div>
+          <div class="bi-chip" onclick="pickBI(this,'Nourishment')">&#127861; Nourishment</div>
+          <div class="bi-chip" onclick="pickBI(this,'Release')">&#127754; Release</div>
+          <div class="bi-chip" onclick="pickBI(this,'Creativity')">&#127912; Creativity</div>
+          <div class="bi-chip" onclick="pickBI(this,'Nothing clear')">&#129335; Nothing clear</div>
+        </div>
+      </div>
+
+      <!-- ★ Unsent letter -->
+      <div style="background:white;border-radius:16px;padding:15px 16px;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 10px rgba(0,0,0,.04);">
+        <div style="font-size:11px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Unsent letter</div>
+        <div style="font-size:12px;color:#A8C0CC;font-style:italic;margin-bottom:10px;">Say what you cannot say out loud right now. Nobody else will see this.</div>
+        <textarea class="notebox" id="ci-note" placeholder="Write freely..."></textarea>
+      </div>
+
+      <button class="savebtn" onclick="saveCI()" id="ci-save-btn">Save today &#8594;</button>
+
     </div>
   </div>
 
@@ -2397,122 +2441,64 @@ function qlog(e,m){
   toast('Logged '+m+' \u2713');
   if(typeof initHome==='function'){setTimeout(initHome,400);}
 }
-function pm(el,v){document.querySelectorAll('.mopt').forEach(e=>e.classList.remove('sel'));el.classList.add('sel');mood=v}
-function pe(el,v){el.classList.toggle('sel');energies=energies.includes(v)?energies.filter(x=>x!==v):[...energies,v]}
-function tf(el,v,t){const cls=t==='p'?'selp':'sels';el.classList.toggle(cls);if(t==='p'){feels=feels.includes(v)?feels.filter(x=>x!==v):[...feels,v]}else{syms=syms.includes(v)?syms.filter(x=>x!==v):[...syms,v]}}
-function matchEmoji(text, type) {
-  var t = text.toLowerCase().trim();
 
-  // Simple but comprehensive word list — check if ANY keyword appears in the typed text
-  function has(words) {
-    return words.some(function(w) { return t.indexOf(w) !== -1; });
-  }
-
-  if (type === 'energy') {
-    // High / charged / ready
-    if (has(['full','high energy','loads','lots of energy','burst','caffein','wired','pumped','buzzing','alive','fired up','on fire','rushing','raring','electric','sprinting','unstoppable','cant stop','crushing','killing it','going strong','full power','supercharged','energised','energized','ready to go','all in','100'])) return '🔋';
-    // Drained / empty / nothing left
-    if (has(['drained','drain','exhausted','exhaust','depleted','wiped out','wiped','dead','zero','no energy','empty','crashed','crash','running on fumes','fumes','burnt out','burned out','shot','spent','nothing left','flatline','done in','running low','on my last','barely','hit a wall','completely gone','fading','fizzled'])) return '🪫';
-    // Foggy / slow / not with it
-    if (has(['foggy','fog','fuzzy','cloudy','hazy','slow','sluggish','heavy','groggy','thick','brain fog','cotton wool','muddled','unclear','cant focus','cant think','scattered','spacey','spaced','not with it','not here','half asleep','zombie','dissociat'])) return '💤';
-    // Calm / gentle / cosy low
-    if (has(['cosy','cozy','snug','gentle','soft','quiet','light','easy','calm','mellow','steady','floating','drifting','warm','relaxed','chill','chilled','peaceful','taking it easy','cruising','slow and steady'])) return '😌';
-    // Restless / hyper / too much
-    if (has(['restless','hyper','racing','scattered','everywhere','bouncing','jumping','antsy','fidgety','spinning','cant settle','cant sit still','too much energy','overloaded','jittery','frantic','frazzled'])) return '⚡';
-    // Tired / sleepy
-    if (has(['tired','sleepy','sleep','drowsy','dragging','crawling','zonked','lethargic','yawning','falling asleep','need a nap','nap','could sleep','half asleep','eyes heavy','crashing','barely awake'])) return '😴';
-    // Strong / focused / sharp
-    if (has(['strong','powerful','motivated','driven','focused','sharp','capable','beast','on it','in the zone','locked in','switched on','clear headed','clear','alert','productive','dialled in','dialed in'])) return '💪';
-    // Wired but tired / contradictory
-    if (has(['wired but tired','wired and tired','tired but wired','exhausted but wired','tired but cant sleep','wired yet tired'])) return '🫠';
-    // Anxious / wound up
-    if (has(['anxious','nervous','jittery','shaky','trembling','on edge','wound up','tightly wound','cant relax','tense energy','stressed out','stressed','frazzled'])) return '😬';
-    // Mixed / moderate / okay
-    if (has(['mixed','up and down','in between','moderate','average','okay','ok','alright','decent','not bad','fine','so so','medium','middling','getting there','improving','better than yesterday','not great not bad','some energy','half'])) return '🔆';
-    // Fallback
-    return '🔆';
-  }
-
-  if (type === 'sym') {
-    if (has(['cramp','cramping','cramps','spasm','contraction','period pain','stomach cramp','muscle cramp'])) return '😣';
-    if (has(['headache','head ache','migraine','head pain','head is pounding','pressure in my head','forehead','temple'])) return '🤕';
-    if (has(['bloated','bloating','bloat','puffy','swollen','gassy','gas','distended','stomach feels full','belly'])) return '🤰';
-    if (has(['nauseous','nausea','sick','queasy','vomit','throwing up','stomach ache','stomach pain','belly ache','gut','want to be sick'])) return '🤢';
-    if (has(['back pain','backache','back ache','lower back','spine','lumbar','back is killing','back hurts'])) return '😩';
-    if (has(['breast','boob','chest sore','nipple','tender chest','sore chest','chest pain','chest tight'])) return '😖';
-    if (has(['acne','breakout','spots','pimples','skin flare','blemish','spot','zit'])) return '😕';
-    if (has(['insomnia','cant sleep','cannot sleep','not sleeping','awake all night','tossing','turning','sleep issues','restless sleep','wide awake'])) return '😩';
-    if (has(['hot flash','hot flush','sweating','overheating','burning up','flushed','night sweat','boiling'])) return '🥵';
-    if (has(['cold','chills','chilly','shivering','freezing','goosebumps','cold sweats'])) return '🥶';
-    if (has(['craving','cravings','hungry','appetite','want to eat','need food','snacking','food','eating','starving'])) return '🤤';
-    if (has(['dizzy','dizziness','lightheaded','spinning','vertigo','woozy','off balance','dizzy spells'])) return '😵';
-    if (has(['tense','tension','tight','stiff','clenched','knotted','rigid','tense muscles','muscle tension'])) return '😬';
-    if (has(['pain','painful','hurting','hurts','sore','aching','sting','burning','raw','in pain','body pain'])) return '😫';
-    if (has(['heart racing','palpitations','heart pounding','fluttering heart','heart beating fast'])) return '😰';
-    if (has(['tired','fatigued','fatigue','exhausted','drained','no energy','wiped','worn out'])) return '😴';
-    if (has(['anxious','anxiety','nerves','nervous','on edge','wound up','jittery'])) return '😟';
-    if (has(['mood','moody','irritable','grumpy','low mood','emotional'])) return '😒';
-    if (has(['appetite loss','no appetite','not hungry','dont want to eat','cant eat'])) return '😶';
-    if (has(['joint','joints','achy joints','joint pain','knees','hips'])) return '🦵';
-    if (has(['dry','dehydrated','thirsty','dry skin','dry lips'])) return '😮';
-    return '🩹';
-  }
-
-  // MOODS — face emojis only
-  if (has(['mad','angry','anger','rage','fuming','livid','furious','irate','seething','heated','pissed'])) return '😡';
-  if (has(['sad','down','blue','unhappy','miserable','depressed','low','glum','gutted','crushed','heartbroken','devastated'])) return '😞';
-  if (has(['happy','joy','joyful','gleeful','delighted','cheerful','beaming','glowing','blissful','bliss','radiant'])) return '😄';
-  if (has(['anxious','anxiety','nervous','worried','worrying','stressed','stress','uneasy','dreading','panicking','apprehensive','on edge'])) return '😟';
-  if (has(['tired','exhausted','drained','fatigued','spent','wiped','zonked','depleted','running on empty'])) return '😪';
-  if (has(['lonely','isolated','alone','abandoned','forgotten','invisible'])) return '🥺';
-  if (has(['scared','afraid','terrified','frightened','fearful','spooked','petrified'])) return '😨';
-  if (has(['confused','lost','unsure','uncertain','muddled','bewildered','all over the place'])) return '😕';
-  if (has(['numb','empty','blank','hollow','void','flatline','dead inside','switched off','feel nothing'])) return '😶';
-  if (has(['guilty','regret','shame','ashamed','my fault','let them down'])) return '😔';
-  if (has(['jealous','envious'])) return '😒';
-  if (has(['hopeful','optimistic','looking up','better days'])) return '🥹';
-  if (has(['grateful','thankful','blessed','appreciative','lucky'])) return '🥰';
-  if (has(['loved','cherished','adored','treasured','safe','cared for','seen','heard','held'])) return '🥰';
-  if (has(['proud','accomplished','achieved','nailed it','did it','made it'])) return '😌';
-  if (has(['confident','capable','bold','certain','owning it','sure of myself'])) return '😏';
-  if (has(['excited','thrilled','hyped','stoked','psyched','cant wait'])) return '🤩';
-  if (has(['inspired','creative','artistic','in the zone','ideas flowing'])) return '🤔';
-  if (has(['motivated','driven','determined','purposeful','going for it'])) return '😤';
-  if (has(['peaceful','calm','serene','tranquil','zen','relaxed','at ease','still'])) return '😌';
-  if (has(['content','settled','satisfied','fulfilled','grounded','at peace'])) return '🙂';
-  if (has(['playful','silly','goofy','laughing','giggly','cheeky','fun'])) return '😄';
-  if (has(['sensitive','fragile','delicate','raw','vulnerable','emotional','on the verge','easily hurt'])) return '🥺';
-  if (has(['overwhelmed','swamped','buried','drowning','too much','cant cope'])) return '😩';
-  if (has(['irritated','irritable','annoyed','frustrated','grumpy','snappy','moody','touchy','agitated','narky'])) return '😒';
-  if (has(['resentful','bitter','betrayed','wronged','used','grudge'])) return '😤';
-  if (has(['weepy','crying','sobbing','tears','cant stop crying','in bits'])) return '😭';
-  if (has(['embarrassed','mortified','cringing','awkward','red faced','sheepish'])) return '😳';
-  if (has(['shy','bashful','timid','meek','self conscious','insecure','withdrawn'])) return '😶';
-  if (has(['needy','clingy','attached','want to be held','need reassurance'])) return '🥺';
-  if (has(['tense','tight','stiff','clenched','wound up','braced'])) return '😬';
-  if (has(['restless','antsy','fidgety','jumpy','pacing','unsettled'])) return '😤';
-  if (has(['disconnected','dissociating','zoning out','spacing out','far away','not here'])) return '😑';
-  if (has(['overthinking','spiralling','spiraling','ruminating','racing thoughts','cant switch off'])) return '😵';
-  if (has(['bored','unstimulated','listless','uninterested','nothing to do','dull'])) return '😑';
-  if (has(['meh','blah','indifferent','neutral','flat','whatever','so so','autopilot'])) return '😐';
-  if (has(['okay','ok','alright','getting by','surviving','managing','hanging in'])) return '🙂';
-  if (has(['strong','resilient','tough','warrior','fighter','survivor','got this'])) return '💪';
-  if (has(['hopeless','giving up','pointless','futile','no point','whats the point'])) return '😔';
-  if (has(['burnt out','burned out','running on fumes','nothing left','cannot anymore'])) return '😮';
-  if (has(['missing','longing','yearning','pining','aching for','wish you were here'])) return '😔';
-  if (has(['nostalgic','reminiscing','bittersweet','remember when'])) return '🥲';
-  if (has(['cosy','cozy','snug','comfy','warm inside','tucked in'])) return '🥰';
-  if (has(['free','light','lifted','weightless','unburdened'])) return '😄';
-  if (has(['soft','tender','gentle','open hearted','warmhearted'])) return '🥰';
-  if (has(['dark','heavy','gloom','burdened','sinking','weight'])) return '😔';
-  if (has(['weird','strange','odd','not myself','out of character'])) return '😶';
-  if (has(['mixed','up and down','complicated','hard to explain'])) return '😕';
-  if (has(['ecstatic','elated','euphoric','overjoyed','on top of the world'])) return '🤩';
-  if (has(['great','good','well','lovely','decent','pretty good','doing well'])) return '😊';
-  if (has(['mad'])) return '😡';
-
-  return null;
+var bodyIntuition='';
+function pickBI(el,val){
+  document.querySelectorAll('.bi-chip').forEach(function(c){c.classList.remove('sel');});
+  el.classList.add('sel');bodyIntuition=val;
 }
+
+function pm(el,m){
+  document.querySelectorAll('.mopt').forEach(function(e){e.classList.remove('sel');});
+  el.classList.add('sel');mood=m;
+  // IR responds based on mood + phase
+  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  var irEl=document.getElementById('ci-ir-response');
+  var irTxt=document.getElementById('ci-ir-text');
+  if(irEl&&irTxt&&setup.start){
+    var day=cd(TODAY),phase=ph(day);
+    var allKeys=Object.keys(logs).sort();
+    var phaseLogs=allKeys.filter(function(k){var d=new Date(k);return ph(cd(d))===phase;});
+    var moodCount=phaseLogs.filter(function(k){return logs[k].mood===m;}).length;
+    var responses={
+      'Amazing':{
+        period:'Feeling amazing during your period is worth noting. That is not always common here.',
+        follicular:'This is your window. Follicular is when you tend to feel most like yourself. Enjoy it.',
+        ovulation:'Peak estrogen, peak you. This is your sharpest, most energised phase.',
+        luteal:'Feeling amazing in luteal? That is actually less common for most people &#8212; your body is handling this phase well.'
+      },
+      'Good':{
+        period:'Good during your period is genuinely solid. Rest and you are managing it well.',
+        follicular:'This is your better week. Good makes complete sense right now &#8212; your energy is rising.',
+        ovulation:'Good in ovulation &#8212; some people feel their absolute best here. Tell me more.',
+        luteal:'Good in luteal is something to note. A lot of people find this phase harder.'
+      },
+      'Meh':{
+        period:'Meh during your period is completely valid. Your body is doing a lot right now.',
+        follicular:'Meh in follicular is worth paying attention to. This is usually your better phase.',
+        ovulation:'Meh in ovulation &#8212; that is not as common. Your body might be telling you something.',
+        luteal:'Meh is very on-pattern for luteal. Progesterone dropping tends to flatten things out.'
+      },
+      'Off':{
+        period:'Feeling off during your period makes complete sense. Both hormones are at their lowest.',
+        follicular:'Off in follicular is worth noting &#8212; this is usually your better week. Something might be off beyond your cycle.',
+        ovulation:'Off during ovulation is less common. Worth logging to see if this is a pattern for you.',
+        luteal:moodCount>=2?'This is very on-pattern for you &#8212; you tend to feel Off in luteal almost every cycle. It is hormonal, not personal.':'Off in luteal is completely on-pattern. Progesterone dropping does this to almost everyone.'
+      },
+      'Rough':{
+        period:'Rough during your period is real. Both hormones drop and your body is working hard.',
+        follicular:'Rough in follicular is unusual. Something beyond your cycle might be going on.',
+        ovulation:'Rough in ovulation is worth noting &#8212; keep logging so I can see if this is a pattern.',
+        luteal:'I hear you. Luteal can be the hardest phase and your logs show that. This will shift.'
+      }
+    };
+    var phaseResponses=responses[m]||{};
+    var msg=phaseResponses[phase]||'Got it. Tell me more about how you are feeling today.';
+    irTxt.innerHTML=msg;
+    irEl.style.display='block';
+  }
+}
+
 function addCustomMood(){
   const inp=document.getElementById('mood-custom'), v=inp.value.trim();
   if(!v)return;
@@ -3364,73 +3350,72 @@ async function loadPersonalisedMessages() {
 }
 
 
-function initCheckin() {
-  // Reset all selections
-  mood=''; energies=[]; feels=[]; syms=''; selectedFlow='';
-  document.querySelectorAll('.mopt').forEach(e=>e.classList.remove('sel'));
-  document.querySelectorAll('.eopt').forEach(e=>e.classList.remove('sel'));
-  document.querySelectorAll('.chip').forEach(e=>e.classList.remove('selp','sels'));
-  document.querySelectorAll('.flow-opt').forEach(e=>e.classList.remove('self'));
-  document.getElementById('ci-note').value = '';
+function initCheckin(){
+  mood='';energies=[];feels=[];syms=[];bodyIntuition='';
+  document.querySelectorAll('.mopt').forEach(function(e){e.classList.remove('sel');});
+  document.querySelectorAll('.eopt').forEach(function(e){e.classList.remove('sel');});
+  document.querySelectorAll('.flow-opt').forEach(function(e){e.classList.remove('self');});
+  document.querySelectorAll('.icon-tile').forEach(function(e){e.classList.remove('selp','sels');});
+  document.querySelectorAll('.bi-chip').forEach(function(e){e.classList.remove('sel');});
+  var n=document.getElementById('ci-note');if(n)n.value='';
+  var ir=document.getElementById('ci-ir-response');if(ir)ir.style.display='none';
 
-  // Show real date in header
-  const dateLabel = document.getElementById('ci-date-label');
-  if (dateLabel) {
-    const day = cd(TODAY);
-    const p = ph(day);
-    const phNames = {period:'Menstrual phase',follicular:'Follicular phase',ovulation:'Ovulation phase',luteal:'Luteal phase'};
-    dateLabel.textContent = TODAY.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'}) + ' · ' + phNames[p] + ' · Day ' + day;
+  // Phase-shifting header
+  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  var header=document.getElementById('ci-header');
+  var phaseGrads={
+    period:'linear-gradient(160deg,#C05080,#D4709A)',
+    follicular:'linear-gradient(160deg,#4AAAC4,#7DC8E0)',
+    ovulation:'linear-gradient(160deg,#C07820,#E8A840)',
+    luteal:'linear-gradient(160deg,#7B5EA8,#9B7EC8)'
+  };
+  var irColors={
+    period:'background:linear-gradient(135deg,#FFF0F6,#FFE0F0);border-left-color:#D4709A;',
+    follicular:'background:linear-gradient(135deg,#EEF8FF,#E0F2FA);border-left-color:#4AAAC4;',
+    ovulation:'background:linear-gradient(135deg,#FFFAF0,#FFF4D8);border-left-color:#E8A840;',
+    luteal:'background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-left-color:#9B7EC8;'
+  };
+  var irTextColors={period:'#7A1040',follicular:'#1A4A6A',ovulation:'#6A4800',luteal:'#3A2A5A'};
+  if(setup.start&&header){
+    var day=cd(TODAY),phase=ph(day);
+    header.style.background=phaseGrads[phase]||phaseGrads.follicular;
+    var irEl=document.getElementById('ci-ir-response');
+    if(irEl){
+      irEl.style.cssText=(irColors[phase]||irColors.follicular)+'border-radius:14px;padding:13px 14px;border-left-width:3px;border-left-style:solid;';
+      var txt=document.getElementById('ci-ir-text');
+      if(txt)txt.style.color=irTextColors[phase]||'#1A4A6A';
+    }
+    // Phase-specific body intuition question
+    var biQ=document.getElementById('body-intuition-q');
+    var biQuestions={
+      period:'What does your body need most right now?',
+      follicular:'What is your body asking for today?',
+      ovulation:'What do you feel like doing with all this energy?',
+      luteal:'What would help you get through today?'
+    };
+    if(biQ)biQ.textContent=biQuestions[phase]||biQuestions.follicular;
   }
 
-  // Check if already logged today — pre-fill if so
-  const k = TODAY.toISOString().slice(0,10);
-  const existing = logs[k];
-  const alreadyEl = document.getElementById('ci-already-logged');
-  const saveBtn = document.getElementById('ci-save-btn');
-
-  if (existing) {
-    // Show already logged banner
-    if (alreadyEl) alreadyEl.style.display = 'block';
-    if (saveBtn) saveBtn.textContent = 'Update check-in';
-
-    // Pre-select mood
-    if (existing.mood) {
-      mood = existing.mood;
-      document.querySelectorAll('.mopt').forEach(e => {
-        if (e.querySelector('.mlbl') && e.querySelector('.mlbl').textContent === existing.mood) {
-          e.classList.add('sel');
-        }
-      });
-    }
-    // Pre-select flow
-    if (existing.flow) {
-      selectedFlow = existing.flow;
-      document.querySelectorAll('.flow-opt').forEach(e => {
-        if (e.querySelector('.flbl') && e.querySelector('.flbl').textContent === existing.flow) {
-          e.classList.add('self');
-        }
-      });
-    }
-    // Pre-fill note
-    if (existing.note) document.getElementById('ci-note').value = existing.note;
-
-  } else {
-    if (alreadyEl) alreadyEl.style.display = 'none';
-    if (saveBtn) saveBtn.textContent = "Save today's check-in";
-
-    // Default flow for non-period phase
-    const cp = ph(cd(TODAY));
-    if (cp !== 'period') {
-      const noP = document.querySelector('.flow-opt');
-      if (noP) { noP.classList.add('self'); selectedFlow = 'Not on period'; }
-    }
+  // Date label
+  var dl=document.getElementById('ci-date-label');
+  if(dl&&checkInDate){
+    var isToday=checkInDate.toDateString()===TODAY.toDateString();
+    dl.textContent=isToday?'Today':checkInDate.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
   }
 
-  checkFlowSection();
+  // Fill existing log if any
+  var k=(checkInDate||TODAY).toISOString().slice(0,10);
+  var al=document.getElementById('ci-already-logged');
+  if(logs[k]&&logs[k].mood){
+    if(al)al.style.display='block';
+    var l=logs[k];
+    if(l.mood){mood=l.mood;document.querySelectorAll('.mopt').forEach(function(e){if(e.querySelector('.mlbl')&&e.querySelector('.mlbl').textContent===l.mood)e.classList.add('sel');});}
+    if(l.energies)l.energies.forEach(function(en){document.querySelectorAll('.eopt').forEach(function(e){if(e.textContent.trim().includes(en))e.classList.add('sel');});energies=l.energies;});
+    if(l.note){var n=document.getElementById('ci-note');if(n)n.value=l.note;}
+  }else{
+    if(al)al.style.display='none';
+  }
 }
-
-
-var onbStep = 0;
 
 function showWelcomeScreen(name) {
   onbStep = 0;
