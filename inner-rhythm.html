@@ -961,6 +961,24 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
         <div id="today-log-content"></div>
       </div>
       <!-- Home period alert -->
+      <div id="treat-card" style="display:none;border-radius:20px;padding:18px;margin-bottom:14px;position:relative;overflow:hidden;">
+        <button onclick="dismissTreat()" style="position:absolute;top:10px;right:12px;background:rgba(255,255,255,.2);border:none;border-radius:50%;width:26px;height:26px;color:white;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">&#x2715;</button>
+        <div style="position:absolute;top:-20px;right:-20px;font-size:60px;opacity:.1;" id="treat-bg-icon"></div>
+        <div style="font-size:10px;font-weight:800;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;" id="treat-label"></div>
+        <div style="font-family:Playfair Display,serif;font-size:17px;color:white;font-weight:700;margin-bottom:7px;line-height:1.35;" id="treat-title"></div>
+        <div style="font-size:12px;color:rgba(255,255,255,.85);line-height:1.65;margin-bottom:13px;" id="treat-msg"></div>
+        <div style="display:flex;flex-wrap:wrap;gap:0;margin:-3px;" id="treat-chips"></div>
+      </div>
+
+      <!-- Streak nudge -->
+      <div id="streak-nudge" style="display:none;background:linear-gradient(135deg,#FFF8E8,#FFF0D0);border-radius:14px;padding:11px 14px;margin-bottom:12px;border:1.5px solid #FFD060;display:flex;align-items:center;gap:10px;">
+        <div style="font-size:20px;flex-shrink:0;">&#128293;</div>
+        <div style="flex:1;">
+          <div style="font-size:12px;font-weight:800;color:#B86000;" id="streak-nudge-text">Keep your streak going</div>
+          <div style="height:4px;background:rgba(184,96,0,.15);border-radius:2px;margin-top:6px;"><div id="streak-nudge-bar" style="height:100%;background:linear-gradient(90deg,#FF8C00,#FFD060);border-radius:2px;width:50%;transition:width .5s;"></div></div>
+        </div>
+      </div>
+
       <div id="home-period-alert" style="display:none;background:linear-gradient(135deg,#FFF0F6,#FFE4F0);border-radius:18px;padding:16px;margin-bottom:14px;border:1.5px solid #F4C0D1;position:relative;">
         <button onclick="document.getElementById('home-period-alert').style.display='none'" style="position:absolute;top:10px;right:12px;background:none;border:none;font-size:14px;color:#C0A0B0;cursor:pointer;line-height:1;">&#215;</button>
         <div style="display:flex;align-items:flex-start;gap:11px;">
@@ -2590,6 +2608,8 @@ function patTog(id,arrId){
 }
 
 function initHome(){
+  try{checkTreatCard();}catch(e){}
+  try{updateStreakNudge();}catch(e){}
   try{var acc=JSON.parse(localStorage.getItem('ir_account')||'{}');var nm=acc.name||'';var g=document.getElementById('greet');if(g)g.textContent=nm?('Hello, '+nm):'Hello';}catch(e){}
   // Period alert on home
   try{
@@ -5053,6 +5073,145 @@ saveCI=function(){
   _origSaveCI();
   setTimeout(checkRewards,500);
 };
+
+
+// ── TREAT CARDS & STREAK NUDGE ────────────────────────────────────────
+var TREATS = {
+  period_end: {
+    bg: 'linear-gradient(135deg,#D4709A,#C05080)',
+    icon: '\ud83e\ude78',
+    label: 'You made it through',
+    title: 'Your period is over. You deserve something today.',
+    msg: 'Your body just did a lot. That deserves recognition, not just moving on.',
+    chips: ['\ud83d\udec1 Long hot bath', '\ud83c\udf55 Order your favourite food', '\ud83d\udecc Early bedtime tonight', '\ud83d\udd6f\ufe0f Cancel one obligation']
+  },
+  luteal_end: {
+    bg: 'linear-gradient(135deg,#7B5EA8,#9B7EC8)',
+    icon: '\ud83c\udf19',
+    label: 'Hardest phase done',
+    title: 'You got through luteal. Treat yourself today.',
+    msg: 'The fog, the heavy feeling, the harder days \u2014 you showed up through all of it.',
+    chips: ['\u2615 Get your favourite order', '\ud83d\udec1 Take a bath tonight', '\ud83c\udf6b Buy the snack', '\ud83d\udcfa Guilt-free screen time']
+  },
+  streak7: {
+    bg: 'linear-gradient(135deg,#B86000,#E8A000)',
+    icon: '\ud83d\udd25',
+    label: '7 days in a row',
+    title: 'You kept your promise to yourself. Celebrate that.',
+    msg: 'Seven consecutive days of showing up. Treat yourself like someone who follows through.',
+    chips: ['\ud83e\uddc1 Get a little treat', '\ud83d\udc90 Buy yourself flowers', '\u2728 Do something just for you', '\ud83d\udc86 Book a massage']
+  },
+  streak14: {
+    bg: 'linear-gradient(135deg,#B86000,#E8A000)',
+    icon: '\ud83d\udd25',
+    label: '14 days in a row',
+    title: 'Two weeks of showing up. That is real dedication.',
+    msg: 'Fourteen days straight. Your patterns are getting clearer every day. You deserve something good today.',
+    chips: ['\ud83c\udf7d\ufe0f Nice dinner tonight', '\ud83d\udec1 Long bath or shower', '\ud83d\uded2 Buy something small', '\ud83c\udf74 Cook your favourite meal']
+  },
+  cycle1: {
+    bg: 'linear-gradient(135deg,#2A6A3A,#4A9A6A)',
+    icon: '\ud83c\udf00',
+    label: 'First full cycle complete',
+    title: 'One whole cycle. That took real commitment.',
+    msg: 'Period to period, you showed up. Do something today that feels like a proper celebration.',
+    chips: ['\ud83d\uded1 Buy something you want', '\ud83c\udf7d\ufe0f Nice dinner out', '\ud83e\uddd6 Book a facial or massage', '\ud83c\udf89 Tell someone you did this']
+  }
+};
+
+function checkTreatCard() {
+  var shown = JSON.parse(localStorage.getItem('ir_treats_shown') || '[]');
+  var todayKey = TODAY.toISOString().slice(0, 10);
+  var shownToday = localStorage.getItem('ir_treat_today');
+  if (shownToday === todayKey) return; // already showed one today
+
+  var setup = JSON.parse(localStorage.getItem('ir_cycle_setup') || '{}');
+  if (!setup.start) return;
+
+  var day = cd(TODAY);
+  var phase = ph(day);
+  var treatKey = null;
+
+  // End of period (first follicular day)
+  if (phase === 'follicular' && day === Math.round(userPeriodDur) + 1) {
+    if (shown.indexOf('period_end_' + TODAY.getMonth()) === -1) treatKey = 'period_end';
+  }
+  // End of luteal (last day before period) — day 26-28
+  if (phase === 'luteal' && (userCycleLen - day) <= 2) {
+    if (shown.indexOf('luteal_end_' + TODAY.getMonth()) === -1) treatKey = 'luteal_end';
+  }
+  // Streak milestones
+  var streak = 0; var d = new Date(TODAY);
+  while (true) { var k = d.toISOString().slice(0, 10); if (!logs[k]) break; streak++; d.setDate(d.getDate() - 1); }
+  if (streak === 14 && shown.indexOf('streak14') === -1) treatKey = 'streak14';
+  else if (streak === 7 && shown.indexOf('streak7') === -1) treatKey = 'streak7';
+  // First cycle
+  var cycles = Math.floor((TODAY - new Date(setup.start + 'T12:00:00')) / (userCycleLen * 86400000));
+  if (cycles >= 1 && shown.indexOf('cycle1') === -1) treatKey = 'cycle1';
+
+  if (treatKey) {
+    shown.push(treatKey.indexOf('period_end') > -1 ? 'period_end_' + TODAY.getMonth() : treatKey.indexOf('luteal_end') > -1 ? 'luteal_end_' + TODAY.getMonth() : treatKey);
+    localStorage.setItem('ir_treats_shown', JSON.stringify(shown));
+    localStorage.setItem('ir_treat_today', todayKey);
+    showTreatCard(treatKey);
+  }
+}
+
+function showTreatCard(key) {
+  var t = TREATS[key]; if (!t) return;
+  var card = document.getElementById('treat-card');
+  if (!card) return;
+  card.style.background = t.bg;
+  var bgIcon = document.getElementById('treat-bg-icon');
+  if (bgIcon) bgIcon.textContent = t.icon;
+  var lbl = document.getElementById('treat-label');
+  if (lbl) lbl.textContent = t.label;
+  var ttl = document.getElementById('treat-title');
+  if (ttl) ttl.textContent = t.title;
+  var msg = document.getElementById('treat-msg');
+  if (msg) msg.textContent = t.msg;
+  var chips = document.getElementById('treat-chips');
+  if (chips) {
+    chips.innerHTML = '';
+    t.chips.forEach(function(c) {
+      var el = document.createElement('div');
+      el.style.cssText = 'background:rgba(255,255,255,.18);border-radius:10px;padding:7px 12px;font-size:11px;font-weight:700;color:white;margin:3px;display:inline-block;';
+      el.textContent = c;
+      chips.appendChild(el);
+    });
+  }
+  card.style.display = 'block';
+}
+
+function dismissTreat() {
+  var card = document.getElementById('treat-card');
+  if (card) card.style.display = 'none';
+}
+
+function updateStreakNudge() {
+  var nudge = document.getElementById('streak-nudge');
+  var nudgeTxt = document.getElementById('streak-nudge-text');
+  var nudgeBar = document.getElementById('streak-nudge-bar');
+  if (!nudge) return;
+
+  var streak = 0; var d = new Date(TODAY);
+  while (true) { var k = d.toISOString().slice(0, 10); if (!logs[k]) break; streak++; d.setDate(d.getDate() - 1); }
+
+  if (streak >= 3) {
+    nudge.style.display = 'flex';
+    var next = streak < 7 ? 7 : streak < 14 ? 14 : streak < 30 ? 30 : null;
+    if (next) {
+      var pct = Math.round(streak / next * 100);
+      if (nudgeTxt) nudgeTxt.textContent = '\ud83d\udd25 ' + streak + ' day streak \u2014 ' + (next - streak) + ' more to unlock your ' + next + '-day badge';
+      if (nudgeBar) nudgeBar.style.width = pct + '%';
+    } else {
+      if (nudgeTxt) nudgeTxt.textContent = '\ud83d\udd25 ' + streak + ' days in a row \u2014 incredible streak';
+      if (nudgeBar) nudgeBar.style.width = '100%';
+    }
+  } else {
+    nudge.style.display = 'none';
+  }
+}
 
 </script>
 
