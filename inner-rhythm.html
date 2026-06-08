@@ -928,8 +928,30 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
       <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 2px 4px;margin-bottom:4px;">
         <div style="font-family:Playfair Display,serif;font-size:22px;color:var(--text);font-weight:700;" id="greet">Hello</div>
         <div style="display:flex;gap:10px;align-items:center;">
-          <div id="streak-badge" class="streak-badge dead" style="display:none;"><span>&#128293;</span><span class="streak-num" id="streak-num">0</span></div>
+          <!-- Streak badge — tappable -->
+          <div id="home-streak-pill" style="display:none;background:linear-gradient(135deg,#FFF0D0,#FFE8B0);border:1.5px solid #FFD060;border-radius:20px;padding:5px 10px;display:flex;align-items:center;gap:5px;cursor:pointer;-webkit-tap-highlight-color:transparent;" onclick="openBadgeSheet()">
+            <span style="font-size:14px;">&#128293;</span>
+            <span style="font-size:12px;font-weight:800;color:#B86000;" id="home-streak-num">0</span>
+          </div>
           <div class="notif-btn" onclick="nav('notifs')" style="font-size:18px;opacity:.55;cursor:pointer;">&#128276;</div>
+        </div>
+
+        <!-- Badge sheet (slides up) -->
+        <div id="badge-sheet" style="display:none;position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,.5);" onclick="closeBadgeSheet()">
+          <div style="position:absolute;bottom:0;left:0;right:0;background:white;border-radius:24px 24px 0 0;padding:20px 20px 40px;max-height:70vh;overflow-y:auto;" onclick="event.stopPropagation()">
+            <div style="width:36px;height:4px;background:#E0E8EE;border-radius:2px;margin:0 auto 18px;"></div>
+            <div style="font-family:Playfair Display,serif;font-size:20px;color:#1A3A45;font-weight:700;margin-bottom:4px;">Your badges</div>
+            <div style="font-size:12px;color:#8AAAB4;margin-bottom:18px;" id="sheet-badge-count">Keep logging to earn badges</div>
+            <!-- Badge grid in sheet -->
+            <div id="sheet-badge-grid" style="display:flex;flex-wrap:wrap;gap:14px;justify-content:flex-start;margin-bottom:20px;"></div>
+            <!-- IR note -->
+            <div style="background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-radius:14px;padding:12px 14px;border:1.5px solid #E4D8F4;">
+              <div style="display:flex;gap:8px;align-items:flex-start;">
+                <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:white;flex-shrink:0;">IR</div>
+                <div style="font-size:12px;color:#3A2A5A;line-height:1.65;" id="sheet-ir-note">Each badge unlocks when I genuinely learn something about your cycle.</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div id="weekly-summary" style="display:none"></div>
@@ -2610,6 +2632,14 @@ function patTog(id,arrId){
 function initHome(){
   try{checkTreatCard();}catch(e){}
   try{updateStreakNudge();}catch(e){}
+  try{
+    var streak2=0;var dd=new Date(TODAY);
+    while(true){var kk=dd.toISOString().slice(0,10);if(!logs[kk])break;streak2++;dd.setDate(dd.getDate()-1);}
+    var pill=document.getElementById('home-streak-pill');
+    var pillNum=document.getElementById('home-streak-num');
+    if(pill&&streak2>=1){pill.style.display='flex';if(pillNum)pillNum.textContent=streak2;}
+    else if(pill){pill.style.display='none';}
+  }catch(e){}
   try{var acc=JSON.parse(localStorage.getItem('ir_account')||'{}');var nm=acc.name||'';var g=document.getElementById('greet');if(g)g.textContent=nm?('Hello, '+nm):'Hello';}catch(e){}
   // Period alert on home
   try{
@@ -5211,6 +5241,54 @@ function updateStreakNudge() {
   } else {
     nudge.style.display = 'none';
   }
+}
+
+
+function openBadgeSheet(){
+  var sheet=document.getElementById('badge-sheet');
+  var grid=document.getElementById('sheet-badge-grid');
+  var countEl=document.getElementById('sheet-badge-count');
+  var noteEl=document.getElementById('sheet-ir-note');
+  if(!sheet||!grid)return;
+  var earnedB=JSON.parse(localStorage.getItem('ir_badges')||'[]');
+  var allB=[
+    {id:'streak7',icon:'\ud83d\udd25',lbl:'7 Day Streak',bg:'linear-gradient(135deg,#B86000,#E8A000)',glow:'rgba(255,160,0,.4)'},
+    {id:'streak14',icon:'\ud83d\udd25',lbl:'14 Day',bg:'linear-gradient(135deg,#B86000,#E8A000)',glow:'rgba(255,160,0,.4)'},
+    {id:'streak30',icon:'\ud83c\udfc6',lbl:'30 Day',bg:'linear-gradient(135deg,#8A7000,#D4B000)',glow:'rgba(220,180,0,.4)'},
+    {id:'cycle1',icon:'\ud83c\udf00',lbl:'1st Cycle',bg:'linear-gradient(135deg,#2A6A3A,#4A9A6A)',glow:'rgba(74,154,106,.4)'},
+    {id:'cycle3',icon:'\ud83c\udf3f',lbl:'3 Cycles',bg:'linear-gradient(135deg,#2A6A3A,#4A9A6A)',glow:'rgba(74,154,106,.4)'},
+    {id:'period_known',icon:'\ud83e\ude78',lbl:'Period Known',bg:'linear-gradient(135deg,#A02060,#D45080)',glow:'rgba(212,80,128,.4)'},
+    {id:'follicular_known',icon:'\ud83c\udf31',lbl:'Follicular',bg:'linear-gradient(135deg,#2A8AAA,#4AAAC4)',glow:'rgba(74,170,196,.4)'},
+    {id:'ovulation_known',icon:'\u2600\ufe0f',lbl:'Ovulation',bg:'linear-gradient(135deg,#A07000,#D4A000)',glow:'rgba(212,160,0,.4)'},
+    {id:'luteal_known',icon:'\ud83c\udf19',lbl:'Luteal Known',bg:'linear-gradient(135deg,#5A3A90,#9B7EC8)',glow:'rgba(155,126,200,.4)'}
+  ];
+  grid.innerHTML='';
+  var earnedCount=0;
+  allB.forEach(function(b){
+    var isE=earnedB.indexOf(b.id)!==-1;
+    if(isE)earnedCount++;
+    var el=document.createElement('div');
+    el.style.cssText='text-align:center;flex-shrink:0;';
+    var ring=document.createElement('div');
+    ring.style.cssText='width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 6px;background:'+b.bg+';'+(isE?'box-shadow:0 0 0 3px white,0 0 0 5px '+b.glow+';':'filter:grayscale(1);opacity:.3;');
+    ring.textContent=b.icon;
+    var lbl=document.createElement('div');
+    lbl.style.cssText='font-size:9px;font-weight:800;color:'+(isE?'#1A3A45':'#C0CDD6')+';text-align:center;line-height:1.3;max-width:56px;';
+    lbl.textContent=b.lbl;
+    el.appendChild(ring);el.appendChild(lbl);
+    grid.appendChild(el);
+  });
+  if(countEl)countEl.textContent=earnedCount+' earned \u00b7 '+(allB.length-earnedCount)+' to unlock';
+  if(noteEl){
+    if(earnedCount===0)noteEl.textContent='Start logging to earn your first badge.';
+    else noteEl.textContent=earnedCount+' badge'+(earnedCount>1?'s':'')+' earned. Keep showing up \u2014 more unlock as I learn your patterns.';
+  }
+  sheet.style.display='block';
+}
+
+function closeBadgeSheet(){
+  var sheet=document.getElementById('badge-sheet');
+  if(sheet)sheet.style.display='none';
 }
 
 </script>
