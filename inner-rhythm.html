@@ -2468,7 +2468,7 @@ function addCustomMood(){
   var inp=document.getElementById('mood-custom');
   var v=inp?inp.value.trim():'';
   if(!v)return;
-  var emojis=['\u{1F604}','\u{1F60C}','\u{1F970}','\u{1F929}','\u{1F614}','\u{1F62C}','\u{1F634}','\u{1F60F}'];
+  var emojis=["😄","😌","🥰","🤩","😔","😬","😴","😏","🫠","🥲","😤","🫶"];
   var emoji=emojis[Math.floor(Math.random()*emojis.length)];
   var extra=document.getElementById('mood-extra');
   if(extra&&extra.style.display==='none')extra.style.display='block';
@@ -2785,36 +2785,86 @@ function addCustomMood(){
   document.querySelectorAll('.mopt').forEach(e=>e.classList.remove('sel'));el.classList.add('sel');
 }
 function addCustomEnergy(){
-  const inp=document.getElementById('energy-custom'), v=inp.value.trim();
+  var inp=document.getElementById('energy-custom');
+  var v=inp?inp.value.trim():'';
   if(!v)return;
-  const emoji=matchEmoji(v,'energy');
-  const g=document.getElementById('energy-row');
-  const el=document.createElement('div');el.className='eopt sel';
+  var emojis=["⚡","🔋","💫","🌿","🫧","🌊","☀️","🌙","🍃","✨"];
+  var emoji=emojis[Math.floor(Math.random()*emojis.length)];
+  var g=document.getElementById('energy-row');
+  if(!g)return;
+  var el=document.createElement('div');
+  el.className='eopt sel';
   el.style.position='relative';
-  el.innerHTML=(emoji ? `<span class="ei">${emoji}</span>${v}` : v)
-    + `<span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();energies=energies.filter(function(x){return x!=='${v}';});" title="Remove">×</span>`;
-  el.onclick=()=>pe(el,v);g.appendChild(el);energies.push(v);inp.value='';
+  var espan=document.createElement('span');
+  espan.className='ei';
+  espan.textContent=emoji;
+  el.appendChild(espan);
+  el.appendChild(document.createTextNode(v));
+  var del=document.createElement('span');
+  del.className='custom-del';
+  del.textContent='x';
+  del.onclick=function(e){e.stopPropagation();el.remove();energies=energies.filter(function(x){return x!==v;});};
+  el.appendChild(del);
+  el.onclick=function(){pe(el,v);};
+  g.appendChild(el);
+  if(energies.indexOf(v)===-1)energies.push(v);
+  if(inp)inp.value='';
 }
 function addCustomFeel(){
-  const inp=document.getElementById('feel-custom'), v=inp.value.trim();
+  var inp=document.getElementById('feel-custom');
+  var v=inp?inp.value.trim():'';
   if(!v)return;
-  const g=document.getElementById('feel-chips');
-  const el=document.createElement('div');el.className='chip';
+  var emojis=["💭","🌸","🦋","🌻","🫂","🌈","💪","🎯","🫀","🌟"];
+  var emoji=emojis[Math.floor(Math.random()*emojis.length)];
+  var g=document.getElementById('feel-chips');
+  if(!g)return;
+  var el=document.createElement('div');
+  el.className='icon-tile';
   el.style.position='relative';
-  el.innerHTML=v
-    + `<span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();feels=feels.filter(function(x){return x!=='${v}';});">×</span>`;
-  el.onclick=()=>tf(el,v,'p');g.appendChild(el);feels.push(v);inp.value='';
+  var ispan=document.createElement('span');
+  ispan.style.fontSize='20px';
+  ispan.textContent=emoji;
+  var lspan=document.createElement('div');
+  lspan.className='icon-tile-label';
+  lspan.textContent=v;
+  var del=document.createElement('span');
+  del.className='custom-del';
+  del.textContent='x';
+  del.onclick=function(e){e.stopPropagation();el.remove();feels=feels.filter(function(x){return x!==v;});};
+  el.appendChild(ispan);
+  el.appendChild(lspan);
+  el.appendChild(del);
+  el.onclick=function(){tfi(el,v,'p');};
+  g.appendChild(el);
+  if(inp)inp.value='';
 }
 function addCustomSym(){
-  const inp=document.getElementById('sym-custom'), v=inp.value.trim();
+  var inp=document.getElementById('sym-custom');
+  var v=inp?inp.value.trim():'';
   if(!v)return;
-  const emoji=matchEmoji(v,'sym');
-  const g=document.getElementById('sym-chips');
-  const el=document.createElement('div');el.className='chip';
+  var emojis=["🤕","😮‍💨","😴","🌡️","💊","🩹","🫁","🧠","💆","🩸"];
+  var emoji=emojis[Math.floor(Math.random()*emojis.length)];
+  var g=document.getElementById('sym-chips');
+  if(!g)return;
+  var el=document.createElement('div');
+  el.className='icon-tile';
   el.style.position='relative';
-  el.innerHTML=(emoji ? `${emoji} ${v}` : v)
-    + `<span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();syms=syms.filter(function(x){return x!=='${v}';});" title="Remove">×</span>`;
-  el.onclick=()=>tf(el,v,'s');g.appendChild(el);syms.push(v);inp.value='';
+  var ispan=document.createElement('span');
+  ispan.style.fontSize='20px';
+  ispan.textContent=emoji;
+  var lspan=document.createElement('div');
+  lspan.className='icon-tile-label';
+  lspan.textContent=v;
+  var del=document.createElement('span');
+  del.className='custom-del';
+  del.textContent='x';
+  del.onclick=function(e){e.stopPropagation();el.remove();syms=syms.filter(function(x){return x!==v;});};
+  el.appendChild(ispan);
+  el.appendChild(lspan);
+  el.appendChild(del);
+  el.onclick=function(){tfi(el,v,'s');};
+  g.appendChild(el);
+  if(inp)inp.value='';
 }
 function saveCI(){
   if(!mood){toast('Pick a mood first');return}
