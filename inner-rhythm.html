@@ -2464,29 +2464,21 @@ function pe(el,e){
   }
 }
 
+function pickEmoji(arr){return arr[Math.floor(Math.random()*arr.length)];}
+function escHtml(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function addCustomMood(){
   var inp=document.getElementById('mood-custom');
-  var v=inp?inp.value.trim():'';
-  if(!v)return;
-  var emojis=["😄","😌","🥰","🤩","😔","😬","😴","😏","🫠","🥲","😤","🫶"];
-  var emoji=emojis[Math.floor(Math.random()*emojis.length)];
+  var v=inp?inp.value.trim():'';if(!v)return;
+  var e=pickEmoji(["😄","😌","🥰","🤩","😔","😬","😴","😏","🫠","🥲","😤","🫶"]);
   var extra=document.getElementById('mood-extra');
   if(extra&&extra.style.display==='none')extra.style.display='block';
-  var extraChips=extra?extra.querySelector('div'):null;
-  if(!extraChips)return;
+  var wrap=extra?extra.querySelector('div'):null;if(!wrap)return;
   var chip=document.createElement('div');
   chip.className='mopt';
-  chip.style.cssText='display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:12px;cursor:pointer;background:#F8F9FB;position:relative;';
-  var espan=document.createElement('span');
-  espan.style.fontSize='18px';
-  espan.textContent=emoji;
-  var lspan=document.createElement('span');
-  lspan.style.cssText='font-size:12px;font-weight:700;color:#5A7A8A;';
-  lspan.textContent=v;
-  chip.appendChild(espan);
-  chip.appendChild(lspan);
+  chip.style.cssText='display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:12px;cursor:pointer;background:#F8F9FB;';
+  chip.innerHTML='<span style="font-size:20px;line-height:1;">'+e+'</span><span style="font-size:12px;font-weight:700;color:#5A7A8A;">'+escHtml(v)+'</span>';
   chip.onclick=function(){pm(chip,v);};
-  extraChips.appendChild(chip);
+  wrap.appendChild(chip);
   if(inp)inp.value='';
   pm(chip,v);
 }
@@ -2786,25 +2778,12 @@ function addCustomMood(){
 }
 function addCustomEnergy(){
   var inp=document.getElementById('energy-custom');
-  var v=inp?inp.value.trim():'';
-  if(!v)return;
-  var emojis=["⚡","🔋","💫","🌿","🫧","🌊","☀️","🌙","🍃","✨"];
-  var emoji=emojis[Math.floor(Math.random()*emojis.length)];
-  var g=document.getElementById('energy-row');
-  if(!g)return;
+  var v=inp?inp.value.trim():'';if(!v)return;
+  var e=pickEmoji(["⚡","🔋","💫","🌿","🌊","☀️","🌙","🍃","✨","🫧"]);
+  var g=document.getElementById('energy-row');if(!g)return;
   var el=document.createElement('div');
   el.className='eopt sel';
-  el.style.position='relative';
-  var espan=document.createElement('span');
-  espan.className='ei';
-  espan.textContent=emoji;
-  el.appendChild(espan);
-  el.appendChild(document.createTextNode(v));
-  var del=document.createElement('span');
-  del.className='custom-del';
-  del.textContent='x';
-  del.onclick=function(e){e.stopPropagation();el.remove();energies=energies.filter(function(x){return x!==v;});};
-  el.appendChild(del);
+  el.innerHTML='<span class="ei" style="font-size:16px;line-height:1;">'+e+'</span>'+escHtml(v);
   el.onclick=function(){pe(el,v);};
   g.appendChild(el);
   if(energies.indexOf(v)===-1)energies.push(v);
@@ -2812,56 +2791,24 @@ function addCustomEnergy(){
 }
 function addCustomFeel(){
   var inp=document.getElementById('feel-custom');
-  var v=inp?inp.value.trim():'';
-  if(!v)return;
-  var emojis=["💭","🌸","🦋","🌻","🫂","🌈","💪","🎯","🫀","🌟"];
-  var emoji=emojis[Math.floor(Math.random()*emojis.length)];
-  var g=document.getElementById('feel-chips');
-  if(!g)return;
+  var v=inp?inp.value.trim():'';if(!v)return;
+  var e=pickEmoji(["💭","🌸","🦋","🌻","🫂","🌈","💪","🎯","🌟","🩷"]);
+  var g=document.getElementById('feel-chips');if(!g)return;
   var el=document.createElement('div');
   el.className='icon-tile';
-  el.style.position='relative';
-  var ispan=document.createElement('span');
-  ispan.style.fontSize='20px';
-  ispan.textContent=emoji;
-  var lspan=document.createElement('div');
-  lspan.className='icon-tile-label';
-  lspan.textContent=v;
-  var del=document.createElement('span');
-  del.className='custom-del';
-  del.textContent='x';
-  del.onclick=function(e){e.stopPropagation();el.remove();feels=feels.filter(function(x){return x!==v;});};
-  el.appendChild(ispan);
-  el.appendChild(lspan);
-  el.appendChild(del);
+  el.innerHTML='<span style="font-size:22px;line-height:1.2;display:block;">'+e+'</span><div class="icon-tile-label">'+escHtml(v)+'</div>';
   el.onclick=function(){tfi(el,v,'p');};
   g.appendChild(el);
   if(inp)inp.value='';
 }
 function addCustomSym(){
   var inp=document.getElementById('sym-custom');
-  var v=inp?inp.value.trim():'';
-  if(!v)return;
-  var emojis=["🤕","😮‍💨","😴","🌡️","💊","🩹","🫁","🧠","💆","🩸"];
-  var emoji=emojis[Math.floor(Math.random()*emojis.length)];
-  var g=document.getElementById('sym-chips');
-  if(!g)return;
+  var v=inp?inp.value.trim():'';if(!v)return;
+  var e=pickEmoji(["🤕","😮","😴","🌡️","💊","🩹","🧠","💆","🩸","😣"]);
+  var g=document.getElementById('sym-chips');if(!g)return;
   var el=document.createElement('div');
   el.className='icon-tile';
-  el.style.position='relative';
-  var ispan=document.createElement('span');
-  ispan.style.fontSize='20px';
-  ispan.textContent=emoji;
-  var lspan=document.createElement('div');
-  lspan.className='icon-tile-label';
-  lspan.textContent=v;
-  var del=document.createElement('span');
-  del.className='custom-del';
-  del.textContent='x';
-  del.onclick=function(e){e.stopPropagation();el.remove();syms=syms.filter(function(x){return x!==v;});};
-  el.appendChild(ispan);
-  el.appendChild(lspan);
-  el.appendChild(del);
+  el.innerHTML='<span style="font-size:22px;line-height:1.2;display:block;">'+e+'</span><div class="icon-tile-label">'+escHtml(v)+'</div>';
   el.onclick=function(){tfi(el,v,'s');};
   g.appendChild(el);
   if(inp)inp.value='';
