@@ -1129,38 +1129,71 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
 
   <!-- ======= PATTERNS ======= -->
   <div class="screen" id="screen-patterns">
-    <div class="scroll">
-      <div style="padding:20px 0 16px">
-        <div style="font-family:'Playfair Display',serif;font-size:30px">Your patterns</div>
-        <div style="font-size:13px;color:var(--text2);margin-top:4px">Here's what I've noticed about you so far.</div>
+
+    <!-- Phase hero — colour shifts on tab tap -->
+    <div id="pat-hero" style="background:linear-gradient(160deg,#9B7EC8,#7B5EA8);padding:max(28px,env(safe-area-inset-top)) 20px 26px;flex-shrink:0;transition:background .4s;">
+      <div style="font-size:12px;color:rgba(255,255,255,.7);font-weight:700;margin-bottom:6px;" id="pat-hero-sub">Loading...</div>
+      <div style="font-family:Playfair Display,serif;font-size:22px;color:white;font-weight:700;margin-bottom:14px;">Your patterns</div>
+      <div style="background:rgba(255,255,255,.2);border-radius:4px;height:5px;overflow:hidden;">
+        <div id="pat-hero-bar" style="height:100%;background:white;border-radius:4px;transition:width .5s;width:50%;"></div>
       </div>
-      <div style="background:var(--card);border-radius:22px;padding:22px;border:0.5px solid var(--border);margin-bottom:14px">
-        <div class="sec" style="margin-bottom:4px">Where you are right now</div>
-        <div class="cycbar"><div class="cbseg" style="width:18%;background:#F2CECE"></div><div class="cbseg" style="width:28%;background:#B8D4A8"></div><div class="cbseg" style="width:11%;background:#F5C98A"></div><div class="cbseg" style="width:43%;background:#B8CEDE"></div></div>
-        <div class="pgrid">
-          <div class="pitem"><div class="pdot" style="background:#F2CECE"></div>Menstrual (1–5)</div>
-          <div class="pitem"><div class="pdot" style="background:#B8D4A8"></div>Follicular (6–13)</div>
-          <div class="pitem"><div class="pdot" style="background:#F5C98A"></div>Ovulation (14–16)</div>
-          <div class="pitem"><div class="pdot" style="background:#B8CEDE"></div>Luteal (17–28)</div>
+      <div style="display:flex;justify-content:space-between;margin-top:5px;">
+        <div style="font-size:9px;color:rgba(255,255,255,.5);font-weight:700;">DAY 1</div>
+        <div style="font-size:9px;color:white;font-weight:800;" id="pat-today-lbl">TODAY</div>
+        <div style="font-size:9px;color:rgba(255,255,255,.5);font-weight:700;" id="pat-cycle-end">DAY 28</div>
+      </div>
+    </div>
+
+    <div class="scroll" style="background:#F7F5FA;border-radius:26px 26px 0 0;margin-top:-18px;padding:16px 16px 28px;position:relative;z-index:1;">
+
+      <!-- IR short note -->
+      <div style="background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-radius:16px;padding:14px 16px;border:1.5px solid #E4D8F4;margin-bottom:16px;">
+        <div style="display:flex;gap:9px;align-items:flex-start;">
+          <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;margin-top:1px;">IR</div>
+          <div style="font-size:13px;color:#3A2A5A;line-height:1.7;font-style:italic;" id="pat-ir-note">Keep logging and I will start seeing your patterns clearly.</div>
         </div>
-        <div class="you-are" id="youare"></div>
-      </div>
-      <div class="sec">What I've noticed</div>
-      <div id="pattern-cards"></div>
-      <div id="pattern-empty" style="display:none;background:var(--card);border-radius:20px;padding:28px 20px;text-align:center;border:0.5px solid var(--border);margin-bottom:14px">
-        <div style="font-size:32px;margin-bottom:10px">🌱</div>
-        <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px">Still learning your rhythm</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.6">Check in for a few more days and I'll start spotting patterns that are actually yours — not just averages.</div>
       </div>
 
-      <div id="cycle-learned-notice" style="display:none"></div>
-      <div class="sec" style="margin-top:8px">Mood correlations</div>
-      <div id="correlation-section">
-      <div id="correlation-cards"></div>
-      <div id="correlation-empty" style="display:none;background:var(--card);border-radius:20px;padding:20px;text-align:center;border:0.5px solid var(--border);margin-bottom:14px">
-        <div style="font-size:13px;color:var(--text2)">More data needed — keep logging and I'll find connections.</div>
+      <!-- Phase tabs -->
+      <div style="display:flex;gap:6px;margin-bottom:14px;" id="pat-tabs">
+        <div id="ptab-period" class="ptab" onclick="patTab('period')" style="flex:1;padding:8px 2px;text-align:center;border-radius:12px;cursor:pointer;border:1.5px solid transparent;-webkit-tap-highlight-color:transparent;">
+          <span style="font-size:15px;display:block;margin-bottom:2px;">&#129768;</span>
+          <span style="font-size:9px;font-weight:800;display:block;color:#C05080;">Period</span>
+          <span style="font-size:8px;font-weight:700;display:block;margin-top:1px;color:#C05080;" id="pscore-period">--</span>
+        </div>
+        <div id="ptab-follicular" class="ptab" onclick="patTab('follicular')" style="flex:1;padding:8px 2px;text-align:center;border-radius:12px;cursor:pointer;border:1.5px solid transparent;-webkit-tap-highlight-color:transparent;">
+          <span style="font-size:15px;display:block;margin-bottom:2px;">&#127807;</span>
+          <span style="font-size:9px;font-weight:800;display:block;color:#4AAAC4;">Follicular</span>
+          <span style="font-size:8px;font-weight:700;display:block;margin-top:1px;color:#4AAAC4;" id="pscore-follicular">--</span>
+        </div>
+        <div id="ptab-ovulation" class="ptab" onclick="patTab('ovulation')" style="flex:1;padding:8px 2px;text-align:center;border-radius:12px;cursor:pointer;border:1.5px solid transparent;-webkit-tap-highlight-color:transparent;">
+          <span style="font-size:15px;display:block;margin-bottom:2px;">&#9728;&#65039;</span>
+          <span style="font-size:9px;font-weight:800;display:block;color:#E8A840;">Ovulation</span>
+          <span style="font-size:8px;font-weight:700;display:block;margin-top:1px;color:#E8A840;" id="pscore-ovulation">--</span>
+        </div>
+        <div id="ptab-luteal" class="ptab" onclick="patTab('luteal')" style="flex:1;padding:8px 2px;text-align:center;border-radius:12px;cursor:pointer;border:1.5px solid transparent;-webkit-tap-highlight-color:transparent;">
+          <span style="font-size:15px;display:block;margin-bottom:2px;">&#127769;</span>
+          <span style="font-size:9px;font-weight:800;display:block;color:#9B7EC8;">Luteal</span>
+          <span style="font-size:8px;font-weight:700;display:block;margin-top:1px;color:#9B7EC8;" id="pscore-luteal">--</span>
+        </div>
       </div>
+
+      <!-- Phase detail card -->
+      <div id="pat-phase-card" style="background:white;border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 12px rgba(0,0,0,.06);min-height:130px;transition:opacity .2s;">
+        <div id="pat-phase-content" style="font-size:13px;color:#3A4A5A;line-height:1.75;">Tap a phase above to see what I have noticed about you.</div>
       </div>
+
+      <!-- Insights section -->
+      <div style="font-size:10px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;" id="pat-insights-hdr" style="display:none;">Patterns spotted &#183; tap to read</div>
+      <div id="pat-insights"></div>
+
+      <!-- Empty state -->
+      <div id="pat-empty" style="text-align:center;padding:24px 16px;">
+        <div style="font-size:36px;margin-bottom:12px;">&#127807;</div>
+        <div style="font-size:15px;font-weight:700;color:#1A3A45;margin-bottom:8px;">Still learning your rhythm</div>
+        <div style="font-size:13px;color:#8AAAB4;line-height:1.65;">Check in for a few more days and I will start seeing patterns that are actually yours.</div>
+      </div>
+
     </div>
   </div>
 
@@ -1635,6 +1668,11 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
         </div>
         <button class="prof-edit-btn" onclick="openProfileEdit()">Edit profile</button>
       </div>
+      <!-- Badge shelf -->
+      <div class="sec">Your badges</div>
+      <div id="badge-shelf" style="display:flex;flex-wrap:wrap;gap:12px;background:var(--card);border-radius:20px;padding:16px;border:0.5px solid var(--border);margin-bottom:14px;min-height:80px;align-items:center;"></div>
+
+
       <div class="sec">My cycle</div>
       <div style="margin-bottom:20px">
         <div class="sitem" onclick="openM()"><div class="si-l"><div class="si-ic" style="background:var(--sky-soft)">🗓</div><div class="si-n">Last period started</div></div><div class="si-v" id="lpval">Feb 28</div></div>
@@ -3883,70 +3921,291 @@ function applyPlusGating() {
   if (btn) btn.onclick = function(){ nav('upgrade'); };
 }
 
-function buildPatterns() {
-  const allKeys = Object.keys(logs).sort();
-  const total = allKeys.length;
+function buildPatterns(){
+  var allKeys=Object.keys(logs).sort();
+  var total=allKeys.length;
 
-  // ── Phase mood analysis ──
-  const phaseMoods = {period:[],follicular:[],ovulation:[],luteal:[]};
-  const phaseSyms = {period:[],follicular:[],ovulation:[],luteal:[]};
-  const phaseEnergy = {period:[],follicular:[],ovulation:[],luteal:[]};
-
-  allKeys.forEach(k => {
-    const log = logs[k];
-    const date = new Date(k);
-    const c = cd(date);
-    const p = ph(c);
-    if (log.mood) phaseMoods[p].push(log.mood);
-    if (log.syms && log.syms.length) phaseSyms[p] = phaseSyms[p].concat(log.syms);
-    if (log.energies && log.energies.length) phaseEnergy[p] = phaseEnergy[p].concat(log.energies);
-  });
-
-  const pcEl = document.getElementById('pattern-cards');
-  const peEl = document.getElementById('pattern-empty');
-  if (!pcEl) return;
-
-  if (total < 5) {
-    pcEl.innerHTML = '';
-    if (peEl) peEl.style.display = 'block';
-  } else {
-    if (peEl) peEl.style.display = 'none';
-    const cards = [];
-
-    // Most common mood per phase
-    Object.keys(phaseMoods).forEach(p => {
-      const moods = phaseMoods[p];
-      if (moods.length < 2) return;
-      const freq = {};
-      moods.forEach(m => freq[m] = (freq[m]||0)+1);
-      const top = Object.entries(freq).sort((a,b)=>b[1]-a[1])[0];
-      if (top && top[1] >= 2) {
-        const pct = Math.round(top[1]/moods.length*100);
-        const phaseLabel = {period:'your period',follicular:'your follicular phase',ovulation:'ovulation',luteal:'your luteal phase'}[p];
-        const typeClass = {period:'',follicular:' soc',ovulation:' nrg',luteal:' bod'}[p];
-        cards.push('<div class="pcard'+typeClass+'"><div class="ptype">'+p.charAt(0).toUpperCase()+p.slice(1)+' phase mood</div><div class="ptxt">During '+phaseLabel+', you most often feel <strong>'+top[0]+'</strong> — that shows up '+pct+'% of the time you log this phase. '+(p==='luteal'?'Completely normal, your hormones are working hard.':p==='period'?'Your body is doing something real right now.':p==='follicular'?'That rising energy is real — use it.':'You are at peak energy and it shows.')+'</div><div class="pmeta">Based on '+moods.length+' logs in this phase</div></div>');
-      }
-    });
-
-    // Common symptoms
-    Object.keys(phaseSyms).forEach(p => {
-      const syms = phaseSyms[p];
-      if (syms.length < 2) return;
-      const freq = {};
-      syms.forEach(s => freq[s] = (freq[s]||0)+1);
-      const top = Object.entries(freq).sort((a,b)=>b[1]-a[1])[0];
-      if (top && top[1] >= 2) {
-        const typeClass = {period:'',follicular:' soc',ovulation:' nrg',luteal:' bod'}[p];
-        cards.push('<div class="pcard'+typeClass+'"><div class="ptype">Body · '+p.charAt(0).toUpperCase()+p.slice(1)+'</div><div class="ptxt">You tend to log <strong>'+top[0].toLowerCase()+'</strong> during your '+p+' phase — it has come up '+top[1]+' times. Worth knowing so you can plan around it.</div><div class="pmeta">Based on your body check logs</div></div>');
-      }
-    });
-
-    pcEl.innerHTML = cards.length ? cards.join('') : '<div class="pcard"><div class="ptype">Still building</div><div class="ptxt">Keep logging and I will spot patterns specific to you.</div></div>';
+  // Hero
+  var heroSub=document.getElementById('pat-hero-sub');
+  var heroBar=document.getElementById('pat-hero-bar');
+  var todayLbl=document.getElementById('pat-today-lbl');
+  var cycleEnd=document.getElementById('pat-cycle-end');
+  if(heroSub){
+    var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+    if(setup.start){
+      var day=cd(TODAY),phase=ph(day);
+      var phNames={period:'Period',follicular:'Follicular',ovulation:'Ovulation',luteal:'Luteal'};
+      heroSub.textContent=(phNames[phase]||phase)+' · Day '+day+' of '+userCycleLen;
+      if(heroBar)heroBar.style.width=Math.round(day/userCycleLen*100)+'%';
+      if(todayLbl)todayLbl.textContent='TODAY · DAY '+day;
+      if(cycleEnd)cycleEnd.textContent='DAY '+userCycleLen;
+      // Set hero colour
+      var phaseGrads={period:'linear-gradient(160deg,#C05080,#D4709A)',follicular:'linear-gradient(160deg,#4AAAC4,#7DC8E0)',ovulation:'linear-gradient(160deg,#C07820,#E8A840)',luteal:'linear-gradient(160deg,#9B7EC8,#7B5EA8)'};
+      var hero=document.getElementById('pat-hero');
+      if(hero)hero.style.background=phaseGrads[phase]||phaseGrads.luteal;
+      // Activate current phase tab
+      patTab(phase);
+    }
   }
 
-  // ── Mood correlations ──
-  buildCorrelations(allKeys, total);
+  // Phase mood analysis
+  var phaseMoods={period:[],follicular:[],ovulation:[],luteal:[]};
+  var phaseSyms={period:[],follicular:[],ovulation:[],luteal:[]};
+  var phaseEnergy={period:[],follicular:[],ovulation:[],luteal:[]};
+  var phaseBI={period:[],follicular:[],ovulation:[],luteal:[]};
+
+  allKeys.forEach(function(k){
+    var log=logs[k];
+    var date=new Date(k);
+    var c=cd(date),p=ph(c);
+    if(log.mood)phaseMoods[p].push(log.mood);
+    if(log.syms&&log.syms.length)phaseSyms[p]=phaseSyms[p].concat(log.syms);
+    if(log.energies&&log.energies.length)phaseEnergy[p]=phaseEnergy[p].concat(log.energies);
+    if(log.bodyIntuition)phaseBI[p].push(log.bodyIntuition);
+  });
+
+  // Score each phase (good/amazing = high, rough/off = low)
+  function scorePhase(moods){
+    if(!moods.length)return null;
+    var score=0;
+    moods.forEach(function(m){
+      if(m==='Amazing')score+=10;
+      else if(m==='Good'||m==='Happy')score+=8;
+      else if(m==='Meh')score+=5;
+      else if(m==='Off'||m==='Sensitive'||m==='Anxious'||m==='Sad')score+=3;
+      else if(m==='Rough'||m==='Angry'||m==='Numb'||m==='Weepy'||m==='Irritated')score+=1;
+    });
+    return Math.round(score/moods.length);
+  }
+
+  // Update score labels
+  var phases=['period','follicular','ovulation','luteal'];
+  phases.forEach(function(p){
+    var s=scorePhase(phaseMoods[p]);
+    var el=document.getElementById('pscore-'+p);
+    if(el)el.textContent=s?s+'/10':'--';
+  });
+
+  // Phase content generator
+  window.patPhaseData={
+    period:{
+      color:'#C05080',bg:'#FFF0F6',
+      note:phaseMoods.period.length?
+        'Your period phase tends to be tougher. Both estrogen and progesterone drop to their lowest here, which is why everything can feel heavier or more painful. That is not weakness, it is biology. You always come through it.':
+        'Log during your period so I can learn how it affects you specifically.',
+      chips:buildChips(phaseMoods.period,phaseSyms.period,'#C05080','#FFF0F6')
+    },
+    follicular:{
+      color:'#4AAAC4',bg:'#EEF8FF',
+      note:phaseMoods.follicular.length?
+        'Follicular tends to be where you feel most like yourself. Rising estrogen lifts your mood, sharpens your thinking, and gives you more energy. Whatever you logged during this phase, your body is genuinely giving you its best here.':
+        'Log during your follicular phase so I can see how your energy shifts after your period.',
+      chips:buildChips(phaseMoods.follicular,phaseEnergy.follicular,'#4AAAC4','#EEF8FF')
+    },
+    ovulation:{
+      color:'#E8A840',bg:'#FFFAF0',
+      note:phaseMoods.ovulation.length?
+        'Ovulation is brief but powerful. A surge in estrogen and testosterone tends to make you feel more social, confident, and sharp. It only lasts a few days so it can be easy to miss, but your logs are starting to show it.':
+        'Log during ovulation so I can see how those high-hormone days feel for you specifically.',
+      chips:buildChips(phaseMoods.ovulation,phaseEnergy.ovulation,'#E8A840','#FFFAF0')
+    },
+    luteal:{
+      color:'#9B7EC8',bg:'#F8F4FF',
+      note:phaseMoods.luteal.length?
+        'Luteal tends to be your most complex phase. As progesterone drops in the second half, your nervous system becomes more reactive, which is why anxiety, irritability, or heaviness tend to show up here. It is a real physical shift, not a mood you created.':
+        'Log during your luteal phase so I can track how the hormone shift affects you.',
+      chips:buildChips(phaseMoods.luteal,phaseSyms.luteal,'#9B7EC8','#F8F4FF')
+    }
+  };
+
+  // Build insight pills
+  var insights=[];
+  if(total>=5){
+    // Check for recurring patterns
+    phases.forEach(function(p){
+      var top=topMood(phaseMoods[p]);
+      if(top&&phaseMoods[p].length>=3){
+        var pName={period:'period',follicular:'follicular phase',ovulation:'ovulation',luteal:'luteal phase'}[p];
+        var whys={
+          period:{
+            'Off':'Both estrogen and progesterone hit their lowest at the start of your period. That drop affects mood, energy, and pain tolerance directly. It is hormonal, not personal.',
+            'Rough':'The drop in estrogen and progesterone at the start of your period can make everything feel amplified. That heaviness is real and it is physical.',
+            'Anxious':'Low hormones during your period can affect your nervous system, making you feel more on edge. This tends to ease as estrogen starts rising again.',
+            'Good':'Your body handles the hormonal drop well. Some people find their period phase more manageable than expected once flow starts.',
+            'Amazing':'Feeling good during your period is genuinely notable. Your body is coping with the hormonal shift really well.'
+          },
+          follicular:{
+            'Good':'Rising estrogen is directly lifting your mood and energy. That lightness is your body doing exactly what it is supposed to do after your period ends.',
+            'Amazing':'High estrogen in follicular phase boosts serotonin and dopamine. Your brain chemistry is working in your favour right now.',
+            'Energized':'Estrogen rising gives your energy and motivation a real lift. Your body is literally gearing up after your period.',
+            'Meh':'Feeling meh in follicular is worth noting. This is usually when estrogen starts rising, so something else might be going on beyond your cycle.'
+          },
+          ovulation:{
+            'Good':'A surge in estrogen and a small testosterone spike during ovulation tends to make people feel more confident and social. Your logs reflect that.',
+            'Amazing':'Peak estrogen and testosterone together create a window of confidence, sharpness, and energy. You are feeling the full effect.',
+            'Social':'Ovulation raises oxytocin alongside estrogen. Your body is literally primed for connection during this window.'
+          },
+          luteal:{
+            'Anxious':'Progesterone dropping in late luteal directly affects GABA receptors in your brain, which regulate calm and anxiety. The anxiety you feel is not created by your thoughts, it is created by your hormones.',
+            'Off':'Falling progesterone in luteal lowers your feel-good hormones. That heaviness and flatness is a real physical response to a real hormone shift.',
+            'Irritated':'Lower progesterone raises your stress response, which can make small things feel bigger. Your threshold for frustration genuinely drops during this phase.',
+            'Sad':'Late luteal drops in estrogen and progesterone affect serotonin. That sadness has a biological cause. It is not who you are, it is where you are in your cycle.',
+            'Rough':'Both major hormones drop in late luteal. Your body is preparing for a reset, and that can feel hard. It always shifts when your period arrives.'
+          }
+        };
+        var why=(whys[p]&&whys[p][top])||('You tend to log '+top.toLowerCase()+' during '+pName+' more than any other mood. Keep logging and I will get more specific about why.');
+        insights.push({
+          color:{period:'#C05080',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#9B7EC8'}[p],
+          title:'You often feel '+top.toLowerCase()+' in '+pName,
+          body:why
+        });
+      }
+    });
+
+    // Symptom patterns
+    var allSyms=[];
+    Object.values(phaseSyms).forEach(function(a){allSyms=allSyms.concat(a);});
+    var topSym=topMood(allSyms);
+    if(topSym){
+      var symPhase=phases.reduce(function(best,p){return phaseSyms[p].filter(function(s){return s===topSym;}).length > (phaseSyms[best]?phaseSyms[best].filter(function(s){return s===topSym;}).length:0)?p:best;},'period');
+      insights.push({
+        color:'#8AAAB4',
+        title:topSym+' shows up most in your '+symPhase+' phase',
+        body:'Tracking symptoms over time helps spot which ones are hormonal and predictable versus ones that need attention. Knowing they are coming means you can prepare rather than be caught off guard.'
+      });
+    }
+
+    // Body intuition insight
+    var allBI=[];
+    Object.values(phaseBI).forEach(function(a){allBI=allBI.concat(a);});
+    var topBI=topMood(allBI);
+    if(topBI){
+      insights.push({
+        color:'#6A9A6A',
+        title:'Your body most often asks for '+topBI.toLowerCase(),
+        body:'You have logged '+topBI+' as what your body needs most often. That is not a coincidence, it is a real signal. Your body has been trying to tell you something consistently.'
+      });
+    }
+  }
+
+  // Render
+  var insEl=document.getElementById('pat-insights');
+  var insHdr=document.getElementById('pat-insights-hdr');
+  var emptyEl=document.getElementById('pat-empty');
+
+  if(insEl){
+    if(insights.length>0){
+      if(insHdr)insHdr.style.display='block';
+      if(emptyEl)emptyEl.style.display='none';
+      insEl.innerHTML='';
+      insights.forEach(function(ins){
+        var pill=document.createElement('div');
+        pill.style.cssText='display:flex;align-items:flex-start;gap:10px;background:white;border-radius:14px;padding:13px 14px;margin-bottom:8px;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 8px rgba(0,0,0,.04);cursor:pointer;-webkit-tap-highlight-color:transparent;';
+        var dot=document.createElement('div');
+        dot.style.cssText='width:8px;height:8px;border-radius:50%;background:'+ins.color+';flex-shrink:0;margin-top:4px;';
+        var textWrap=document.createElement('div');textWrap.style.flex='1';
+        var title=document.createElement('div');
+        title.style.cssText='font-size:12px;font-weight:800;color:#1A3A45;margin-bottom:0;';
+        title.textContent=ins.title;
+        var body=document.createElement('div');
+        body.style.cssText='font-size:12px;color:#5A7A8A;line-height:1.7;margin-top:8px;padding-top:8px;border-top:0.5px solid #F0F4F8;display:none;';
+        body.textContent=ins.body;
+        var plus=document.createElement('div');
+        plus.style.cssText='font-size:14px;color:#C0CDD6;font-weight:800;flex-shrink:0;';
+        plus.textContent='+';
+        textWrap.appendChild(title);textWrap.appendChild(body);
+        pill.appendChild(dot);pill.appendChild(textWrap);pill.appendChild(plus);
+        pill.onclick=function(){
+          var open=body.style.display==='block';
+          body.style.display=open?'none':'block';
+          plus.textContent=open?'+':'−';
+          plus.style.color=open?'#C0CDD6':ins.color;
+        };
+        insEl.appendChild(pill);
+      });
+    } else {
+      if(insHdr)insHdr.style.display='none';
+      if(emptyEl)emptyEl.style.display='block';
+    }
+  }
+
+  // IR note
+  var irNote=document.getElementById('pat-ir-note');
+  if(irNote){
+    if(total===0)irNote.textContent='Start logging and I will begin building your picture.';
+    else if(total<5)irNote.textContent=total+' days logged. Keep going — patterns start forming around 5 days.';
+    else{
+      var acc=JSON.parse(localStorage.getItem('ir_account')||'{}');
+      var name=acc.name||(JSON.parse(localStorage.getItem('ir_profile')||'{}')).name||'';
+      irNote.textContent=(name?name+', I':' I')+' have '+total+' days of your data now. Tap each phase below to see what I have noticed about you.';
+    }
+  }
 }
+
+function buildChips(moods,extra,color,bg){
+  var chips=[];
+  var top=topMood(moods);
+  if(top)chips.push({label:top,color:color,bg:bg});
+  var topE=topMood(extra);
+  if(topE&&topE!==top)chips.push({label:topE,color:color,bg:bg});
+  return chips;
+}
+
+function topMood(arr){
+  if(!arr||!arr.length)return null;
+  var freq={};
+  arr.forEach(function(m){freq[m]=(freq[m]||0)+1;});
+  return Object.entries(freq).sort(function(a,b){return b[1]-a[1];})[0][0];
+}
+
+function patTab(phase){
+  var phaseGrads={period:'linear-gradient(160deg,#C05080,#D4709A)',follicular:'linear-gradient(160deg,#4AAAC4,#7DC8E0)',ovulation:'linear-gradient(160deg,#C07820,#E8A840)',luteal:'linear-gradient(160deg,#9B7EC8,#7B5EA8)'};
+  var phaseBgs={period:'#FFF0F6',follicular:'#EEF8FF',ovulation:'#FFFAF0',luteal:'#F8F4FF'};
+  var phaseCols={period:'#C05080',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#9B7EC8'};
+
+  // Update hero
+  var hero=document.getElementById('pat-hero');
+  if(hero)hero.style.background=phaseGrads[phase]||phaseGrads.luteal;
+
+  // Update tabs
+  ['period','follicular','ovulation','luteal'].forEach(function(p){
+    var t=document.getElementById('ptab-'+p);
+    if(!t)return;
+    if(p===phase){
+      t.style.background=phaseBgs[p];
+      t.style.borderColor=phaseCols[p];
+    }else{
+      t.style.background='transparent';
+      t.style.borderColor='transparent';
+    }
+  });
+
+  // Update card
+  var card=document.getElementById('pat-phase-card');
+  var contentEl=document.getElementById('pat-phase-content');
+  if(!card||!contentEl)return;
+  card.style.opacity='0';
+  setTimeout(function(){
+    var d=window.patPhaseData&&window.patPhaseData[phase];
+    if(d){
+      var col=d.color;
+      var html='<div style="font-size:11px;font-weight:800;color:'+col+';text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;">What I notice in your '+phase+' phase</div>';
+      html+='<div style="font-size:13px;color:#3A2A5A;line-height:1.75;margin-bottom:10px;">'+d.note+'</div>';
+      if(d.chips&&d.chips.length){
+        html+='<div style="display:flex;flex-wrap:wrap;gap:6px;">';
+        d.chips.forEach(function(c){
+          html+='<div style="background:'+c.bg+';border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;color:'+c.color+';">'+c.label+'</div>';
+        });
+        html+='</div>';
+      }
+      contentEl.innerHTML=html;
+    }else{
+      contentEl.innerHTML='<div style="font-size:13px;color:#8AAAB4;">Log during this phase so I can learn how it affects you.</div>';
+    }
+    card.style.opacity='1';
+  },150);
+}
+
 
 function buildCorrelations(allKeys, total) {
   const ccEl = document.getElementById('correlation-cards');
@@ -4699,6 +4958,115 @@ function exportData(){
   document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);toast('Downloaded');
 }
 
+
+// ── REWARDS SYSTEM ────────────────────────────────────────────────────
+var BADGES={
+  streak7:{id:'streak7',icon:'&#128293;',label:'7 Day Streak',title:'You kept showing up.',msg:'Seven days in a row. Most people quit by day three. I am starting to really see your patterns now. Keep going.',earned:'&#127885; Flame badge earned',btnText:'Keep going →',bg:'linear-gradient(160deg,#B86000,#E8A000)',glow:'rgba(255,160,0,.4)'},
+  streak14:{id:'streak14',icon:'&#128293;',label:'14 Day Streak',title:'Two weeks. That is dedication.',msg:'Fourteen days of showing up for yourself. Your patterns are getting clearer every single day. I see you.',earned:'&#127885; Flame badge earned',btnText:'Keep going →',bg:'linear-gradient(160deg,#B86000,#E8A000)',glow:'rgba(255,160,0,.4)'},
+  streak30:{id:'streak30',icon:'&#127942;',label:'30 Day Streak',title:'A whole month. Remarkable.',msg:'Thirty days straight. I know your patterns better than almost any app has ever known anyone. This is real data about you, not averages.',earned:'&#127941; Gold badge earned',btnText:'See my patterns →',bg:'linear-gradient(160deg,#8A7000,#D4B000)',glow:'rgba(220,180,0,.4)'},
+  cycle1:{id:'cycle1',icon:'&#127744;',label:'First Full Cycle',title:'One full cycle. That took something.',msg:'Period to period, you showed up every day. Your patterns are just starting to take shape. This is where it gets interesting.',earned:'&#127774; Cycle badge earned',btnText:'See my journey →',bg:'linear-gradient(160deg,#2A6A3A,#4A9A6A)',glow:'rgba(74,154,106,.4)'},
+  cycle3:{id:'cycle3',icon:'&#127756;',label:'3 Cycles Complete',title:'Three cycles. I really know you now.',msg:'Three full cycles of data. I can see your patterns repeating, your body doing the same things at the same times. You are starting to understand your own rhythm.',earned:'&#127774; Cycle badge earned',btnText:'See my patterns →',bg:'linear-gradient(160deg,#2A6A3A,#4A9A6A)',glow:'rgba(74,154,106,.4)'},
+  period_known:{id:'period_known',icon:'&#129768;',label:'Period Phase Known',title:'I know your period now.',msg:'Two full period phases logged. I can see how your body responds, what helps, and what to expect. This knowledge is yours.',earned:'&#129352; Phase badge earned',btnText:'See my patterns →',bg:'linear-gradient(160deg,#A02060,#D45080)',glow:'rgba(212,80,128,.4)'},
+  follicular_known:{id:'follicular_known',icon:'&#127807;',label:'Follicular Phase Known',title:'I know your follicular now.',msg:'Two follicular phases logged. I can see clearly when you start to come alive, and what this phase brings you.',earned:'&#129352; Phase badge earned',btnText:'See my patterns →',bg:'linear-gradient(160deg,#2A8AAA,#4AAAC4)',glow:'rgba(74,170,196,.4)'},
+  ovulation_known:{id:'ovulation_known',icon:'&#9728;&#65039;',label:'Ovulation Phase Known',title:'I know your ovulation now.',msg:'Two ovulation windows logged. Brief but powerful, and now I know exactly how yours shows up.',earned:'&#129352; Phase badge earned',btnText:'See my patterns →',bg:'linear-gradient(160deg,#A07000,#D4A000)',glow:'rgba(212,160,0,.4)'},
+  luteal_known:{id:'luteal_known',icon:'&#127769;',label:'Luteal Phase Known',title:'I know your luteal now.',msg:'Two full luteal phases logged. I can see the patterns clearly now, including the harder days. You always come through them.',earned:'&#129352; Phase badge earned',btnText:'See my patterns →',bg:'linear-gradient(160deg,#5A3A90,#9B7EC8)',glow:'rgba(155,126,200,.4)'}
+};
+
+function checkRewards(){
+  var earned=JSON.parse(localStorage.getItem('ir_badges')||'[]');
+  var newBadge=null;
+
+  // Streak check
+  var streak=0;var d=new Date(TODAY);
+  while(true){var k=d.toISOString().slice(0,10);if(!logs[k])break;streak++;d.setDate(d.getDate()-1);}
+  if(streak>=30&&earned.indexOf('streak30')===-1){newBadge='streak30';}
+  else if(streak>=14&&earned.indexOf('streak14')===-1){newBadge='streak14';}
+  else if(streak>=7&&earned.indexOf('streak7')===-1){newBadge='streak7';}
+
+  // Cycle milestones
+  if(!newBadge){
+    var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+    if(setup.start){
+      var cycles=Math.floor((TODAY-new Date(setup.start+'T12:00:00'))/(userCycleLen*86400000));
+      if(cycles>=3&&earned.indexOf('cycle3')===-1){newBadge='cycle3';}
+      else if(cycles>=1&&earned.indexOf('cycle1')===-1){newBadge='cycle1';}
+    }
+  }
+
+  // Phase badges — need 2+ cycles of data per phase
+  if(!newBadge){
+    var allKeys=Object.keys(logs).sort();
+    var phaseDays={period:[],follicular:[],ovulation:[],luteal:[]};
+    allKeys.forEach(function(k){var c=cd(new Date(k));var p=ph(c);phaseDays[p].push(k);});
+    var phBadges={period:'period_known',follicular:'follicular_known',ovulation:'ovulation_known',luteal:'luteal_known'};
+    Object.entries(phBadges).forEach(function(entry){
+      var phase=entry[0],badgeId=entry[1];
+      if(!newBadge&&phaseDays[phase].length>=8&&earned.indexOf(badgeId)===-1){
+        newBadge=badgeId;
+      }
+    });
+  }
+
+  if(newBadge){
+    earned.push(newBadge);
+    localStorage.setItem('ir_badges',JSON.stringify(earned));
+    showReward(newBadge);
+  }
+}
+
+function showReward(badgeId){
+  var b=BADGES[badgeId];if(!b)return;
+  var ov=document.getElementById('reward-overlay');
+  var card=document.getElementById('reward-card');
+  if(!ov||!card)return;
+  document.getElementById('reward-badge-icon').innerHTML=b.icon;
+  document.getElementById('reward-badge-label').textContent=b.label;
+  document.getElementById('reward-title').textContent=b.title;
+  document.getElementById('reward-msg').textContent=b.msg;
+  document.getElementById('reward-badge-earned').innerHTML=b.earned;
+  document.getElementById('reward-badge-earned').style.cssText='border-radius:12px;padding:8px 16px;display:inline-block;margin-bottom:24px;font-size:11px;font-weight:800;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);color:white;';
+  document.getElementById('reward-btn').textContent=b.btnText;
+  document.getElementById('reward-btn').style.background=b.bg;
+  card.style.background=b.bg;
+  card.style.boxShadow='0 0 60px '+b.glow;
+  // Sparkles
+  var sp=document.getElementById('reward-sparkles');
+  sp.innerHTML='';
+  var spArr=['&#10024;','&#11088;','&#10023;','&#127775;','&#10022;'];
+  for(var i=0;i<8;i++){
+    var s=document.createElement('div');
+    s.style.cssText='position:absolute;font-size:'+(12+Math.random()*16)+'px;top:'+(Math.random()*80)+'%;left:'+(Math.random()*90)+'%;opacity:'+(0.3+Math.random()*0.5)+';';
+    s.innerHTML=spArr[Math.floor(Math.random()*spArr.length)];
+    sp.appendChild(s);
+  }
+  ov.style.display='flex';
+}
+
+function closeReward(){
+  var ov=document.getElementById('reward-overlay');
+  if(ov)ov.style.display='none';
+}
+
+// Check rewards after saving
+var _origSaveCI=saveCI;
+saveCI=function(){
+  _origSaveCI();
+  setTimeout(checkRewards,500);
+};
+
 </script>
+
+  <!-- REWARD OVERLAY -->
+  <div id="reward-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);align-items:center;justify-content:center;flex-direction:column;padding:32px;">
+    <div id="reward-card" style="width:100%;max-width:320px;text-align:center;padding:40px 28px;border-radius:28px;position:relative;">
+      <div id="reward-sparkles" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;border-radius:28px;"></div>
+      <div id="reward-badge-icon" style="font-size:64px;margin-bottom:16px;position:relative;z-index:1;"></div>
+      <div id="reward-badge-label" style="font-size:11px;font-weight:800;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;"></div>
+      <div id="reward-title" style="font-family:Playfair Display,serif;font-size:24px;color:white;font-weight:700;margin-bottom:14px;line-height:1.3;"></div>
+      <div id="reward-msg" style="font-size:13px;color:rgba(255,255,255,.8);line-height:1.75;margin-bottom:24px;"></div>
+      <div id="reward-badge-earned" style="border-radius:12px;padding:8px 16px;display:inline-block;margin-bottom:24px;font-size:11px;font-weight:800;"></div>
+      <button id="reward-btn" onclick="closeReward()" style="width:100%;border:none;border-radius:14px;padding:15px;font-family:Nunito,sans-serif;font-size:14px;font-weight:800;color:white;cursor:pointer;"></button>
+    </div>
+  </div>
 </body>
 </html>
