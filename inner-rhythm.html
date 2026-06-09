@@ -3832,8 +3832,1003 @@ async function loadPersonalisedMessages() {
 }
 
 
-function initCheckin() {
-  // Reset all selections
+
+function showWelcomeScreen(name) {
+  onbStep = 0;
+  initHome();
+
+  // Personalise slide 0
+  const heading = document.getElementById('welcome-name-heading');
+  const sub = document.getElementById('welcome-sub-msg');
+  if (heading) heading.textContent = name ? 'Hey ' + name + ' 🌙' : 'Welcome 🌙';
+  if (sub) {
+    const msgs = [
+      'This is your space. No judgment, just you.',
+      'Really glad you\'re here. Let\'s figure out your rhythm.',
+      'This is just for you. Let\'s get started.',
+    ];
+    sub.textContent = msgs[Math.floor(Math.random() * msgs.length)];
+  }
+
+  // Set today as default date for period picker
+  const dateInp = document.getElementById('onb-period-date');
+  if (dateInp) dateInp.valueAsDate = new Date();
+
+  // Personalise ready slide
+  const readyTitle = document.getElementById('onb-ready-title');
+  if (readyTitle && name) readyTitle.textContent = name + ', you\'re all set';
+
+  nav('welcome');
+  updateOnbSlide(0);
+}
+
+function updateOnbSlide(step) {
+  onbStep = step;
+  // Move slides
+  const slides = document.getElementById('onb-slides');
+  if (slides) slides.style.transform = 'translateX(-' + (step * 25) + '%)';
+  // Update dots
+  for (let i = 0; i < 4; i++) {
+    const dot = document.getElementById('dot-' + i);
+    if (dot) dot.className = 'onb-dot' + (i === step ? ' active' : '');
+  }
+}
+
+function onbNext() {
+  if (onbStep < 3) updateOnbSlide(onbStep + 1);
+}
+
+function onbSavePeriod() {
+  const dateInp = document.getElementById('onb-period-date');
+  if (dateInp && dateInp.value) {
+    const setup = JSON.parse(localStorage.getItem('ir_cycle_setup') || '{}');
+    setup.start = dateInp.value;
+    localStorage.setItem('ir_cycle_setup', JSON.stringify(setup));
+    userLP = new Date(dateInp.value);
+    // Update the profile display
+    const lpEl = document.getElementById('lpval');
+    if (lpEl) {
+      const d = new Date(dateInp.value);
+      lpEl.textContent = d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    }
+  }
+  onbNext();
+}
+
+function onbSaveCycle() {
+  const lenInp = document.getElementById('onb-cycle-len');
+  if (lenInp) {
+    const cycleLen = parseInt(lenInp.value) || 28;
+    const setup = JSON.parse(localStorage.getItem('ir_cycle_setup') || '{}');
+    setup.cycleLen = cycleLen;
+    localStorage.setItem('ir_cycle_setup', JSON.stringify(setup));
+    userCycleLen = cycleLen;
+    const clEl = document.getElementById('cycle-len-display');
+    if (clEl) clEl.textContent = cycleLen + ' days';
+  }
+  onbNext();
+}
+
+function onbFinish() {
+  // Reinit home with fresh data before navigating
+  initHome();
+  renderCal();
+  nav('home');
+}
+
+function startApp() { nav('home'); }
+function startAppSetup() { nav('home'); setTimeout(() => openM(), 400); }
+
+
+function buildCalOverview() {
+  const container = document.getElementById('cal-log-overview');
+  const emptyEl = document.getElementById('cal-log-empty');
+  if (!container) return;
+
+  // Get all logged days in current calendar month, sorted newest first
+  const daysInMonth = new Date(calY, calM + 1, 0).getDate();
+  const entries = [];
+
+  for (let d = daysInMonth; d >= 1; d--) {
+    const date = new Date(calY, calM, d);
+    const k = date.toISOString().slice(0, 10);
+    if (logs[k]) {
+      entries.push({ date, k, log: logs[k] });
+    }
+  }
+
+  if (entries.length === 0) {
+    container.innerHTML = '';
+    if (emptyEl) emptyEl.style.display = 'block';
+    return;
+  }
+
+  if (emptyEl) emptyEl.style.display = 'none';
+
+  const phaseNames = { period:'Period', follicular:'Follicular', ovulation:'Ovulation', luteal:'Luteal' };
+
+  container.innerHTML = entries.map(({ date, k, log }) => {
+    const c = cd(date);
+    const p = ph(c);
+    const dateFmt = date.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
+
+    let chips = '';
+    if (log.mood) chips += '<span class="cal-log-chip mood">' + log.mood + '</span>';
+    if (log.flow && log.flow !== 'Not on period') chips += '<span class="cal-log-chip flow">' + log.flow + ' flow</span>';
+    if (log.energies && log.energies.length) log.energies.slice(0,2).forEach(e => { chips += '<span class="cal-log-chip">' + e + '</span>'; });
+    if (log.feels && log.feels.length) log.feels.slice(0,3).forEach(f => { chips += '<span class="cal-log-chip feel">' + f + '</span>'; });
+    if (log.syms && log.syms.length) log.syms.slice(0,2).forEach(s => { chips += '<span class="cal-log-chip sym">' + s + '</span>'; });
+
+    const noteHtml = log.note && log.note.trim()
+      ? '<div class="cal-log-note">"' + log.note.trim() + '"</div>'
+      : '';
+
+    return '<div class="cal-log-card" onclick="openDayDetail(new Date(' + date.getFullYear() + ',' + date.getMonth() + ',' + date.getDate() + '),' + c + ',\'' + p + '\',' + (date.toDateString() === userLP.toDateString()) + ',false,false,\'' + k + '\')">'
+      + '<div class="cal-log-header">'
+      + '<div class="cal-log-date">' + dateFmt + ' · Day ' + c + '</div>'
+      + '<div class="cal-log-phase ' + p + '">' + phaseNames[p] + '</div>'
+      + '</div>'
+      + '<div class="cal-log-row">' + chips + '</div>'
+      + noteHtml
+      + '<div class="cal-log-edit">Tap to view or edit →</div>'
+      + '</div>';
+  }).join('');
+}
+
+
+// ── STREAK ──────────────────────────────────────────────────────────────────
+function calcStreak() {
+  let streak = 0;
+  const d = new Date(TODAY);
+  while (true) {
+    const k = d.toISOString().slice(0,10);
+    if (logs[k]) { streak++; d.setDate(d.getDate()-1); }
+    else break;
+  }
+  return streak;
+}
+
+function updateStreakDisplay() {
+  const streak = calcStreak();
+  const badge = document.getElementById('streak-badge');
+  const num = document.getElementById('streak-num');
+  if (!badge || !num) return;
+  num.textContent = streak;
+  if (streak >= 1) {
+    badge.className = 'streak-badge';
+    badge.title = streak + ' day streak — keep going!';
+  } else {
+    badge.className = 'streak-badge dead';
+    badge.title = 'Start your streak — log today!';
+  }
+}
+
+
+// ── CYCLE AUTO-LEARNING ──────────────────────────────────────────────────────
+// Stores period start dates as they're logged via flow=Spotting/Light/Medium/Heavy
+function recordPeriodStart(dateKey) {
+  const history = JSON.parse(localStorage.getItem('ir_period_history') || '[]');
+  if (!history.includes(dateKey)) {
+    history.push(dateKey);
+    history.sort();
+    localStorage.setItem('ir_period_history', JSON.stringify(history));
+    recalcCycleLength();
+  }
+}
+
+function recalcCycleLength() {
+  const history = JSON.parse(localStorage.getItem('ir_period_history') || '[]');
+  if (history.length < 2) return;
+
+  // Calculate gaps between consecutive period starts
+  const gaps = [];
+  for (let i = 1; i < history.length; i++) {
+    const a = new Date(history[i-1]), b = new Date(history[i]);
+    const diff = Math.round((b - a) / 86400000);
+    if (diff >= 18 && diff <= 45) gaps.push(diff); // plausible cycle lengths only
+  }
+  if (gaps.length === 0) return;
+
+  const avg = Math.round(gaps.reduce((a,b)=>a+b,0) / gaps.length);
+  const setup = JSON.parse(localStorage.getItem('ir_cycle_setup') || '{}');
+  const oldLen = setup.cycleLen || 28;
+
+  if (avg !== oldLen) {
+    setup.cycleLen = avg;
+    setup.lastAutoCalc = new Date().toISOString();
+    setup.prevCycleLen = oldLen;
+    localStorage.setItem('ir_cycle_setup', JSON.stringify(setup));
+    userCycleLen = avg;
+
+    // Update display in settings
+    const clEl = document.getElementById('cycle-len-display');
+    if (clEl) clEl.textContent = avg + ' days';
+
+    // Show a toast if meaningful change
+    if (Math.abs(avg - oldLen) >= 1) {
+      setTimeout(()=>toast('Cycle updated to ' + avg + ' days based on your logs ✓'), 800);
+    }
+  }
+}
+
+// Also calculate period duration from flow logs
+function recalcPeriodDur() {
+  // Find consecutive days with flow logged
+  const sortedKeys = Object.keys(logs).sort();
+  let maxRun = 0, curRun = 0;
+  let prevDate = null;
+  sortedKeys.forEach(k => {
+    const log = logs[k];
+    if (log.flow && log.flow !== 'Not on period') {
+      const d = new Date(k);
+      if (prevDate) {
+        const diff = Math.round((d - prevDate) / 86400000);
+        curRun = diff === 1 ? curRun + 1 : 1;
+      } else { curRun = 1; }
+      maxRun = Math.max(maxRun, curRun);
+      prevDate = d;
+    } else { prevDate = null; curRun = 0; }
+  });
+  if (maxRun >= 2) {
+    const setup = JSON.parse(localStorage.getItem('ir_cycle_setup') || '{}');
+    if (maxRun !== setup.periodDur) {
+      setup.periodDur = maxRun;
+      localStorage.setItem('ir_cycle_setup', JSON.stringify(setup));
+      userPeriodDur = maxRun;
+      const pdEl = document.getElementById('period-dur-display');
+      if (pdEl) pdEl.textContent = maxRun + ' days';
+    }
+  }
+}
+
+
+// ── PATTERN ANALYSIS ────────────────────────────────────────────────────────
+
+function applyPlusGating() {
+  if (isPlus()) return;
+  var corrSection = document.getElementById('correlation-section');
+  if (!corrSection) return;
+  corrSection.innerHTML = '<div class="plus-gate"><div class="plus-gate-icon">🔍</div><div class="plus-gate-title">Mood correlations</div><div class="plus-gate-sub">See exactly how your moods, symptoms and feelings connect. Unlock with Plus — free for 60 days, no card needed.</div><button class="plus-gate-btn" id="plus-gate-corr-btn">Unlock with Plus →</button></div>';
+  var btn = document.getElementById('plus-gate-corr-btn');
+  if (btn) btn.onclick = function(){ nav('upgrade'); };
+}
+
+function buildPatterns(){
+  var allKeys=Object.keys(logs).sort();
+  var total=allKeys.length;
+
+  // Hero
+  var heroSub=document.getElementById('pat-hero-sub');
+  var heroBar=document.getElementById('pat-hero-bar');
+  var todayLbl=document.getElementById('pat-today-lbl');
+  var cycleEnd=document.getElementById('pat-cycle-end');
+  if(heroSub){
+    var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+    if(setup.start){
+      var day=cd(TODAY),phase=ph(day);
+      var phNames={period:'Period',follicular:'Follicular',ovulation:'Ovulation',luteal:'Luteal'};
+      heroSub.textContent=(phNames[phase]||phase)+' · Day '+day+' of '+userCycleLen;
+      if(heroBar)heroBar.style.width=Math.round(day/userCycleLen*100)+'%';
+      if(todayLbl)todayLbl.textContent='TODAY · DAY '+day;
+      if(cycleEnd)cycleEnd.textContent='DAY '+userCycleLen;
+      // Set hero colour
+      var phaseGrads={period:'linear-gradient(160deg,#C05080,#D4709A)',follicular:'linear-gradient(160deg,#4AAAC4,#7DC8E0)',ovulation:'linear-gradient(160deg,#C07820,#E8A840)',luteal:'linear-gradient(160deg,#9B7EC8,#7B5EA8)'};
+      var hero=document.getElementById('pat-hero');
+      if(hero)hero.style.background=phaseGrads[phase]||phaseGrads.luteal;
+      // Activate current phase tab
+      patTab(phase);
+    }
+  }
+
+  // Phase mood analysis
+  var phaseMoods={period:[],follicular:[],ovulation:[],luteal:[]};
+  var phaseSyms={period:[],follicular:[],ovulation:[],luteal:[]};
+  var phaseEnergy={period:[],follicular:[],ovulation:[],luteal:[]};
+  var phaseBI={period:[],follicular:[],ovulation:[],luteal:[]};
+
+  allKeys.forEach(function(k){
+    var log=logs[k];
+    var date=new Date(k);
+    var c=cd(date),p=ph(c);
+    if(log.mood)phaseMoods[p].push(log.mood);
+    if(log.syms&&log.syms.length)phaseSyms[p]=phaseSyms[p].concat(log.syms);
+    if(log.energies&&log.energies.length)phaseEnergy[p]=phaseEnergy[p].concat(log.energies);
+    if(log.bodyIntuition)phaseBI[p].push(log.bodyIntuition);
+  });
+
+  // Score each phase (good/amazing = high, rough/off = low)
+  function scorePhase(moods){
+    if(!moods.length)return null;
+    var score=0;
+    moods.forEach(function(m){
+      if(m==='Amazing')score+=10;
+      else if(m==='Good'||m==='Happy')score+=8;
+      else if(m==='Meh')score+=5;
+      else if(m==='Off'||m==='Sensitive'||m==='Anxious'||m==='Sad')score+=3;
+      else if(m==='Rough'||m==='Angry'||m==='Numb'||m==='Weepy'||m==='Irritated')score+=1;
+    });
+    return Math.round(score/moods.length);
+  }
+
+  // Update score labels
+  var phases=['period','follicular','ovulation','luteal'];
+  phases.forEach(function(p){
+    var s=scorePhase(phaseMoods[p]);
+    var el=document.getElementById('pscore-'+p);
+    if(el)el.textContent=s?s+'/10':'--';
+  });
+
+  // Phase content generator
+  window.patPhaseData={
+    period:{
+      color:'#C05080',bg:'#FFF0F6',
+      note:phaseMoods.period.length?
+        'Your period phase tends to be tougher. Both estrogen and progesterone drop to their lowest here, which is why everything can feel heavier or more painful. That is not weakness, it is biology. You always come through it.':
+        'Log during your period so I can learn how it affects you specifically.',
+      chips:buildChips(phaseMoods.period,phaseSyms.period,'#C05080','#FFF0F6')
+    },
+    follicular:{
+      color:'#4AAAC4',bg:'#EEF8FF',
+      note:phaseMoods.follicular.length?
+        'Follicular tends to be where you feel most like yourself. Rising estrogen lifts your mood, sharpens your thinking, and gives you more energy. Whatever you logged during this phase, your body is genuinely giving you its best here.':
+        'Log during your follicular phase so I can see how your energy shifts after your period.',
+      chips:buildChips(phaseMoods.follicular,phaseEnergy.follicular,'#4AAAC4','#EEF8FF')
+    },
+    ovulation:{
+      color:'#E8A840',bg:'#FFFAF0',
+      note:phaseMoods.ovulation.length?
+        'Ovulation is brief but powerful. A surge in estrogen and testosterone tends to make you feel more social, confident, and sharp. It only lasts a few days so it can be easy to miss, but your logs are starting to show it.':
+        'Log during ovulation so I can see how those high-hormone days feel for you specifically.',
+      chips:buildChips(phaseMoods.ovulation,phaseEnergy.ovulation,'#E8A840','#FFFAF0')
+    },
+    luteal:{
+      color:'#9B7EC8',bg:'#F8F4FF',
+      note:phaseMoods.luteal.length?
+        'Luteal tends to be your most complex phase. As progesterone drops in the second half, your nervous system becomes more reactive, which is why anxiety, irritability, or heaviness tend to show up here. It is a real physical shift, not a mood you created.':
+        'Log during your luteal phase so I can track how the hormone shift affects you.',
+      chips:buildChips(phaseMoods.luteal,phaseSyms.luteal,'#9B7EC8','#F8F4FF')
+    }
+  };
+
+  // Build insight pills
+  var insights=[];
+  if(total>=5){
+    // Check for recurring patterns
+    phases.forEach(function(p){
+      var top=topMood(phaseMoods[p]);
+      if(top&&phaseMoods[p].length>=3){
+        var pName={period:'period',follicular:'follicular phase',ovulation:'ovulation',luteal:'luteal phase'}[p];
+        var whys={
+          period:{
+            'Off':'Both estrogen and progesterone hit their lowest at the start of your period. That drop affects mood, energy, and pain tolerance directly. It is hormonal, not personal.',
+            'Rough':'The drop in estrogen and progesterone at the start of your period can make everything feel amplified. That heaviness is real and it is physical.',
+            'Anxious':'Low hormones during your period can affect your nervous system, making you feel more on edge. This tends to ease as estrogen starts rising again.',
+            'Good':'Your body handles the hormonal drop well. Some people find their period phase more manageable than expected once flow starts.',
+            'Amazing':'Feeling good during your period is genuinely notable. Your body is coping with the hormonal shift really well.'
+          },
+          follicular:{
+            'Good':'Rising estrogen is directly lifting your mood and energy. That lightness is your body doing exactly what it is supposed to do after your period ends.',
+            'Amazing':'High estrogen in follicular phase boosts serotonin and dopamine. Your brain chemistry is working in your favour right now.',
+            'Energized':'Estrogen rising gives your energy and motivation a real lift. Your body is literally gearing up after your period.',
+            'Meh':'Feeling meh in follicular is worth noting. This is usually when estrogen starts rising, so something else might be going on beyond your cycle.'
+          },
+          ovulation:{
+            'Good':'A surge in estrogen and a small testosterone spike during ovulation tends to make people feel more confident and social. Your logs reflect that.',
+            'Amazing':'Peak estrogen and testosterone together create a window of confidence, sharpness, and energy. You are feeling the full effect.',
+            'Social':'Ovulation raises oxytocin alongside estrogen. Your body is literally primed for connection during this window.'
+          },
+          luteal:{
+            'Anxious':'Progesterone dropping in late luteal directly affects GABA receptors in your brain, which regulate calm and anxiety. The anxiety you feel is not created by your thoughts, it is created by your hormones.',
+            'Off':'Falling progesterone in luteal lowers your feel-good hormones. That heaviness and flatness is a real physical response to a real hormone shift.',
+            'Irritated':'Lower progesterone raises your stress response, which can make small things feel bigger. Your threshold for frustration genuinely drops during this phase.',
+            'Sad':'Late luteal drops in estrogen and progesterone affect serotonin. That sadness has a biological cause. It is not who you are, it is where you are in your cycle.',
+            'Rough':'Both major hormones drop in late luteal. Your body is preparing for a reset, and that can feel hard. It always shifts when your period arrives.'
+          }
+        };
+        var why=(whys[p]&&whys[p][top])||('You tend to log '+top.toLowerCase()+' during '+pName+' more than any other mood. Keep logging and I will get more specific about why.');
+        insights.push({
+          color:{period:'#C05080',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#9B7EC8'}[p],
+          title:'You often feel '+top.toLowerCase()+' in '+pName,
+          body:why
+        });
+      }
+    });
+
+    // Symptom patterns
+    var allSyms=[];
+    Object.values(phaseSyms).forEach(function(a){allSyms=allSyms.concat(a);});
+    var topSym=topMood(allSyms);
+    if(topSym){
+      var symPhase=phases.reduce(function(best,p){return phaseSyms[p].filter(function(s){return s===topSym;}).length > (phaseSyms[best]?phaseSyms[best].filter(function(s){return s===topSym;}).length:0)?p:best;},'period');
+      insights.push({
+        color:'#8AAAB4',
+        title:topSym+' shows up most in your '+symPhase+' phase',
+        body:'Tracking symptoms over time helps spot which ones are hormonal and predictable versus ones that need attention. Knowing they are coming means you can prepare rather than be caught off guard.'
+      });
+    }
+
+    // Body intuition insight
+    var allBI=[];
+    Object.values(phaseBI).forEach(function(a){allBI=allBI.concat(a);});
+    var topBI=topMood(allBI);
+    if(topBI){
+      insights.push({
+        color:'#6A9A6A',
+        title:'Your body most often asks for '+topBI.toLowerCase(),
+        body:'You have logged '+topBI+' as what your body needs most often. That is not a coincidence, it is a real signal. Your body has been trying to tell you something consistently.'
+      });
+    }
+  }
+
+  // Render
+  var insEl=document.getElementById('pat-insights');
+  var insHdr=document.getElementById('pat-insights-hdr');
+  var emptyEl=document.getElementById('pat-empty');
+
+  if(insEl){
+    if(insights.length>0){
+      if(insHdr)insHdr.style.display='block';
+      if(emptyEl)emptyEl.style.display='none';
+      insEl.innerHTML='';
+      insights.forEach(function(ins){
+        var pill=document.createElement('div');
+        pill.style.cssText='display:flex;align-items:flex-start;gap:10px;background:white;border-radius:14px;padding:13px 14px;margin-bottom:8px;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 8px rgba(0,0,0,.04);cursor:pointer;-webkit-tap-highlight-color:transparent;';
+        var dot=document.createElement('div');
+        dot.style.cssText='width:8px;height:8px;border-radius:50%;background:'+ins.color+';flex-shrink:0;margin-top:4px;';
+        var textWrap=document.createElement('div');textWrap.style.flex='1';
+        var title=document.createElement('div');
+        title.style.cssText='font-size:12px;font-weight:800;color:#1A3A45;margin-bottom:0;';
+        title.textContent=ins.title;
+        var body=document.createElement('div');
+        body.style.cssText='font-size:12px;color:#5A7A8A;line-height:1.7;margin-top:8px;padding-top:8px;border-top:0.5px solid #F0F4F8;display:none;';
+        body.textContent=ins.body;
+        var plus=document.createElement('div');
+        plus.style.cssText='font-size:14px;color:#C0CDD6;font-weight:800;flex-shrink:0;';
+        plus.textContent='+';
+        textWrap.appendChild(title);textWrap.appendChild(body);
+        pill.appendChild(dot);pill.appendChild(textWrap);pill.appendChild(plus);
+        pill.onclick=function(){
+          var open=body.style.display==='block';
+          body.style.display=open?'none':'block';
+          plus.textContent=open?'+':'−';
+          plus.style.color=open?'#C0CDD6':ins.color;
+        };
+        insEl.appendChild(pill);
+      });
+    } else {
+      if(insHdr)insHdr.style.display='none';
+      if(emptyEl)emptyEl.style.display='block';
+    }
+  }
+
+  // IR note
+  var irNote=document.getElementById('pat-ir-note');
+  if(irNote){
+    if(total===0)irNote.textContent='Start logging and I will begin building your picture.';
+    else if(total<5)irNote.textContent=total+' days logged. Keep going — patterns start forming around 5 days.';
+    else{
+      var acc=JSON.parse(localStorage.getItem('ir_account')||'{}');
+      var name=acc.name||(JSON.parse(localStorage.getItem('ir_profile')||'{}')).name||'';
+      irNote.textContent=(name?name+', I':' I')+' have '+total+' days of your data now. Tap each phase below to see what I have noticed about you.';
+    }
+  }
+}
+
+function buildChips(moods,extra,color,bg){
+  var chips=[];
+  var top=topMood(moods);
+  if(top)chips.push({label:top,color:color,bg:bg});
+  var topE=topMood(extra);
+  if(topE&&topE!==top)chips.push({label:topE,color:color,bg:bg});
+  return chips;
+}
+
+function topMood(arr){
+  if(!arr||!arr.length)return null;
+  var freq={};
+  arr.forEach(function(m){freq[m]=(freq[m]||0)+1;});
+  return Object.entries(freq).sort(function(a,b){return b[1]-a[1];})[0][0];
+}
+
+function patTab(phase){
+  var phaseGrads={period:'linear-gradient(160deg,#C05080,#D4709A)',follicular:'linear-gradient(160deg,#4AAAC4,#7DC8E0)',ovulation:'linear-gradient(160deg,#C07820,#E8A840)',luteal:'linear-gradient(160deg,#9B7EC8,#7B5EA8)'};
+  var phaseBgs={period:'#FFF0F6',follicular:'#EEF8FF',ovulation:'#FFFAF0',luteal:'#F8F4FF'};
+  var phaseCols={period:'#C05080',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#9B7EC8'};
+
+  // Update hero
+  var hero=document.getElementById('pat-hero');
+  if(hero)hero.style.background=phaseGrads[phase]||phaseGrads.luteal;
+
+  // Update tabs
+  ['period','follicular','ovulation','luteal'].forEach(function(p){
+    var t=document.getElementById('ptab-'+p);
+    if(!t)return;
+    if(p===phase){
+      t.style.background=phaseBgs[p];
+      t.style.borderColor=phaseCols[p];
+    }else{
+      t.style.background='transparent';
+      t.style.borderColor='transparent';
+    }
+  });
+
+  // Update card
+  var card=document.getElementById('pat-phase-card');
+  var contentEl=document.getElementById('pat-phase-content');
+  if(!card||!contentEl)return;
+  card.style.opacity='0';
+  setTimeout(function(){
+    var d=window.patPhaseData&&window.patPhaseData[phase];
+    if(d){
+      var col=d.color;
+      var html='<div style="font-size:11px;font-weight:800;color:'+col+';text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;">What I notice in your '+phase+' phase</div>';
+      html+='<div style="font-size:13px;color:#3A2A5A;line-height:1.75;margin-bottom:10px;">'+d.note+'</div>';
+      if(d.chips&&d.chips.length){
+        html+='<div style="display:flex;flex-wrap:wrap;gap:6px;">';
+        d.chips.forEach(function(c){
+          html+='<div style="background:'+c.bg+';border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;color:'+c.color+';">'+c.label+'</div>';
+        });
+        html+='</div>';
+      }
+      contentEl.innerHTML=html;
+    }else{
+      contentEl.innerHTML='<div style="font-size:13px;color:#8AAAB4;">Log during this phase so I can learn how it affects you.</div>';
+    }
+    card.style.opacity='1';
+  },150);
+}
+
+
+function buildCorrelations(allKeys, total) {
+  const ccEl = document.getElementById('correlation-cards');
+  const ceEl = document.getElementById('correlation-empty');
+  if (!ccEl) return;
+
+  if (total < 7) {
+    ccEl.innerHTML = '';
+    if (ceEl) ceEl.style.display = 'block';
+    return;
+  }
+  if (ceEl) ceEl.style.display = 'none';
+
+  // Find what symptoms/feelings co-occur with what moods
+  const moodWithSym = {}; // mood -> {sym: count}
+  const moodWithFeel = {};
+  allKeys.forEach(k => {
+    const log = logs[k];
+    if (!log.mood) return;
+    const m = log.mood;
+    if (!moodWithSym[m]) moodWithSym[m] = {};
+    if (!moodWithFeel[m]) moodWithFeel[m] = {};
+    (log.syms||[]).forEach(s => moodWithSym[m][s] = (moodWithSym[m][s]||0)+1);
+    (log.feels||[]).forEach(f => moodWithFeel[m][f] = (moodWithFeel[m][f]||0)+1);
+  });
+
+  const insights = [];
+
+  Object.keys(moodWithSym).forEach(mood => {
+    const syms = moodWithSym[mood];
+    const topSym = Object.entries(syms).sort((a,b)=>b[1]-a[1])[0];
+    if (topSym && topSym[1] >= 2) {
+      const moodLogs = allKeys.filter(k => logs[k] && logs[k].mood === mood).length;
+      const pct = Math.round(topSym[1]/moodLogs*100);
+      if (pct >= 40) {
+        insights.push('<div class="pcard"><div class="ptype">Pattern spotted</div><div class="ptxt">When you feel <strong>'+mood.toLowerCase()+'</strong>, you also log <strong>'+topSym[0].toLowerCase()+'</strong> '+pct+'% of the time. That connection is worth knowing \u2014 it\'s not a coincidence.</div><div class="pmeta">'+topSym[1]+' out of '+moodLogs+' '+mood.toLowerCase()+' days</div></div>');
+      }
+    }
+  });
+
+  Object.keys(moodWithFeel).forEach(mood => {
+    const feels = moodWithFeel[mood];
+    const topFeel = Object.entries(feels).sort((a,b)=>b[1]-a[1])[0];
+    if (topFeel && topFeel[1] >= 2) {
+      const moodLogs = allKeys.filter(k => logs[k] && logs[k].mood === mood).length;
+      const pct = Math.round(topFeel[1]/moodLogs*100);
+      if (pct >= 40) {
+        insights.push('<div class="pcard soc"><div class="ptype">Feeling link</div><div class="ptxt">On days you feel <strong>'+mood.toLowerCase()+'</strong>, <strong>'+topFeel[0].toLowerCase()+'</strong> shows up '+pct+'% of the time. Your mood and feelings are talking to each other.</div><div class="pmeta">'+topFeel[1]+' out of '+moodLogs+' '+mood.toLowerCase()+' days</div></div>');
+      }
+    }
+  });
+
+  ccEl.innerHTML = insights.length ? insights.slice(0,4).join('') : '<div class="pcard"><div class="ptype">Building correlations</div><div class="ptxt">Once you have a few more check-ins, I will show you the connections I am seeing between your moods, symptoms and feelings.</div></div>';
+}
+
+
+// ── WEEKLY SUMMARY ──────────────────────────────────────────────────────────
+function buildWeeklySummary() {
+  const el = document.getElementById('weekly-summary');
+  if (!el) return;
+
+  const totalLogs = Object.keys(logs).length;
+  if (totalLogs < 3) { el.style.display = 'none'; return; }
+
+  // Gather last 7 days
+  const week = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(TODAY); d.setDate(d.getDate()-i);
+    const k = d.toISOString().slice(0,10);
+    if (logs[k]) week.push(logs[k]);
+  }
+
+  if (week.length < 3) { el.style.display = 'none'; return; }
+
+  // Stats
+  const moods = week.map(l=>l.mood).filter(Boolean);
+  const freq = {};
+  moods.forEach(m => freq[m]=(freq[m]||0)+1);
+  const topMood = Object.entries(freq).sort((a,b)=>b[1]-a[1])[0];
+  const flowDays = week.filter(l=>l.flow && l.flow!=='Not on period').length;
+  const noteCount = week.filter(l=>l.note && l.note.trim()).length;
+
+  const moodEmojis = {Amazing:'🤩',Happy:'😊',Good:'🙂',Meh:'😑',Sensitive:'🥺',Irritated:'😒',Anxious:'😟',Sad:'😞',Angry:'😡',Numb:'😶',Weepy:'😭',Rough:'😩'};
+  const topEmoji = topMood ? (moodEmojis[topMood[0]]||'💭') : '💭';
+
+  const insights = [
+    'You logged ' + week.length + ' days this week — that\'s real data about you.',
+    topMood ? 'Your most common feeling this week was ' + topMood[0].toLowerCase() + ' ' + topEmoji + ' — worth sitting with.' : 'A mixed week — totally normal.',
+    noteCount > 0 ? 'You wrote notes ' + noteCount + ' time' + (noteCount>1?'s':'') + ' — those words matter.' : null,
+    flowDays > 0 ? 'You tracked flow for ' + flowDays + ' day' + (flowDays>1?'s':'') + ' this week.' : null
+  ].filter(Boolean);
+
+  el.innerHTML = '<div class="weekly-card">'
+    + '<div class="weekly-title">This week ✨</div>'
+    + '<div class="weekly-sub">' + new Date(TODAY.getTime()-6*86400000).toLocaleDateString('en-US',{month:'short',day:'numeric'}) + ' — ' + TODAY.toLocaleDateString('en-US',{month:'short',day:'numeric'}) + '</div>'
+    + '<div class="weekly-stats">'
+    + '<div class="wstat"><div class="wstat-num">' + week.length + '</div><div class="wstat-lbl">Days logged</div></div>'
+    + '<div class="wstat"><div class="wstat-num">' + calcStreak() + '🔥</div><div class="wstat-lbl">Streak</div></div>'
+    + (topMood ? '<div class="wstat"><div class="wstat-num">' + topEmoji + '</div><div class="wstat-lbl">Top mood</div></div>' : '')
+    + '</div>'
+    + '<div class="weekly-insight">' + insights[Math.floor(Math.random()*Math.min(2,insights.length))] + '</div>'
+    + '</div>';
+  el.style.display = 'block';
+}
+
+
+// ── PARTNER COMPANION VIEW ───────────────────────────────────────────────────
+function generateCompanionData() {
+  const profile = JSON.parse(localStorage.getItem('ir_profile') || '{}');
+  const name = profile.name || '';
+  if (!name) return null;
+
+  const day = cd(TODAY);
+  const p = ph(day);
+  const phaseNames = {period:'Period',follicular:'Follicular phase',ovulation:'Ovulation',luteal:'Luteal phase'};
+  const phaseMsgs = {
+    period: ["Your body is working hard today. Be easy on yourself.", "Period day. Rest counts as doing something.", "Low energy today is valid — not a flaw."],
+    follicular: ["The fog is lifting. You might actually want things today.", "Energy rising. Good time to start something.", "Follicular phase — your clearest thinking window."],
+    ovulation: ["Peak day. You've got this.", "High energy, clear head. Go for it.", "Today is one of your best days in the cycle."],
+    luteal: ["Things might feel heavier today. That's the phase, not you.", "Extra patience with yourself today — you're in luteal.", "Emotions may be louder. That's information, not drama."]
+  };
+  const tips = {
+    period: ['💊 Pain relief ready?','🛌 Rest plans','🤍 No big expectations','☕ Comfort drinks'],
+    follicular: ['🌱 New plans together','💬 Good time to talk','⚡ Match her energy','😊 She is coming back'],
+    ovulation: ['🌟 Quality time','💬 Important convos','🎉 Say yes to plans','🤩 She is at her best'],
+    luteal: ['💬 Check in on her','🤍 Extra patience','🧘 Give her space too','👂 Listen more']
+  };
+
+  return { name, day, phase: phaseNames[p], msg: phaseMsgs[p], tips: tips[p] };
+}
+
+function updatePartnerPreview() {
+  const data = generateCompanionData();
+  if (!data) return;
+  const phaseEl = document.getElementById('partner-preview-phase');
+  const msgEl = document.getElementById('partner-preview-msg');
+  const nameEl = document.getElementById('partner-preview-name');
+  const tipsEl = document.getElementById('partner-preview-tips');
+  if (phaseEl) phaseEl.textContent = data.phase + ' · Day ' + data.day;
+  if (msgEl) msgEl.textContent = data.msg;
+  if (nameEl) nameEl.textContent = data.name + "'s cycle — partner view";
+  if (tipsEl) tipsEl.innerHTML = data.tips.map(t=>'<div style="background:rgba(255,255,255,.12);border-radius:10px;padding:7px 12px;font-size:12px;font-weight:700">'+t+'</div>').join('');
+}
+
+function copyCompanionLink() {
+  const data = generateCompanionData();
+  if (!data) { toast('Add your name in Profile first'); return; }
+
+  // Build a self-contained companion page encoded in URL hash
+  const encoded = btoa(JSON.stringify(data));
+  const baseUrl = window.location.href.split('#')[0].split('?')[0];
+  const link = baseUrl + '?companion=' + encoded;
+
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(link).then(()=>toast('Link copied! Send it to your partner 🤍'));
+  } else {
+    const el = document.getElementById('companion-link-display');
+    if (el) el.textContent = link;
+    toast('Link ready — tap and copy it above');
+  }
+}
+
+function checkCompanionMode() {
+  const params = new URLSearchParams(window.location.search);
+  const encoded = params.get('companion');
+  if (!encoded) return false;
+
+  try {
+    const data = JSON.parse(atob(encoded));
+    showCompanionView(data);
+    return true;
+  } catch(e) { return false; }
+}
+
+function showCompanionView(data) {
+  document.body.innerHTML = '';
+  document.body.style.cssText = 'margin:0;font-family:Nunito,sans-serif;background:linear-gradient(160deg,#1A3A52,#2E6A8E,#4A90B8);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box';
+
+  const html = '<div style="max-width:380px;width:100%;color:white">'
+    + '<div style="text-align:center;margin-bottom:32px"><div style="font-size:48px;margin-bottom:12px">🌙</div>'
+    + '<div style="font-family:Georgia,serif;font-size:28px;font-weight:700;margin-bottom:4px">Inner Rhythm</div>'
+    + '<div style="font-size:13px;opacity:.6">Companion view for ' + data.name + '</div></div>'
+
+    + '<div style="background:rgba(255,255,255,.1);border-radius:24px;padding:24px;margin-bottom:16px;backdrop-filter:blur(10px)">'
+    + '<div style="font-size:11px;font-weight:800;opacity:.6;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">Right now</div>'
+    + '<div style="font-size:26px;font-weight:700;margin-bottom:14px">' + data.phase + ' · Day ' + data.day + '</div>'
+    + '<div style="font-size:15px;opacity:.9;line-height:1.65">' + data.msg + '</div></div>'
+
+    + '<div style="background:rgba(255,255,255,.08);border-radius:20px;padding:20px;margin-bottom:16px">'
+    + '<div style="font-size:11px;font-weight:800;opacity:.6;text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px">Ways to show up today</div>'
+    + data.tips.map(t=>'<div style="background:rgba(255,255,255,.1);border-radius:10px;padding:10px 14px;margin-bottom:8px;font-size:14px;font-weight:700">'+t+'</div>').join('')
+    + '</div>'
+
+    + '<div style="text-align:center;font-size:11px;opacity:.45;line-height:1.6">This is a read-only companion view.<br>' + data.name + ' shared this with you privately through Inner Rhythm.</div>'
+    + '</div>';
+
+  document.body.innerHTML = html;
+  // Add Nunito font
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = 'https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&display=swap';
+  document.head.appendChild(link);
+}
+
+
+// ── MORNING MESSAGE ──────────────────────────────────────────────────────────
+function buildMorningMessage() {
+  const el = document.getElementById('morning-card');
+  if (!el) return;
+
+  const h = new Date().getHours();
+  if (h < 5 || h > 11) { el.style.display = 'none'; return; } // only morning
+
+  const totalLogs = Object.keys(logs).length;
+  if (totalLogs < 3) { el.style.display = 'none'; return; }
+
+  const day = cd(TODAY);
+  const p = ph(day);
+  const profile = JSON.parse(localStorage.getItem('ir_profile') || '{}');
+  const name = profile.name ? profile.name.split(' ')[0] : '';
+
+  const morningMsgs = {
+    period: ['Your body is working hard today. Be easy on yourself.','Period day. Rest is productive. Seriously.','Low energy is expected and valid today.'],
+    follicular: ['Energy on the rise today — good morning!','The fog is lifting. Use this.','You might actually want to do things today.'],
+    ovulation: ['Peak day. You have got this.','High energy, clear head. Go for it.','Today is one of your best days in the cycle.'],
+    luteal: ['Things might feel heavier today — that is the phase, not you.','Your feelings are valid, even the big ones.','Luteal phase — extra patience with yourself today.']
+  };
+
+  const msgs = morningMsgs[p];
+  const msg = msgs[TODAY.getDate() % msgs.length];
+  const greeting = name ? 'Morning, ' + name : 'Good morning';
+
+  el.innerHTML = '<div class="morning-card">'
+    + '<div class="morning-tag">☀️ ' + greeting + '</div>'
+    + '<div class="morning-msg">' + msg + ' Day ' + day + ' of your cycle.</div>'
+    + '</div>';
+  el.style.display = 'block';
+}
+
+// ── PLUS GATING ──────────────────────────────────────────────────────────────
+function isPlus() {
+  return localStorage.getItem('ir_plus') === '1';
+}
+
+function showPlusGate(featureName, containerId) {
+  const el = document.getElementById(containerId);
+  if (!el || isPlus()) return;
+  el.innerHTML = '<div class="plus-gate">'
+    + '<div class="plus-gate-icon">⭐</div>'
+    + '<div class="plus-gate-title">Inner Rhythm Plus</div>'
+    + '<div class="plus-gate-sub">' + featureName + ' is a Plus feature. Upgrade to unlock deeper insights, partner sharing and more — free for 60 days.</div>'
+    + '<button class="plus-gate-btn" onclick="nav(\'upgrade\')">Try Plus free for 60 days</button>'
+    + '</div>';
+}
+
+
+// ── CYCLE AUTO-LEARNING ──────────────────────────────────────────────────────
+function learnCycleFromLogs() {
+  const allKeys = Object.keys(logs).sort();
+  if (allKeys.length < 7) return;
+
+  // Find days where flow transitions from 'Not on period' → something (period start)
+  const periodStarts = [];
+  let wasOnPeriod = false;
+
+  allKeys.forEach((k, i) => {
+    const log = logs[k];
+    const onPeriod = log.flow && log.flow !== 'Not on period';
+    if (onPeriod && !wasOnPeriod) {
+      periodStarts.push(new Date(k));
+    }
+    wasOnPeriod = onPeriod;
+  });
+
+  // Need at least 2 period starts to calculate cycle length
+  if (periodStarts.length < 2) return;
+
+  // Calculate average cycle length from detected starts
+  const gaps = [];
+  for (let i = 1; i < periodStarts.length; i++) {
+    const gap = Math.round((periodStarts[i] - periodStarts[i-1]) / 86400000);
+    if (gap >= 20 && gap <= 45) gaps.push(gap); // only reasonable lengths
+  }
+  if (gaps.length === 0) return;
+
+  const avgCycle = Math.round(gaps.reduce((a,b)=>a+b,0) / gaps.length);
+
+  // Calculate average period duration
+  const durations = [];
+  periodStarts.forEach(start => {
+    let len = 0;
+    for (let i = 0; i < 10; i++) {
+      const d = new Date(start);
+      d.setDate(d.getDate() + i);
+      const k = d.toISOString().slice(0,10);
+      if (logs[k] && logs[k].flow && logs[k].flow !== 'Not on period') len++;
+      else if (i > 0) break;
+    }
+    if (len > 0) durations.push(len);
+  });
+  const avgDuration = durations.length ? Math.round(durations.reduce((a,b)=>a+b,0)/durations.length) : null;
+
+  // Check if this is different from what we have
+  const setup = JSON.parse(localStorage.getItem('ir_cycle_setup') || '{}');
+  const oldLen = setup.cycleLen || 28;
+  const changed = Math.abs(avgCycle - oldLen) >= 1;
+
+  if (changed) {
+    setup.cycleLen = avgCycle;
+    setup.learnedAt = new Date().toISOString();
+    setup.detectedStarts = periodStarts.length;
+    if (avgDuration) setup.periodDur = avgDuration;
+    localStorage.setItem('ir_cycle_setup', JSON.stringify(setup));
+    userCycleLen = avgCycle;
+    if (avgDuration) userPeriodDur = avgDuration;
+
+    // Also update last period start if we detected one recently
+    const lastStart = periodStarts[periodStarts.length - 1];
+    if (!setup.start || new Date(setup.start) < lastStart) {
+      setup.start = lastStart.toISOString().slice(0,10);
+      userLP = lastStart;
+      localStorage.setItem('ir_cycle_setup', JSON.stringify(setup));
+    }
+
+    // Update display
+    const clEl = document.getElementById('cycle-len-display');
+    const durEl = document.getElementById('period-dur-display');
+    const lpEl = document.getElementById('lpval');
+    if (clEl) clEl.textContent = avgCycle + ' days';
+    if (durEl && avgDuration) durEl.textContent = avgDuration + ' days';
+    if (lpEl) lpEl.textContent = userLP.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+
+    // Show a subtle notice on patterns screen
+    const learnEl = document.getElementById('cycle-learned-notice');
+    if (learnEl) {
+      learnEl.innerHTML = '<div style="background:var(--sage-soft);border-radius:14px;padding:12px 16px;margin-bottom:14px;border:0.5px solid rgba(74,140,114,.2);font-size:13px;color:var(--sage);font-weight:600">✨ Updated — based on ' + periodStarts.length + ' cycles tracked, your average is now ' + avgCycle + ' days.</div>';
+      learnEl.style.display = 'block';
+    }
+  }
+}
+
+
+// ── TODAY'S LOG SUMMARY ON HOME ──────────────────────────────────────────────
+function updateTodaySummary() {
+  const k = TODAY.toISOString().slice(0,10);
+  const log = logs[k];
+  const totalLogs = Object.keys(logs).length;
+  const banner = document.getElementById('first-checkin-banner');
+  const summary = document.getElementById('today-log-summary');
+  const content = document.getElementById('today-log-content');
+  const ciCard = document.getElementById('ci-card-home');
+  const ciSub = document.getElementById('ci-sub-home');
+
+  if (totalLogs === 0) {
+    // No logs ever — show big banner
+    if (banner) banner.style.display = 'none';
+    if (summary) summary.style.display = 'none';
+    if (ciCard) ciCard.style.display = 'block';
+  } else if (log) {
+    // Logged today — show summary, hide banner and quick checkin
+    if (banner) banner.style.display = 'none';
+    if (summary) summary.style.display = 'block';
+    if (ciCard) ciCard.style.display = 'block';
+
+    // Build summary content
+    const moodEmojis = {Amazing:'🤩',Happy:'😊',Good:'🙂',Meh:'😑',Sensitive:'🥺',
+      Irritated:'😒',Anxious:'😟',Sad:'😞',Angry:'😡',Numb:'😶',Weepy:'😭',Rough:'😩'};
+    const moji = log.mood ? (moodEmojis[log.mood] || '💭') : '💭';
+    const feels = (log.feels||[]).slice(0,3).join(' · ');
+    const notePreview = log.note && log.note.trim()
+      ? '"' + log.note.trim().slice(0,80) + (log.note.trim().length > 80 ? '…' : '') + '"'
+      : '';
+    const flowChip = log.flow && log.flow !== 'Not on period'
+      ? '<span style="background:#FFEBEE;color:#C62828;border-radius:20px;padding:3px 10px;font-size:12px;font-weight:700;margin-right:6px">' + log.flow + ' flow</span>' : '';
+
+    if (content) content.innerHTML =
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">'
+      + '<div style="font-size:28px">' + moji + '</div>'
+      + '<div>'
+      + '<div style="font-size:16px;font-weight:700;color:var(--text)">' + (log.mood || 'Logged') + '</div>'
+      + (feels ? '<div style="font-size:12px;color:var(--text3);margin-top:2px">' + feels + '</div>' : '')
+      + '</div>'
+      + '</div>'
+      + (flowChip ? '<div style="margin-bottom:6px">' + flowChip + '</div>' : '')
+      + (notePreview ? '<div style="font-size:13px;color:var(--text2);font-style:italic;line-height:1.55;border-top:0.5px solid var(--border);padding-top:8px;margin-top:6px">' + notePreview + '</div>' : '');
+  } else {
+    // Has logs before but not today
+    if (banner) banner.style.display = 'none';
+    if (summary) summary.style.display = 'none';
+    if (ciCard) { ciCard.style.display = 'block'; }
+    if (ciSub) ciSub.textContent = 'How are you doing today? Tap to check in.';
+  }
+}
+
+// ── LOG A MISSED DAY — 7 days back ───────────────────────────────────────────
+var checkInDate = null; // null means today
+
+function openDayPicker() {
+  const picker = document.getElementById('day-picker');
+  const opts = document.getElementById('day-picker-options');
+  if (!picker || !opts) return;
+
+  if (picker.style.display !== 'none') {
+    picker.style.display = 'none';
+    return;
+  }
+
+  opts.innerHTML = '';
+  const days = ['Today'];
+  for (let i = 1; i <= 7; i++) {
+    const d = new Date(TODAY);
+    d.setDate(d.getDate() - i);
+    const label = i === 1 ? 'Yesterday' : d.toLocaleDateString('en-US',{weekday:'long', month:'short', day:'numeric'});
+    const k = d.toISOString().slice(0,10);
+    const hasLog = logs[k] ? ' ✓' : '';
+    days.push({label: label + hasLog, date: new Date(d), key: k});
+  }
+
+  // Today option
+  const todayDiv = document.createElement('div');
+  todayDiv.style.cssText = 'padding:10px 12px;border-radius:10px;cursor:pointer;font-size:14px;font-weight:700;color:var(--sky);transition:background .15s';
+  todayDiv.textContent = 'Today';
+  todayDiv.onmouseover = () => todayDiv.style.background = 'var(--sky-soft)';
+  todayDiv.onmouseout = () => todayDiv.style.background = '';
+  todayDiv.onclick = () => {
+    checkInDate = null;
+    picker.style.display = 'none';
+    initCheckin();
+  };
+  opts.appendChild(todayDiv);
+
+  // Past days
+  days.slice(1).forEach(day => {
+    const div = document.createElement('div');
+    div.style.cssText = 'padding:10px 12px;border-radius:10px;cursor:pointer;font-size:14px;font-weight:600;color:var(--text);transition:background .15s;border-top:0.5px solid var(--border)';
+    div.textContent = day.label;
+    div.onmouseover = () => div.style.background = 'var(--bg)';
+    div.onmouseout = () => div.style.background = '';
+    div.onclick = () => {
+      checkInDate = day.date;
+      picker.style.display = 'none';
+      initCheckinForDate(day.date, day.key);
+    };
+    opts.appendChild(div);
+  });
+
+  picker.style.display = 'block';
+}
+
+function initCheckinForDate(date, key) {
+  // Reset all
   mood=''; energies=[]; feels=[]; syms=''; selectedFlow='';
   document.querySelectorAll('.mopt').forEach(e=>e.classList.remove('sel'));
   document.querySelectorAll('.eopt').forEach(e=>e.classList.remove('sel'));
@@ -3841,64 +4836,2448 @@ function initCheckin() {
   document.querySelectorAll('.flow-opt').forEach(e=>e.classList.remove('self'));
   document.getElementById('ci-note').value = '';
 
-  // Show real date in header
+  // Update header
+  const titleEl = document.getElementById('ci-title-label');
   const dateLabel = document.getElementById('ci-date-label');
-  if (dateLabel) {
-    const day = cd(TODAY);
-    const p = ph(day);
-    const phNames = {period:'Menstrual phase',follicular:'Follicular phase',ovulation:'Ovulation phase',luteal:'Luteal phase'};
-    dateLabel.textContent = TODAY.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'}) + ' · ' + phNames[p] + ' · Day ' + day;
-  }
+  const c = cd(date);
+  const p = ph(c);
+  const phNames = {period:'Menstrual phase',follicular:'Follicular phase',ovulation:'Ovulation phase',luteal:'Luteal phase'};
+  if (titleEl) titleEl.textContent = date.toLocaleDateString('en-US',{weekday:'long'}) + "'s check-in";
+  if (dateLabel) dateLabel.textContent = date.toLocaleDateString('en-US',{month:'long',day:'numeric'}) + ' · ' + phNames[p] + ' · Day ' + c;
 
-  // Check if already logged today — pre-fill if so
-  const k = TODAY.toISOString().slice(0,10);
-  const existing = logs[k];
+  // Pre-fill if already logged
+  const existing = logs[key];
   const alreadyEl = document.getElementById('ci-already-logged');
   const saveBtn = document.getElementById('ci-save-btn');
 
   if (existing) {
-    // Show already logged banner
     if (alreadyEl) alreadyEl.style.display = 'block';
     if (saveBtn) saveBtn.textContent = 'Update check-in';
-
-    // Pre-select mood
     if (existing.mood) {
       mood = existing.mood;
       document.querySelectorAll('.mopt').forEach(e => {
-        if (e.querySelector('.mlbl') && e.querySelector('.mlbl').textContent === existing.mood) {
-          e.classList.add('sel');
-        }
+        const lbl = e.querySelector('.mlbl');
+        if (lbl && lbl.textContent === existing.mood) e.classList.add('sel');
       });
     }
-    // Pre-select flow
     if (existing.flow) {
       selectedFlow = existing.flow;
       document.querySelectorAll('.flow-opt').forEach(e => {
-        if (e.querySelector('.flbl') && e.querySelector('.flbl').textContent === existing.flow) {
-          e.classList.add('self');
-        }
+        const flbl = e.querySelector('.flbl');
+        if (flbl && flbl.textContent === existing.flow) e.classList.add('self');
       });
     }
-    // Pre-fill note
     if (existing.note) document.getElementById('ci-note').value = existing.note;
-
   } else {
     if (alreadyEl) alreadyEl.style.display = 'none';
-    if (saveBtn) saveBtn.textContent = "Save today's check-in";
-
-    // Default flow for non-period phase
-    const cp = ph(cd(TODAY));
-    if (cp !== 'period') {
-      const noP = document.querySelector('.flow-opt');
-      if (noP) { noP.classList.add('self'); selectedFlow = 'Not on period'; }
-    }
+    if (saveBtn) saveBtn.textContent = 'Save check-in';
   }
-
   checkFlowSection();
 }
 
+// Update saveCI to use checkInDate
+// ── OFFLINE DETECTION ─────────────────────────────────────────────────────────
+function initOfflineDetection() {
+  const bar = document.getElementById('offline-bar');
+  if (!bar) return;
+  const update = () => {
+    bar.style.display = navigator.onLine ? 'none' : 'block';
+  };
+  update();
+  window.addEventListener('online', update);
+  window.addEventListener('offline', update);
+}
 
-var onbStep = 0;
+
+function toast(m){const t=document.getElementById('toastel');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
+function openM(){
+  const m=document.getElementById('modal');
+  // Pre-fill with saved values
+  const saved=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  if(saved.start) document.getElementById('pdinp').value=saved.start;
+  if(saved.end) document.getElementById('pdend').value=saved.end;
+  if(saved.cycleLen){
+    document.getElementById('cycle-len').value=saved.cycleLen;
+    document.getElementById('cycle-len-val').textContent='('+saved.cycleLen+' days)';
+  }
+  if(saved.periodDur){
+    document.getElementById('period-dur').value=saved.periodDur;
+    document.getElementById('period-dur-val').textContent='('+saved.periodDur+' days)';
+  }
+  m.classList.add('show');
+  m.onclick=e=>{if(e.target===m)m.classList.remove('show')};
+}
+function savePD(){
+  var start=(document.getElementById('pdinp')||{}).value||'';
+  var cycleLen=parseInt((document.getElementById('cycle-len')||{}).value)||28;
+  var periodDur=parseInt((document.getElementById('period-dur')||{}).value)||5;
+  if(!start){toast('Please add your last period date.');return;}
+  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  setup.start=start;setup.cycleLen=cycleLen;setup.periodDur=periodDur;setup._manualDate=true;
+  localStorage.setItem('ir_cycle_setup',JSON.stringify(setup));
+  userLP=new Date(start+'T12:00:00');userCycleLen=cycleLen;userPeriodDur=periodDur;
+  var lpval=document.getElementById('lpval');
+  if(lpval){var d=new Date(start+'T12:00:00');lpval.textContent=d.toLocaleDateString('en-US',{month:'short',day:'numeric'});}
+  localStorage.removeItem('ir_ai_msgs');
+  buildCycleCircle();buildTomorrowCard();
+  toast('Saved \u2713');
+  var modal=document.getElementById('modal');if(modal)modal.classList.remove('show');
+}
+// ── STARTUP ──
+(function() {
+  try{var clk=document.getElementById('clock');if(clk)clk.textContent=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:false});setInterval(function(){var el=document.getElementById('clock');if(el)el.textContent=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:false});},30000);}catch(e){}
+  try{initOfflineDetection();}catch(e){}
+  try{if(checkCompanionMode()){}else if(!checkAutoLogin()){}}catch(e){console.log('startup error',e);}
+})();
+
+
+function doAuth(){
+  var nameEl=document.getElementById('inp-name');
+  var name=nameEl?nameEl.value.trim():'';
+  if(!name){toast('Please enter your name first.');return;}
+  localStorage.setItem('ir_account',JSON.stringify({name:name,createdAt:new Date().toISOString()}));
+  localStorage.setItem('ir_session','1');
+  var prof=JSON.parse(localStorage.getItem('ir_profile')||'{}');
+  prof.name=name;localStorage.setItem('ir_profile',JSON.stringify(prof));
+  var wMsg=document.getElementById('welcome-name-msg');
+  if(wMsg)wMsg.textContent='Nice to meet you, '+name+' ✨';
+  var authEl=document.getElementById('screen-auth');
+  if(authEl){authEl.classList.remove('active');authEl.style.display='none';}
+  var wEl=document.getElementById('screen-welcome');
+  if(wEl){wEl.style.display='flex';wEl.classList.add('active');}
+}
+
+
+function tfi(el,val,type){
+  var cls=type==='p'?'selp':'sels';
+  if(el.classList.contains(cls)){
+    el.classList.remove(cls);
+    if(type==='p')feels=feels.filter(function(x){return x!==val;});
+    else syms=syms.filter(function(x){return x!==val;});
+  }else{
+    el.classList.add(cls);
+    if(type==='p'){if(!feels.includes(val))feels.push(val);}
+    else{if(!syms.includes(val))syms.push(val);}
+  }
+}
+
+function matchEmoji(v){
+  var t=v.toLowerCase();
+  var m=[['overwhelmed','&#127754;'],['anxious','&#128154;'],['irritable','&#9889;'],['sensitive','&#129402;'],
+    ['weepy','&#128149;'],['tired','&#128564;'],['happy','&#128522;'],['sad','&#128546;'],
+    ['calm','&#128524;'],['excited','&#127881;'],['stressed','&#128560;'],['hopeful','&#127807;'],
+    ['foggy','&#127787;'],['creative','&#127912;'],['lonely','&#129708;'],['angry','&#128545;'],
+    ['full energy','&#128170;'],['wired','&#9889;'],['focused','&#127919;'],['grateful','&#128591;']];
+  for(var i=0;i<m.length;i++){if(t.includes(m[i][0]))return m[i][1];}
+  return null;
+}
+
+function makeDelBtn(removeFn){
+  var del=document.createElement('div');
+  del.style.cssText='position:absolute;top:-5px;right:-5px;width:18px;height:18px;background:#FF6B6B;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:white;cursor:pointer;font-weight:800;line-height:1;z-index:10;box-shadow:0 1px 3px rgba(0,0,0,.2)';
+  del.textContent='x';
+  del.onclick=function(e){e.stopPropagation();removeFn();};
+  return del;
+}
+
+function addCustomEnergy(){
+  var inp=document.getElementById('energy-custom');
+  if(!inp)return;var v=inp.value.trim();if(!v)return;
+  var g=document.getElementById('energy-row');if(!g)return;
+  var el=document.createElement('div');el.className='eopt sel';el.style.position='relative';el.style.paddingRight='20px';
+  el.appendChild(document.createTextNode(v));
+  var vCopy=v;
+  el.appendChild(makeDelBtn(function(){el.parentNode&&el.parentNode.removeChild(el);energies=energies.filter(function(x){return x!==vCopy;});}));
+  el.onclick=function(e){if(e.target.textContent!=='x')pe(el,vCopy);};
+  g.appendChild(el);if(!energies.includes(v))energies.push(v);inp.value='';inp.focus();
+}
+
+function addCustomFeel(){
+  var inp=document.getElementById('feel-custom');
+  if(!inp)return;var v=inp.value.trim();if(!v)return;
+  var g=document.getElementById('feel-chips');if(!g)return;
+  var el=document.createElement('div');el.className='icon-tile selp';el.style.position='relative';
+  el.innerHTML='<i class="ph ph-pencil"></i><div class="icon-tile-label">'+v+'</div>';
+  var vCopy=v;
+  el.appendChild(makeDelBtn(function(){el.parentNode&&el.parentNode.removeChild(el);feels=feels.filter(function(x){return x!==vCopy;});}));
+  el.onclick=function(e){if(e.target.textContent!=='x')tfi(el,vCopy,'p');};
+  g.appendChild(el);if(!feels.includes(v))feels.push(v);inp.value='';inp.focus();
+}
+
+function addCustomSym(){
+  var inp=document.getElementById('sym-custom');
+  if(!inp)return;var v=inp.value.trim();if(!v)return;
+  var g=document.getElementById('sym-chips');if(!g)return;
+  var el=document.createElement('div');el.className='icon-tile sels';el.style.position='relative';
+  el.innerHTML='<i class="ph ph-pencil"></i><div class="icon-tile-label">'+v+'</div>';
+  var vCopy=v;
+  el.appendChild(makeDelBtn(function(){el.parentNode&&el.parentNode.removeChild(el);syms=syms.filter(function(x){return x!==vCopy;});}));
+  el.onclick=function(e){if(e.target.textContent!=='x')tfi(el,vCopy,'s');};
+  g.appendChild(el);if(!syms.includes(v))syms.push(v);inp.value='';inp.focus();
+}
+
+function addCustomMood(){
+  var inp=document.getElementById('mood-custom');
+  if(!inp)return;var v=inp.value.trim();if(!v)return;
+  var g=document.getElementById('mood-grid');if(!g)return;
+  document.querySelectorAll('.mopt').forEach(function(e){e.classList.remove('sel');});
+  var el=document.createElement('div');el.className='mopt sel';el.style.position='relative';
+  var lbl=document.createElement('span');lbl.className='mlbl';lbl.textContent=v;el.appendChild(lbl);
+  var vCopy=v;
+  el.appendChild(makeDelBtn(function(){el.parentNode&&el.parentNode.removeChild(el);if(mood===vCopy)mood='';}));
+  el.onclick=function(e){if(e.target.textContent!=='x')pm(el,vCopy);};
+  g.appendChild(el);mood=v;inp.value='';inp.focus();
+}
+
+function buildTomorrowCard(){
+  var el=document.getElementById('tomorrow-card');if(!el)return;
+  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  if(!setup.start){el.style.display='none';return;}
+  var today=cd(TODAY),tDay=today+1>userCycleLen?1:today+1;
+  var tPhase=ph(tDay),daysLeft=userCycleLen-today;
+  var icon='&#127769;',title='',body='',tag='',tagColor='#9B7EC8';
+  if(tPhase!==ph(today)){
+    if(tPhase==='period'){icon='&#128157;';title='Your period is likely starting tomorrow';body='If things feel heavier today, that is probably why. Be soft with yourself.';tag='Phase change';tagColor='#D4709A';}
+    else if(tPhase==='follicular'){icon='&#10024;';title='The heaviest part is almost behind you';body='Tomorrow marks the start of follicular. Energy and clarity return gradually.';tag='Phase change';tagColor='#4A8C72';}
+    else if(tPhase==='ovulation'){icon='&#9728;&#65039;';title='Your peak phase opens tomorrow';body='Ovulation brings your highest energy and confidence.';tag='Phase change';tagColor='#E8A840';}
+    else if(tPhase==='luteal'){icon='&#127810;';title='Your body is shifting gears tomorrow';body='Luteal begins tomorrow. Energy starts to turn inward.';tag='Phase change';tagColor='#7DC8E0';}
+  }else if(daysLeft<=3){icon='&#129704;';title='Period likely in '+daysLeft+' day'+(daysLeft===1?'':'s');body='If things feel harder than usual, that is the cycle. You are not overreacting.';tag='Heads up';tagColor='#D4709A';}
+  else if(tPhase==='ovulation'){icon='&#128161;';title='Tomorrow is one of your strongest days';body='Peak ovulation. Schedule something that matters.';tag='Peak day';tagColor='#E8A840';}
+  else if(tPhase==='luteal'&&today>=22){icon='&#129336;';title='Tomorrow may feel heavier than usual';body='Late luteal is real. Nothing is wrong. Be patient with yourself.';tag='Late luteal';tagColor='#9B7EC8';}
+  else{title='Tomorrow: Day '+tDay+' of your cycle';body='Keep checking in. The more you log, the clearer your patterns.';tag='Day '+tDay;}
+  el.style.display='block';
+  el.innerHTML='<div class="tomorrow-card"><div class="tomorrow-card-eyebrow">Tomorrow &middot; Day '+tDay+'</div>'
+    +'<div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px">'
+    +'<div style="font-size:26px;line-height:1;flex-shrink:0;margin-top:2px">'+icon+'</div>'
+    +'<div><div class="tomorrow-card-title">'+title+'</div><div class="tomorrow-card-body">'+body+'</div></div></div>'
+    +'<div class="tomorrow-card-phase" style="background:'+tagColor+'22;color:'+tagColor+'">'+tag+'</div></div>';
+}
+
+function getWaveY(x){
+  var s=[{x0:0,y0:30,cx:40,cy:12,x1:85,y1:26},{x0:85,y0:26,cx:130,cy:42,x1:175,y1:22},
+    {x0:175,y0:22,cx:220,cy:4,x1:265,y1:18},{x0:265,y0:18,cx:310,cy:34,x1:378,y1:20},
+    {x0:378,y0:20,cx:430,cy:10,x1:500,y1:14}];
+  for(var i=0;i<s.length;i++){var q=s[i];if(x>=q.x0&&x<=q.x1){var t=(x-q.x0)/(q.x1-q.x0);return Math.round(Math.pow(1-t,2)*q.y0+2*(1-t)*t*q.cy+Math.pow(t,2)*q.y1);}}
+  return 20;
+}
+
+function buildCycleWidget(){
+  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  var widget=document.getElementById('cycle-widget');if(!widget)return;
+  if(!setup.start){widget.style.display='none';checkCycleSetupNudge();return;}
+  widget.style.display='block';
+  var day=cd(TODAY),p=ph(day),streak=calcStreak(),daysLeft=userCycleLen-day;
+  ['period','follicular','ovulation','luteal'].forEach(function(pn){
+    var el=document.getElementById('moon-'+pn),lbl=document.getElementById('moon-'+pn+'-lbl');
+    if(el){if(pn===p){el.style.opacity='1';if(lbl){lbl.style.color='#1A7A9A';lbl.style.fontWeight='800';}}
+      else{el.style.opacity='.4';if(lbl){lbl.style.color='#4898BC';lbl.style.fontWeight='600';}}}
+  });
+  var sEl=document.getElementById('wave-streak'),dEl=document.getElementById('wave-day'),tEl=document.getElementById('wave-toperiod');
+  if(sEl)sEl.textContent=streak>0?('x'+streak):'0';if(dEl)dEl.textContent=day;if(tEl)tEl.textContent=daysLeft>0?(daysLeft+'d'):'today';
+  var xPos=Math.round((day/userCycleLen)*500),yPos=getWaveY(xPos);
+  var line=document.getElementById('wave-now-line'),dot=document.getElementById('wave-now-dot'),txt=document.getElementById('wave-now-text'),rect=document.getElementById('wave-past-rect');
+  if(line){line.setAttribute('x1',xPos);line.setAttribute('x2',xPos);}if(dot){dot.setAttribute('cx',xPos);dot.setAttribute('cy',yPos);}
+  if(txt){txt.setAttribute('x',xPos);txt.setAttribute('y',yPos+4);}if(rect)rect.setAttribute('width',xPos);
+}
+
+function checkCycleSetupNudge(){
+  var el=document.getElementById('cycle-setup-nudge');if(!el)return;
+  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  if(!setup.start&&!localStorage.getItem('ir_nudge_dismissed')){
+    el.style.display='block';
+    el.innerHTML='<div onclick="openM()" style="background:linear-gradient(135deg,#FBF8FD,#F0EEF8);border-radius:18px;padding:16px 18px;border:1px solid rgba(180,160,220,.2);cursor:pointer;display:flex;align-items:center;gap:14px;margin-bottom:14px">'
+      +'<div style="font-size:28px;flex-shrink:0">&#127769;</div><div style="flex:1">'
+      +'<div style="font-size:14px;font-weight:700;color:#1A3A45;margin-bottom:3px">Set up your cycle</div>'
+      +'<div style="font-size:12px;color:#6A8A9A;line-height:1.5">Add your last period date to unlock your wave</div></div>'
+      +'<div style="font-size:13px;color:#4AAAC4;font-weight:700">Set up &#8594;</div></div>';
+  }else{el.style.display='none';}
+}
+
+var onbCycleLen=28;
+
+function pickCycleLen(el,len){document.querySelectorAll('.onb-cycle-pill').forEach(function(p){p.classList.remove('picked');});el.classList.add('picked');onbCycleLen=len;}
+
+
+
+
+var _custPrefs=JSON.parse(localStorage.getItem('ir_cust')||'{"wave":true,"tomorrow":true,"message":true,"moodtap":true}');
+function toggleCust(el,key){_custPrefs[key]=!_custPrefs[key];el.classList.toggle('on',_custPrefs[key]);localStorage.setItem('ir_cust',JSON.stringify(_custPrefs));applyCustPrefs();}
+function applyCustPrefs(){
+  var wave=document.getElementById('cycle-widget'),tomorrow=document.getElementById('tomorrow-card');
+  var msg=document.querySelector('.msg-card'),moodtap=document.getElementById('ci-card-home');
+  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  if(wave&&setup.start)wave.style.display=(_custPrefs.wave!==false)?'block':'none';
+  if(tomorrow&&_custPrefs.tomorrow===false)tomorrow.style.display='none';
+  if(msg)msg.style.display=(_custPrefs.message!==false)?'':'none';
+  if(moodtap)moodtap.style.display=(_custPrefs.moodtap!==false)?'block':'none';
+}
+function loadCustToggles(){
+  _custPrefs=JSON.parse(localStorage.getItem('ir_cust')||'{"wave":true,"tomorrow":true,"message":true,"moodtap":true}');
+  ['wave','tomorrow','message','moodtap'].forEach(function(k){var el=document.getElementById('cust-'+k);if(el)el.classList.toggle('on',_custPrefs[k]!==false);});
+}
+function exportData(){
+  var profile=JSON.parse(localStorage.getItem('ir_profile')||'{}'),setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  var lines=['Inner Rhythm Data','================','Name: '+(profile.name||'Unknown'),'Date: '+new Date().toLocaleDateString(),''];
+  if(setup.start)lines.push('Cycle: '+setup.start+', '+(setup.cycleLen||28)+' days');
+  lines.push('');lines.push('Logs:');
+  Object.keys(logs).sort().forEach(function(date){var log=logs[date];lines.push('');lines.push(date);
+    if(log.mood)lines.push('  Mood: '+log.mood);if(log.energies&&log.energies.length)lines.push('  Energy: '+log.energies.join(', '));
+    if(log.feels&&log.feels.length)lines.push('  Feelings: '+log.feels.join(', '));if(log.syms&&log.syms.length)lines.push('  Symptoms: '+log.syms.join(', '));
+    if(log.note)lines.push('  Note: '+log.note);});
+  lines.push('');lines.push('Data lives only on your phone.');
+  var blob=new Blob([lines.join('\n')],{type:'text/plain'}),url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download='inner-rhythm-'+new Date().toISOString().slice(0,10)+'.txt';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);toast('Downloaded');
+}
+
+
+// ── REWARDS SYSTEM ────────────────────────────────────────────────────
+var BADGES={
+  streak7:{id:'streak7',icon:'&#128293;',label:'7 Day Streak',title:'You kept showing up.',msg:'Seven days in a row. Most people quit by day three. I am starting to really see your patterns now. Keep going.',earned:'&#127885; Flame badge earned',btnText:'Keep going →',bg:'linear-gradient(160deg,#B86000,#E8A000)',glow:'rgba(255,160,0,.4)'},
+  streak14:{id:'streak14',icon:'&#128293;',label:'14 Day Streak',title:'Two weeks. That is dedication.',msg:'Fourteen days of showing up for yourself. Your patterns are getting clearer every single day. I see you.',earned:'&#127885; Flame badge earned',btnText:'Keep going →',bg:'linear-gradient(160deg,#B86000,#E8A000)',glow:'rgba(255,160,0,.4)'},
+  streak30:{id:'streak30',icon:'&#127942;',label:'30 Day Streak',title:'A whole month. Remarkable.',msg:'Thirty days straight. I know your patterns better than almost any app has ever known anyone. This is real data about you, not averages.',earned:'&#127941; Gold badge earned',btnText:'See my patterns →',bg:'linear-gradient(160deg,#8A7000,#D4B000)',glow:'rgba(220,180,0,.4)'},
+  cycle1:{id:'cycle1',icon:'&#127744;',label:'First Full Cycle',title:'One full cycle. That took something.',msg:'Period to period, you showed up every day. Your patterns are just starting to take shape. This is where it gets interesting.',earned:'&#127774; Cycle badge earned',btnText:'See my journey →',bg:'linear-gradient(160deg,#2A6A3A,#4A9A6A)',glow:'rgba(74,154,106,.4)'},
+  cycle3:{id:'cycle3',icon:'&#127756;',label:'3 Cycles Complete',title:'Three cycles. I really know you now.',msg:'Three full cycles of data. I can see your patterns repeating, your body doing the same things at the same times. You are starting to understand your own rhythm.',earned:'&#127774; Cycle badge earned',btnText:'See my patterns →',bg:'linear-gradient(160deg,#2A6A3A,#4A9A6A)',glow:'rgba(74,154,106,.4)'},
+  period_known:{id:'period_known',icon:'&#129768;',label:'Period Phase Known',title:'I know your period now.',msg:'Two full period phases logged. I can see how your body responds, what helps, and what to expect. This knowledge is yours.',earned:'&#129352; Phase badge earned',btnText:'See my patterns →',bg:'linear-gradient(160deg,#A02060,#D45080)',glow:'rgba(212,80,128,.4)'},
+  follicular_known:{id:'follicular_known',icon:'&#127807;',label:'Follicular Phase Known',title:'I know your follicular now.',msg:'Two follicular phases logged. I can see clearly when you start to come alive, and what this phase brings you.',earned:'&#129352; Phase badge earned',btnText:'See my patterns →',bg:'linear-gradient(160deg,#2A8AAA,#4AAAC4)',glow:'rgba(74,170,196,.4)'},
+  ovulation_known:{id:'ovulation_known',icon:'&#9728;&#65039;',label:'Ovulation Phase Known',title:'I know your ovulation now.',msg:'Two ovulation windows logged. Brief but powerful, and now I know exactly how yours shows up.',earned:'&#129352; Phase badge earned',btnText:'See my patterns →',bg:'linear-gradient(160deg,#A07000,#D4A000)',glow:'rgba(212,160,0,.4)'},
+  luteal_known:{id:'luteal_known',icon:'&#127769;',label:'Luteal Phase Known',title:'I know your luteal now.',msg:'Two full luteal phases logged. I can see the patterns clearly now, including the harder days. You always come through them.',earned:'&#129352; Phase badge earned',btnText:'See my patterns →',bg:'linear-gradient(160deg,#5A3A90,#9B7EC8)',glow:'rgba(155,126,200,.4)'}
+};
+
+function checkRewards(){
+  var earned=JSON.parse(localStorage.getItem('ir_badges')||'[]');
+  var newBadge=null;
+
+  // Streak check
+  var streak=0;var d=new Date(TODAY);
+  while(true){var k=d.toISOString().slice(0,10);if(!logs[k])break;streak++;d.setDate(d.getDate()-1);}
+  if(streak>=30&&earned.indexOf('streak30')===-1){newBadge='streak30';}
+  else if(streak>=14&&earned.indexOf('streak14')===-1){newBadge='streak14';}
+  else if(streak>=7&&earned.indexOf('streak7')===-1){newBadge='streak7';}
+
+  // Cycle milestones
+  if(!newBadge){
+    var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+    if(setup.start){
+      var cycles=Math.floor((TODAY-new Date(setup.start+'T12:00:00'))/(userCycleLen*86400000));
+      if(cycles>=3&&earned.indexOf('cycle3')===-1){newBadge='cycle3';}
+      else if(cycles>=1&&earned.indexOf('cycle1')===-1){newBadge='cycle1';}
+    }
+  }
+
+  // Phase badges — need 2+ cycles of data per phase
+  if(!newBadge){
+    var allKeys=Object.keys(logs).sort();
+    var phaseDays={period:[],follicular:[],ovulation:[],luteal:[]};
+    allKeys.forEach(function(k){var c=cd(new Date(k));var p=ph(c);phaseDays[p].push(k);});
+    var phBadges={period:'period_known',follicular:'follicular_known',ovulation:'ovulation_known',luteal:'luteal_known'};
+    Object.entries(phBadges).forEach(function(entry){
+      var phase=entry[0],badgeId=entry[1];
+      if(!newBadge&&phaseDays[phase].length>=8&&earned.indexOf(badgeId)===-1){
+        newBadge=badgeId;
+      }
+    });
+  }
+
+  if(newBadge){
+    earned.push(newBadge);
+    localStorage.setItem('ir_badges',JSON.stringify(earned));
+    showReward(newBadge);
+  }
+}
+
+function showReward(badgeId){
+  var b=BADGES[badgeId];if(!b)return;
+  var ov=document.getElementById('reward-overlay');
+  var card=document.getElementById('reward-card');
+  if(!ov||!card)return;
+  document.getElementById('reward-badge-icon').innerHTML=b.icon;
+  document.getElementById('reward-badge-label').textContent=b.label;
+  document.getElementById('reward-title').textContent=b.title;
+  document.getElementById('reward-msg').textContent=b.msg;
+  document.getElementById('reward-badge-earned').innerHTML=b.earned;
+  document.getElementById('reward-badge-earned').style.cssText='border-radius:12px;padding:8px 16px;display:inline-block;margin-bottom:24px;font-size:11px;font-weight:800;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);color:white;';
+  document.getElementById('reward-btn').textContent=b.btnText;
+  document.getElementById('reward-btn').style.background=b.bg;
+  card.style.background=b.bg;
+  card.style.boxShadow='0 0 60px '+b.glow;
+  // Sparkles
+  var sp=document.getElementById('reward-sparkles');
+  sp.innerHTML='';
+  var spArr=['&#10024;','&#11088;','&#10023;','&#127775;','&#10022;'];
+  for(var i=0;i<8;i++){
+    var s=document.createElement('div');
+    s.style.cssText='position:absolute;font-size:'+(12+Math.random()*16)+'px;top:'+(Math.random()*80)+'%;left:'+(Math.random()*90)+'%;opacity:'+(0.3+Math.random()*0.5)+';';
+    s.innerHTML=spArr[Math.floor(Math.random()*spArr.length)];
+    sp.appendChild(s);
+  }
+  ov.style.display='flex';
+}
+
+function closeReward(){
+  var ov=document.getElementById('reward-overlay');
+  if(ov)ov.style.display='none';
+}
+
+// Check rewards after saving
+var _origSaveCI=saveCI;
+saveCI=function(){
+  _origSaveCI();
+  setTimeout(checkRewards,500);
+};
+
+
+// ── TREAT CARDS & STREAK NUDGE ────────────────────────────────────────
+var TREATS = {
+  period_end: {
+    bg: 'linear-gradient(135deg,#D4709A,#C05080)',
+    icon: '\ud83e\ude78',
+    label: 'You made it through',
+    title: 'Your period is over. You deserve something today.',
+    msg: 'Your body just did a lot. That deserves recognition, not just moving on.',
+    chips: ['\ud83d\udec1 Long hot bath', '\ud83c\udf55 Order your favourite food', '\ud83d\udecc Early bedtime tonight', '\ud83d\udd6f\ufe0f Cancel one obligation']
+  },
+  luteal_end: {
+    bg: 'linear-gradient(135deg,#7B5EA8,#9B7EC8)',
+    icon: '\ud83c\udf19',
+    label: 'Hardest phase done',
+    title: 'You got through luteal. Treat yourself today.',
+    msg: 'The fog, the heavy feeling, the harder days \u2014 you showed up through all of it.',
+    chips: ['\u2615 Get your favourite order', '\ud83d\udec1 Take a bath tonight', '\ud83c\udf6b Buy the snack', '\ud83d\udcfa Guilt-free screen time']
+  },
+  streak7: {
+    bg: 'linear-gradient(135deg,#B86000,#E8A000)',
+    icon: '\ud83d\udd25',
+    label: '7 days in a row',
+    title: 'You kept your promise to yourself. Celebrate that.',
+    msg: 'Seven consecutive days of showing up. Treat yourself like someone who follows through.',
+    chips: ['\ud83e\uddc1 Get a little treat', '\ud83d\udc90 Buy yourself flowers', '\u2728 Do something just for you', '\ud83d\udc86 Book a massage']
+  },
+  streak14: {
+    bg: 'linear-gradient(135deg,#B86000,#E8A000)',
+    icon: '\ud83d\udd25',
+    label: '14 days in a row',
+    title: 'Two weeks of showing up. That is real dedication.',
+    msg: 'Fourteen days straight. Your patterns are getting clearer every day. You deserve something good today.',
+    chips: ['\ud83c\udf7d\ufe0f Nice dinner tonight', '\ud83d\udec1 Long bath or shower', '\ud83d\uded2 Buy something small', '\ud83c\udf74 Cook your favourite meal']
+  },
+  cycle1: {
+    bg: 'linear-gradient(135deg,#2A6A3A,#4A9A6A)',
+    icon: '\ud83c\udf00',
+    label: 'First full cycle complete',
+    title: 'One whole cycle. That took real commitment.',
+    msg: 'Period to period, you showed up. Do something today that feels like a proper celebration.',
+    chips: ['\ud83d\uded1 Buy something you want', '\ud83c\udf7d\ufe0f Nice dinner out', '\ud83e\uddd6 Book a facial or massage', '\ud83c\udf89 Tell someone you did this']
+  }
+};
+
+function checkTreatCard() {
+  var shown = JSON.parse(localStorage.getItem('ir_treats_shown') || '[]');
+  var todayKey = TODAY.toISOString().slice(0, 10);
+  var shownToday = localStorage.getItem('ir_treat_today');
+  if (shownToday === todayKey) return; // already showed one today
+
+  var setup = JSON.parse(localStorage.getItem('ir_cycle_setup') || '{}');
+  if (!setup.start) return;
+
+  var day = cd(TODAY);
+  var phase = ph(day);
+  var treatKey = null;
+
+  // End of period (first follicular day)
+  if (phase === 'follicular' && day === Math.round(userPeriodDur) + 1) {
+    if (shown.indexOf('period_end_' + TODAY.getMonth()) === -1) treatKey = 'period_end';
+  }
+  // End of luteal (last day before period) — day 26-28
+  if (phase === 'luteal' && (userCycleLen - day) <= 2) {
+    if (shown.indexOf('luteal_end_' + TODAY.getMonth()) === -1) treatKey = 'luteal_end';
+  }
+  // Streak milestones
+  var streak = 0; var d = new Date(TODAY);
+  while (true) { var k = d.toISOString().slice(0, 10); if (!logs[k]) break; streak++; d.setDate(d.getDate() - 1); }
+  if (streak === 14 && shown.indexOf('streak14') === -1) treatKey = 'streak14';
+  else if (streak === 7 && shown.indexOf('streak7') === -1) treatKey = 'streak7';
+  // First cycle
+  var cycles = Math.floor((TODAY - new Date(setup.start + 'T12:00:00')) / (userCycleLen * 86400000));
+  if (cycles >= 1 && shown.indexOf('cycle1') === -1) treatKey = 'cycle1';
+
+  if (treatKey) {
+    shown.push(treatKey.indexOf('period_end') > -1 ? 'period_end_' + TODAY.getMonth() : treatKey.indexOf('luteal_end') > -1 ? 'luteal_end_' + TODAY.getMonth() : treatKey);
+    localStorage.setItem('ir_treats_shown', JSON.stringify(shown));
+    localStorage.setItem('ir_treat_today', todayKey);
+    showTreatCard(treatKey);
+  }
+}
+
+function showTreatCard(key) {
+  var t = TREATS[key]; if (!t) return;
+  var card = document.getElementById('treat-card');
+  if (!card) return;
+  card.style.background = t.bg;
+  var bgIcon = document.getElementById('treat-bg-icon');
+  if (bgIcon) bgIcon.textContent = t.icon;
+  var lbl = document.getElementById('treat-label');
+  if (lbl) lbl.textContent = t.label;
+  var ttl = document.getElementById('treat-title');
+  if (ttl) ttl.textContent = t.title;
+  var msg = document.getElementById('treat-msg');
+  if (msg) msg.textContent = t.msg;
+  var chips = document.getElementById('treat-chips');
+  if (chips) {
+    chips.innerHTML = '';
+    t.chips.forEach(function(c) {
+      var el = document.createElement('div');
+      el.style.cssText = 'background:rgba(255,255,255,.18);border-radius:10px;padding:7px 12px;font-size:11px;font-weight:700;color:white;margin:3px;display:inline-block;';
+      el.textContent = c;
+      chips.appendChild(el);
+    });
+  }
+  card.style.display = 'block';
+}
+
+function dismissTreat() {
+  var card = document.getElementById('treat-card');
+  if (card) card.style.display = 'none';
+}
+
+function updateStreakNudge() {
+  var nudge = document.getElementById('streak-nudge');
+  var nudgeTxt = document.getElementById('streak-nudge-text');
+  var nudgeBar = document.getElementById('streak-nudge-bar');
+  if (!nudge) return;
+
+  var streak = 0; var d = new Date(TODAY);
+  while (true) { var k = d.toISOString().slice(0, 10); if (!logs[k]) break; streak++; d.setDate(d.getDate() - 1); }
+
+  if (streak >= 3) {
+    nudge.style.display = 'flex';
+    var next = streak < 7 ? 7 : streak < 14 ? 14 : streak < 30 ? 30 : null;
+    if (next) {
+      var pct = Math.round(streak / next * 100);
+      if (nudgeTxt) nudgeTxt.textContent = '\ud83d\udd25 ' + streak + ' day streak \u2014 ' + (next - streak) + ' more to unlock your ' + next + '-day badge';
+      if (nudgeBar) nudgeBar.style.width = pct + '%';
+    } else {
+      if (nudgeTxt) nudgeTxt.textContent = '\ud83d\udd25 ' + streak + ' days in a row \u2014 incredible streak';
+      if (nudgeBar) nudgeBar.style.width = '100%';
+    }
+  } else {
+    nudge.style.display = 'none';
+  }
+}
+
+
+function openBadgeSheet(){
+  var sheet=document.getElementById('badge-sheet');
+  var grid=document.getElementById('sheet-badge-grid');
+  var countEl=document.getElementById('sheet-badge-count');
+  var noteEl=document.getElementById('sheet-ir-note');
+  if(!sheet||!grid)return;
+  var earnedB=JSON.parse(localStorage.getItem('ir_badges')||'[]');
+  var allB=[
+    {id:'streak7',icon:'\ud83d\udd25',lbl:'7 Day Streak',bg:'linear-gradient(135deg,#B86000,#E8A000)',glow:'rgba(255,160,0,.4)'},
+    {id:'streak14',icon:'\ud83d\udd25',lbl:'14 Day',bg:'linear-gradient(135deg,#B86000,#E8A000)',glow:'rgba(255,160,0,.4)'},
+    {id:'streak30',icon:'\ud83c\udfc6',lbl:'30 Day',bg:'linear-gradient(135deg,#8A7000,#D4B000)',glow:'rgba(220,180,0,.4)'},
+    {id:'cycle1',icon:'\ud83c\udf00',lbl:'1st Cycle',bg:'linear-gradient(135deg,#2A6A3A,#4A9A6A)',glow:'rgba(74,154,106,.4)'},
+    {id:'cycle3',icon:'\ud83c\udf3f',lbl:'3 Cycles',bg:'linear-gradient(135deg,#2A6A3A,#4A9A6A)',glow:'rgba(74,154,106,.4)'},
+    {id:'period_known',icon:'\ud83e\ude78',lbl:'Period Known',bg:'linear-gradient(135deg,#A02060,#D45080)',glow:'rgba(212,80,128,.4)'},
+    {id:'follicular_known',icon:'\ud83c\udf31',lbl:'Follicular',bg:'linear-gradient(135deg,#2A8AAA,#4AAAC4)',glow:'rgba(74,170,196,.4)'},
+    {id:'ovulation_known',icon:'\u2600\ufe0f',lbl:'Ovulation',bg:'linear-gradient(135deg,#A07000,#D4A000)',glow:'rgba(212,160,0,.4)'},
+    {id:'luteal_known',icon:'\ud83c\udf19',lbl:'Luteal Known',bg:'linear-gradient(135deg,#5A3A90,#9B7EC8)',glow:'rgba(155,126,200,.4)'}
+  ];
+  grid.innerHTML='';
+  var earnedCount=0;
+  allB.forEach(function(b){
+    var isE=earnedB.indexOf(b.id)!==-1;
+    if(isE)earnedCount++;
+    var el=document.createElement('div');
+    el.style.cssText='text-align:center;flex-shrink:0;';
+    var ring=document.createElement('div');
+    ring.style.cssText='width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 6px;background:'+b.bg+';'+(isE?'box-shadow:0 0 0 3px white,0 0 0 5px '+b.glow+';':'filter:grayscale(1);opacity:.3;');
+    ring.textContent=b.icon;
+    var lbl=document.createElement('div');
+    lbl.style.cssText='font-size:9px;font-weight:800;color:'+(isE?'#1A3A45':'#C0CDD6')+';text-align:center;line-height:1.3;max-width:56px;';
+    lbl.textContent=b.lbl;
+    el.appendChild(ring);el.appendChild(lbl);
+    grid.appendChild(el);
+  });
+  if(countEl)countEl.textContent=earnedCount+' earned \u00b7 '+(allB.length-earnedCount)+' to unlock';
+  if(noteEl){
+    if(earnedCount===0)noteEl.textContent='Start logging to earn your first badge.';
+    else noteEl.textContent=earnedCount+' badge'+(earnedCount>1?'s':'')+' earned. Keep showing up \u2014 more unlock as I learn your patterns.';
+  }
+  sheet.style.display='block';
+}
+
+function closeBadgeSheet(){
+  var sheet=document.getElementById('badge-sheet');
+  if(sheet)sheet.style.display='none';
+}
+
+
+function toggleNotif(id){
+  var track=document.getElementById('track-'+id);
+  var thumb=document.getElementById('thumb-'+id);
+  var inp=document.getElementById('notif-'+id);
+  if(!track)return;
+  var on=track.style.background==='rgb(74, 170, 196)'||track.style.background.indexOf('4AAAC4')>-1||track.style.background==='#4AAAC4';
+  track.style.background=on?'#D0D8E0':'#4AAAC4';
+  if(thumb)thumb.style.left=on?'3px':'23px';
+  if(inp)inp.checked=!on;
+  var prefs=JSON.parse(localStorage.getItem('ir_notif_prefs')||'{}');
+  prefs[id]=!on;
+  localStorage.setItem('ir_notif_prefs',JSON.stringify(prefs));
+}
+
+function saveNotifPref(key,val){
+  var prefs=JSON.parse(localStorage.getItem('ir_notif_prefs')||'{}');
+  prefs[key]=val;
+  localStorage.setItem('ir_notif_prefs',JSON.stringify(prefs));
+}
+
+
+var ciMode='quick';
+var ciDriver='';
+
+function setCiMode(mode){
+  ciMode=mode;
+  var tq=document.getElementById('toggle-quick');
+  var td=document.getElementById('toggle-deep');
+  var title=document.getElementById('ci-title-label');
+
+  if(tq&&td){
+    if(mode==='quick'){
+      tq.style.background='white';
+      tq.querySelector('div').style.color='#9B7EC8';
+      td.style.background='transparent';
+      td.querySelector('div').style.color='rgba(255,255,255,.6)';
+      if(title)title.textContent='Hey. Give me the honest version.';
+    }else{
+      td.style.background='white';
+      td.querySelector('div').style.color='#9B7EC8';
+      tq.style.background='transparent';
+      tq.querySelector('div').style.color='rgba(255,255,255,.6)';
+      if(title)title.textContent='I want to really know how you are.';
+    }
+  }
+
+  // Show/hide sections
+  document.querySelectorAll('.ci-quick-only').forEach(function(el){
+    el.style.display=mode==='quick'?'':'none';
+  });
+  document.querySelectorAll('.ci-deep-only').forEach(function(el){
+    el.style.display=mode==='deep'?'':'none';
+  });
+
+  // Always show flow and body intuition
+  var flow=document.getElementById('ci-flow-block');
+  if(flow)flow.style.display='';
+  var bi=document.getElementById('ci-body-intuition');
+  if(bi)bi.style.display='';
+
+  // Set deep question chips
+  if(mode==='deep'){
+    var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+    if(setup.start){
+      var phase=ph(cd(TODAY));
+      var qs={
+        period:{label:'What does your body need permission for today?',chips:['To do nothing','To feel bad','To cancel plans','To eat what I want','To sleep all day','To cry if needed']},
+        follicular:{label:'What are you most looking forward to this week?',chips:['Something creative','Being social','Getting things done','Trying something new','Feeling like myself','Honestly nothing yet']},
+        ovulation:{label:'What do you feel like doing with all this energy?',chips:['Being around people','Creating something','Taking on a challenge','Saying yes to things','Physical movement','Quiet time actually']},
+        luteal:{label:'What is the loudest feeling you are carrying today?',chips:['Dread about nothing','Tired but wired','Irritated at small things','Sad without reason','Just done','Actually okay']}
+      };
+      var q=qs[phase]||qs.luteal;
+      var ql=document.getElementById('deep-q-label');
+      var qt=document.getElementById('deep-q-text');
+      var qc=document.getElementById('deep-q-chips');
+      if(ql)ql.textContent='Something I always wonder';
+      if(qt)qt.textContent=q.label;
+      if(qc){
+        qc.innerHTML='';
+        q.chips.forEach(function(c){
+          var el=document.createElement('div');
+          el.className='ci-chip';
+          el.textContent=c;
+          el.onclick=function(){
+            qc.querySelectorAll('.ci-chip').forEach(function(x){x.classList.remove('sel');});
+            el.classList.add('sel');
+          };
+          qc.appendChild(el);
+        });
+      }
+    }
+  }
+}
+
+function pickDriver(el,v){
+  document.querySelectorAll('#driver-chips .ci-chip').forEach(function(c){c.classList.remove('sel');});
+  el.classList.add('sel');
+  ciDriver=v;
+  // Save driver to current log data
+  var k=(checkInDate||TODAY).toISOString().slice(0,10);
+  if(logs[k]){logs[k].driver=v;localStorage.setItem('ir4',JSON.stringify(logs));}
+}
+
+</script>
+
+  <!-- REWARD OVERLAY -->
+  <div id="reward-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);align-items:center;justify-content:center;flex-direction:column;padding:32px;">
+    <div id="reward-card" style="width:100%;max-width:320px;text-align:center;padding:40px 28px;border-radius:28px;position:relative;">
+      <div id="reward-sparkles" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;border-radius:28px;"></div>
+      <div id="reward-badge-icon" style="font-size:64px;margin-bottom:16px;position:relative;z-index:1;"></div>
+      <div id="reward-badge-label" style="font-size:11px;font-weight:800;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;"></div>
+      <div id="reward-title" style="font-family:Playfair Display,serif;font-size:24px;color:white;font-weight:700;margin-bottom:14px;line-height:1.3;"></div>
+      <div id="reward-msg" style="font-size:13px;color:rgba(255,255,255,.8);line-height:1.75;margin-bottom:24px;"></div>
+      <div id="reward-badge-earned" style="border-radius:12px;padding:8px 16px;display:inline-block;margin-bottom:24px;font-size:11px;font-weight:800;"></div>
+      <button id="reward-btn" onclick="closeReward()" style="width:100%;border:none;border-radius:14px;padding:15px;font-family:Nunito,sans-serif;font-size:14px;font-weight:800;color:white;cursor:pointer;"></button>
+    </div>
+  </div>
+</body>
+</html>function initCheckin(){
+  ciMode='quick';
+  ciDriver='';
+  mood='';
+  energies=[];
+  feels=[];
+  syms=[];
+  bodyIntuition='';
+  selectedFlow='';
+
+  // Reset selections
+  document.querySelectorAll('.mopt').forEach(function(e){e.classList.remove('sel');});
+  document.querySelectorAll('.eopt').forEach(function(e){e.classList.remove('sel');});
+  document.querySelectorAll('.flow-opt').forEach(function(e){e.classList.remove('self');});
+  document.querySelectorAll('.icon-tile').forEach(function(e){e.classList.remove('selp','sels');});
+  document.querySelectorAll('.bi-chip').forEach(function(e){e.classList.remove('sel');});
+  document.querySelectorAll('.ci-chip').forEach(function(e){e.classList.remove('sel');});
+  var n=document.getElementById('ci-note');if(n)n.value='';
+  var ir=document.getElementById('ci-ir-response');if(ir)ir.style.display='none';
+
+  // Phase-shifting header colour
+  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  var header=document.getElementById('ci-header');
+  var phaseGrads={
+    period:'linear-gradient(160deg,#C05080,#D4709A)',
+    follicular:'linear-gradient(160deg,#4AAAC4,#7DC8E0)',
+    ovulation:'linear-gradient(160deg,#C07820,#E8A840)',
+    luteal:'linear-gradient(160deg,#9B7EC8,#7B5EA8)'
+  };
+  if(setup.start&&header){
+    var phase=ph(cd(TODAY));
+    header.style.background=phaseGrads[phase]||phaseGrads.luteal;
+    // Phase-specific body intuition question
+    var biQ=document.getElementById('body-intuition-q');
+    var biQuestions={
+      period:'What does your body need most right now?',
+      follicular:'What is your body asking for today?',
+      ovulation:'What do you feel like doing with all this energy?',
+      luteal:'What would actually help you get through today?'
+    };
+    if(biQ)biQ.textContent=biQuestions[phase]||biQuestions.follicular;
+  }
+
+  // Set date label
+  var dl=document.getElementById('ci-date-label');
+  if(dl){
+    var isToday=!checkInDate||checkInDate.toDateString()===TODAY.toDateString();
+    if(isToday){
+      checkInDate=null;
+      dl.textContent='Today';
+    }else{
+      dl.textContent=checkInDate.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+    }
+  }
+
+  // Pre-fill existing log
+  var k=(checkInDate||TODAY).toISOString().slice(0,10);
+  var alEl=document.getElementById('ci-already-logged');
+  if(logs[k]&&logs[k].mood){
+    if(alEl)alEl.style.display='block';
+    var l=logs[k];
+    if(l.mood){
+      mood=l.mood;
+      document.querySelectorAll('.mopt').forEach(function(e){
+        var lbl=e.querySelector('span:last-child');
+        if(lbl&&lbl.textContent.trim()===l.mood)e.classList.add('sel');
+      });
+    }
+    if(l.energies)energies=l.energies;
+    if(l.flow)selectedFlow=l.flow;
+    if(l.note){var n=document.getElementById('ci-note');if(n)n.value=l.note;}
+  }else{
+    if(alEl)alEl.style.display='none';
+  }
+
+  // Show period alert if applicable
+  try{
+    if(setup.start){
+      var daysLeft=userCycleLen-cd(TODAY);
+      var alertEl=document.getElementById('period-alert');
+      var alertTitle=document.getElementById('period-alert-title');
+      var alertMsg=document.getElementById('period-alert-msg');
+      if(alertEl&&daysLeft>=1&&daysLeft<=4){
+        alertEl.style.display='block';
+        var msgs={
+          1:{title:'Period likely starting tomorrow',msg:'Your body is almost there. The heaviness right now is real.'},
+          2:{title:'Period in 2 days',msg:'Feeling heavier or more emotional makes complete sense right now.'},
+          3:{title:'Period in 3 days',msg:'That heavy, tired feeling is your hormones shifting — right on schedule.'},
+          4:{title:'Period in about 4 days',msg:'Late luteal. The fog and fatigue creeping in makes sense.'}
+        };
+        var m=msgs[daysLeft]||msgs[3];
+        if(alertTitle)alertTitle.textContent=m.title;
+        if(alertMsg)alertMsg.textContent=m.msg;
+      }else if(alertEl){
+        alertEl.style.display='none';
+      }
+    }
+  }catch(e){}
+
+  // Initialise mode (quick by default)
+  setCiMode('quick');
+}
+
+function getDailyMsg(phase, cycleDay) {
+  const msgs = {
+    // PERIOD — days 1-5, honest + gentle
+    period: [
+      `Day one. Your body just started something significant. You don't have to push through — resting today is not giving up, it's giving your body what it actually needs.`,
+      `Still in it. Your energy is low because your body is working, not because something is wrong with you. Be as gentle with yourself as you would be with someone you love.`,
+      `Day ${cycleDay}. The heaviness is real. So is the fact that this passes. You have been here before and come out the other side. Nothing is broken.`,
+      `Even if you feel steadier today, your body is still in full effort mode. Don't mistake a slightly better day for being back to normal — you're still in it.`,
+      `Almost through the hardest physical part. Your body has been working non-stop. Whatever you managed today counts — even if it was just getting through it.`
+    ],
+    // FOLLICULAR — days 6-13, rising energy, early vs mid
+    follicular: [
+      `The fog is lifting. You might not feel it yet but something is starting to shift. Give it a day or two and notice how differently the world looks.`,
+      `Energy coming back online. It happens quietly — you just notice at some point that things feel less heavy. That's your follicular phase doing its thing.`,
+      `You might actually want to do things today. Plans sound possible again. People sound interesting again. That's not random — that's your hormones shifting in your favour.`,
+      `This is your window for the hard stuff. The emails you've been avoiding, the conversation you've been putting off, the goal you keep starting but not finishing. Now is genuinely a good time.`,
+      `Day ${cycleDay}. Estrogen is still climbing and so is your confidence. This is real. You're not just in a good mood — your brain is literally sharper right now.`,
+      `Creative, clear, social. You might feel like a different person to the one who was struggling a week ago. You're not. Same person, different phase. Both are you.`,
+      `End of your follicular phase soon. Make the most of this energy window — ovulation is next and it builds on everything you've set in motion.`,
+      `Your best thinking window. The work you do now, the connections you make, the decisions you commit to — they tend to stick. Use this.`
+    ],
+    // OVULATION — days 14-16, peak
+    ovulation: [
+      `Peak day. You're as switched on as you get in your cycle. Confidence up, communication sharp, energy high. Whatever felt hard last week — go at it now.`,
+      `You might feel magnetic today. More at ease in conversations, more yourself in a room. That's ovulation — lean into it rather than second-guessing it.`,
+      `This is your window. It's short — three, maybe four days. If there's something you've been waiting to feel ready for, this is the closest you'll get. Go.`
+    ],
+    // LUTEAL EARLY — days 17-21, settling in, honest
+    luteal_early: [
+      `You've crossed into your luteal phase. You probably won't notice much yet, but things will gradually feel a little heavier from here. Not bad — just different.`,
+      `Day ${cycleDay}. Progesterone is rising. Your body is in a different gear now — slower, more inward. That's not a flaw, it's biology. Work with it instead of against it.`,
+      `You might want less stimulation than usual — quieter evenings, fewer people, simpler plans. That's a signal worth listening to, not pushing through.`,
+      `Energy is starting its gradual shift. Some days in early luteal still feel good — enjoy those. When the dip comes, you'll be prepared for it.`,
+      `This is a good phase for finishing things, not starting them. Wrap up, close loops, rest into completion rather than chasing new energy.`
+    ],
+    // LUTEAL LATE — days 22-end, honest but kind
+    luteal_late: [
+      `The hard stretch. Everything feels bigger — frustration lands harder, small things feel huge, your fuse is shorter than usual. That's real, and it's hormones. You are not too much.`,
+      `Day ${cycleDay}. If you woke up feeling heavy or off before you'd even done anything — that's late luteal. Your body is preparing. You're not failing at being a person.`,
+      `The things you're worried about right now are probably real. But your brain is also amplifying them. Both things can be true. Before acting on something, sleep on it if you can.`,
+      `If people are getting on your nerves more than usual — or you need reassurance more than usual — that's not weakness and it's not drama. Your nervous system is running hot right now. Be kind to yourself about it.`,
+      `Almost there. The hardest emotional part of your cycle is usually the week before your period. If that's where you are — you're nearly through it. Hang on.`
+    ]
+  };
+
+  // Pick the right sub-array
+  let arr;
+  if (phase === 'period') arr = msgs.period;
+  else if (phase === 'follicular') arr = msgs.follicular;
+  else if (phase === 'ovulation') arr = msgs.ovulation;
+  else if (phase === 'luteal') {
+    // Split luteal into early (days 17-21) and late (22+)
+    arr = cycleDay <= 21 ? msgs.luteal_early : msgs.luteal_late;
+  } else arr = msgs.period;
+
+  return arr[cycleDay % arr.length];
+}
+
+function getDailyEmo(phase, cycleDay) {
+  const msgs = {
+    period: [
+      `Progesterone drops sharply at the start of your period and takes your mood stability with it. Feeling fragile, tearful or raw right now is a direct hormonal response — not a personality flaw.`,
+      `Your pain tolerance is also lower during your period. Physical discomfort plus low progesterone plus disrupted sleep is a lot. If everything feels harder, that's because it genuinely is.`,
+      `If your emotions feel close to the surface today — quick to cry, quick to get frustrated — that's completely normal for where you are. Let it move through you rather than trying to hold it together.`,
+      `Your body is doing significant physical work. That takes energy that would otherwise go to emotional regulation. You have less in reserve right now, and that's okay.`,
+      `Towards the end of your period, you might notice a very gradual lift. Estrogen starts rising and the heaviness begins to clear. It's subtle but it's real.`
+    ],
+    follicular: [
+      `After your period, estrogen starts climbing and it genuinely lifts mood, focus and motivation. The shift feels almost magical but it's just your hormones working in your favour.`,
+      `Your confidence in your own thoughts and feelings is higher right now. This is a good time to trust your gut — you're seeing clearly.`,
+      `Emotionally you're in a stable, open window. New ideas feel exciting rather than overwhelming. Other people feel interesting rather than draining.`,
+      `You might feel more resilient than usual — like things are bouncing off you a bit easier. That's real. Your emotional threshold is higher in the follicular phase.`,
+      `This is a good time for difficult conversations — not because the problems are smaller, but because you have more emotional bandwidth to handle them thoughtfully.`,
+      `Your brain is literally working differently right now. Memory, verbal fluency and emotional processing are all sharper. Use this phase for things that matter.`,
+      `If you feel optimistic, open and energetic — don't dismiss it as a fluke. This is how you feel when your hormones are working with you, not against you.`,
+      `End of your follicular phase. Your emotional window is about to shift — enjoy the clarity while you have it.`
+    ],
+    ovulation: [
+      `Emotionally you're at your most open, magnetic and socially confident. You might feel more capable of love, connection and bravery today than at almost any other point in your cycle.`,
+      `Your emotional intelligence is particularly high right now. You'll likely read situations accurately and respond well. Trust yourself in conversations today.`,
+      `If you feel a pull toward connection — toward the people who matter, toward intimacy, toward being seen — that's not neediness. That's ovulation. It's a window, not a weakness.`
+    ],
+    luteal_early: [
+      `Progesterone is rising and your emotional processing is starting to shift. Things might feel a touch more serious, a little more internal. That's the beginning of the luteal turn.`,
+      `You might start feeling more sensitive to stress. What felt manageable last week might feel slightly heavier now. Not dramatically — just noticeably.`,
+      `Your inner critic tends to get louder in the luteal phase. The thoughts that say you're falling behind, doing it wrong, not enough — those often spike with progesterone. Notice them without believing everything they say.`,
+      `Emotionally you might want more time alone or more reassurance — sometimes both at once. That's not contradictory. It's just where you are right now.`,
+      `If you feel more emotional sensitivity creeping in — that's information, not weakness. Your body is changing gears and your feelings are doing the same.`
+    ],
+    luteal_late: [
+      `In your late luteal phase, your brain processes emotional information more intensely than at any other point in your cycle. A text that feels off, a tone that seems wrong — you might be right. You're also more sensitive. Both are true.`,
+      `The things that feel unbearable right now are real feelings. But they're being amplified. Before making any big decisions or sending anything in anger — give it 24 hours.`,
+      `Your emotional responses are bigger than they will be in a week. That's not drama — that's late luteal. The people in your life who understand this will show up differently. The ones who don't yet, might need the context.`,
+      `Feeling overwhelmed, irritable, or like everything is too much — you're not losing your mind. You're in the hardest emotional stretch of your cycle. It ends. It always ends.`,
+      `If you're struggling to feel okay right now — that's valid. Late luteal can feel genuinely dark for some people. If it feels like more than hormones, that's worth talking to someone about. And either way, you're not alone in this.`
+    ]
+  };
+
+  let arr;
+  if (phase === 'period') arr = msgs.period;
+  else if (phase === 'follicular') arr = msgs.follicular;
+  else if (phase === 'ovulation') arr = msgs.ovulation;
+  else if (phase === 'luteal') arr = cycleDay <= 21 ? msgs.luteal_early : msgs.luteal_late;
+  else arr = msgs.period;
+  return arr[cycleDay % arr.length];
+}
+
+function getDailySoc(phase, cycleDay) {
+  const msgs = {
+    period: [
+      `If you've gone quiet or cancelled on people this week — that's okay. You don't owe anyone your energy right now. The people who matter will still be there.`,
+      `You might need more from people right now and also feel less able to ask for it. If someone reaches out — let them in. You're allowed to receive.`,
+      `Small gestures mean more during your period. Someone checking in, making food, sitting with you quietly. You don't need to explain your body to accept kindness.`,
+      `If you've been short with someone this week — it's worth a gentle "I'm not feeling great, sorry if I was off." One sentence. It keeps things from building.`,
+      `You might feel distant from people even when you want connection. That's the period paradox — needing warmth while feeling untouchable. It passes.`
+    ],
+    follicular: [
+      `Your communication energy is genuinely higher this phase. Conversations come easier, you're more articulate, and you have more patience for other people. Use it.`,
+      `Good time to reconnect with people you've been meaning to reach out to. The energy is there and you'll enjoy it more than you expect.`,
+      `If there's a relationship you've been neglecting or a conversation you've been avoiding — this phase gives you the bandwidth to handle it with grace.`,
+      `You might notice you're funnier, more present, more interesting in conversation right now. That's not your imagination. People tend to feel drawn to you in your follicular phase.`,
+      `Plans that felt overwhelming a week ago might sound genuinely appealing now. Say yes to a few things. You have the energy for it.`,
+      `Your ability to really listen — to be present with someone — is higher now. If someone in your life needs that, this week is a good time to offer it.`,
+      `You're easier to be around right now — lighter, more open, less guarded. The people in your life might not know why, but they'll feel the difference.`,
+      `If you've been wanting to have an important conversation — about something in a relationship, something at work, something that matters — do it while you have this clarity.`
+    ],
+    ovulation: [
+      `You're at your most magnetic and socially open right now. If you've been wanting to meet new people, reconnect with old ones, or strengthen existing bonds — this is your window.`,
+      `Important conversations land better this week. You're more articulate and more empathetic than usual. The things you say now tend to be heard the way you mean them.`,
+      `If there's someone you've been thinking about reaching out to — do it today. You'll be more yourself than you've been in weeks.`
+    ],
+    luteal_early: [
+      `You might start wanting less social contact without quite knowing why. That's a normal luteal shift — more inward, more selective. It's not antisocial, it's self-aware.`,
+      `Quality over quantity with people right now. A few real conversations matter more than lots of shallow ones. Edit your social calendar to match your energy.`,
+      `If you find yourself more easily irritated by people — that's the luteal phase. Notice it before you act on it. Give people a little more benefit of the doubt than feels natural right now.`,
+      `You might need more reassurance from the people close to you. That's okay — asking for what you need is always better than stewing in silence.`,
+      `Your patience for small talk and surface-level interaction is lower right now. That's fine. Depth over breadth this week.`
+    ],
+    luteal_late: [
+      `If people have been getting on your nerves — or you've been more easily hurt than usual — check where you are in your cycle before deciding it's a problem. It might be luteal, not a relationship issue.`,
+      `You might need reassurance and space at the same time. That's not contradictory — it's just hard to communicate. Try: "I'm in a rough patch hormonally — I might need extra check-ins but also more quiet time."`,
+      `If you've been isolating or pulling away from people — try to stay just a little connected. Even a short message to someone who gets you can help more than full withdrawal.`,
+      `The things that feel like relationship problems right now might not look the same after your period arrives. Hold off on big decisions or confrontations until you're through this stretch if you can.`,
+      `If someone in your life has been patient with you this week — tell them. It matters. And you'll mean it more than they know.`
+    ]
+  };
+
+  let arr;
+  if (phase === 'period') arr = msgs.period;
+  else if (phase === 'follicular') arr = msgs.follicular;
+  else if (phase === 'ovulation') arr = msgs.ovulation;
+  else if (phase === 'luteal') arr = cycleDay <= 21 ? msgs.luteal_early : msgs.luteal_late;
+  else arr = msgs.period;
+  return arr[cycleDay % arr.length];
+}
+
+// Keep MSGS/EMO/SOC as fallbacks for the AI message system
+const MSGS={
+  period:`Hey. Your period is here — you don't have to be okay right now. Rest if you can, cancel if you need to. Your body is genuinely going through something real. Be soft with yourself this week.`,
+  follicular:`Something is shifting — can you feel it? That fog is lifting. Energy is coming back, ideas are flowing, and you might actually want to be around people again. That is your follicular phase doing its thing. Ride it.`,
+  ovulation:`You are probably feeling more like yourself — maybe even more than yourself. Confident, switched on, social. This is your ovulation phase and it is your peak energy window. If there is something big you have been putting off, this is the week.`,
+  luteal:`Heads up — you are in your luteal phase now. Things might feel heavier over the next couple weeks. Emotions might hit harder, small stuff might feel bigger, and you might need more from people without knowing how to ask. That is not you being difficult. That is your hormones. I have got you.`
+};
+const EMO={
+  period:`If you are feeling unusually fragile right now, that is not weakness. Progesterone drops sharply before and during your period and it directly affects your mood, patience, and resilience. Your body is doing something significant.`,
+  follicular:`Notice how things feel a little lighter lately? After your period, estrogen starts climbing and it genuinely lifts mood and sharpens focus. If you have been avoiding something tough, this is actually your sweet spot for it.`,
+  ovulation:`You are wired for connection right now — more magnetic, more at ease, more confident. That is not a coincidence. Lean into the things and people that matter this week.`,
+  luteal:`In your luteal phase, your brain processes emotional information more intensely than usual. So if a text felt off, or something someone said landed really hard — you might not be overreacting. You are just feeling it more. That is information, not drama.`
+};
+const SOC={
+  period:`If you have gone quiet or cancelled on people this week, that is okay. You do not owe anyone your energy right now. The people who matter will still be there when you come back.`,
+  follicular:`You might find yourself wanting to reconnect and actually enjoy being around people. Go for it. Your communication energy is genuinely higher this phase — good time for conversations that matter.`,
+  ovulation:`If there is a conversation you have been putting off, this is actually a good week for it. You tend to be clearer, more articulate, and easier to connect with during ovulation.`,
+  luteal:`If people have been getting on your nerves, or you have needed more reassurance than usual — before you spiral — check where you are in your cycle. You often need more connection AND more space at the same time right now. Both are valid.`
+};
+const UPC={
+  period:`Next up: follicular phase, where you will start feeling more yourself. Hang in there.`,
+  follicular:`You have got about a week before ovulation — your most energetic phase. Make the most of how you are feeling now.`,
+  ovulation:`Luteal phase is coming in about 3 days. I will check in when it arrives so you are not caught off guard.`,
+  luteal:`Your period is expected in about 9 days. I will be sending check-ins along the way so you can start connecting the dots before it arrives.`
+};
+const NOTIFS=[
+  {when:'14 days before period',icon:'🌙',bg:'var(--sky-soft)',txt:`Hey — you're entering your luteal phase. The next couple weeks might feel emotionally heavier than usual. Nothing's wrong with you. Your hormones are shifting. I'll be checking in.`,unread:true},
+  {when:'11 days before period',icon:'💬',bg:'var(--sky-soft)',txt:`If conversations felt harder today, or something someone said hit differently — that's your luteal phase talking. You're not overreacting. You're just feeling things more intensely right now.`,unread:true},
+  {when:'8 days before period',icon:'🔗',bg:'var(--sky-soft)',txt:`Quick heads up: you've logged craving more reassurance around this time in past cycles. If you're wanting more from people but not saying it — you're allowed to ask.`,unread:false},
+  {when:'5 days before period',icon:'⚡',bg:'var(--amber-soft)',txt:`Energy dipping? That's real, not laziness. Your body is doing a lot behind the scenes. Lighter days, more rest, no guilt.`,unread:false},
+  {when:'2 days before period',icon:'🗓',bg:'var(--sky-soft)',txt:`Your period is probably arriving soon. Pack supplies if you haven't. Be gentle with yourself — you've almost made it through the hardest emotional stretch of your cycle.`,unread:false},
+];
+
+/* AUTH */
+
+function switchTab(t) {
+  authTab = t;
+  document.getElementById('tab-up').className = 'tab' + (t==='up' ? ' active' : '');
+  document.getElementById('tab-in').className = 'tab' + (t==='in' ? ' active' : '');
+  const pwWrap = document.getElementById('field-pw');
+  const remRow = document.getElementById('remember-row');
+  const nameWrap = document.getElementById('field-name');
+  if (t === 'up') {
+    if(nameWrap) nameWrap.style.display = 'block';
+    // Create account — show password field
+    pwWrap.style.display = 'block';
+    remRow.style.display = 'flex';
+    document.getElementById('pw-label').textContent = 'Create a password';
+    document.getElementById('inp-pw').placeholder = 'Choose something memorable';
+    document.getElementById('inp-pw').autocomplete = 'new-password';
+    document.getElementById('cta-label').textContent = 'Create my account';
+    document.getElementById('contact-label').textContent = 'Email or phone number';
+  } else {
+    // Sign in — show password only if they had one
+    const saved = JSON.parse(localStorage.getItem('ir_account') || '{}');
+    if (saved.hasPassword) {
+      pwWrap.style.display = 'block';
+      remRow.style.display = 'flex';
+      document.getElementById('pw-label').textContent = 'Password';
+      document.getElementById('inp-pw').placeholder = 'Your password';
+      document.getElementById('inp-pw').autocomplete = 'current-password';
+    } else {
+      pwWrap.style.display = 'none';
+      remRow.style.display = 'none';
+    }
+    if(nameWrap) nameWrap.style.display = 'none';
+    document.getElementById('cta-label').textContent = 'Sign in';
+    document.getElementById('contact-label').textContent = 'Email or phone number';
+    // Pre-fill if remembered
+    const contact = localStorage.getItem('ir_contact') || '';
+    if (contact) document.getElementById('inp-contact').value = contact;
+  }
+}
+
+function detectContactType(val) {
+  const hint = document.getElementById('contact-hint');
+  if (!hint) return;
+  if (val.includes('@')) hint.textContent = 'Looks like an email ✓';
+  else if (/[0-9]{6,}/.test(val.replace(/[\s\-\(\)\+]/g,''))) hint.textContent = 'Looks like a phone number ✓';
+  else hint.textContent = 'You can use either — whichever you prefer';
+}
+
+function togglePwVisible() {
+  pwVisible = !pwVisible;
+  const inp = document.getElementById('inp-pw');
+  const eye = document.getElementById('pw-eye');
+  inp.type = pwVisible ? 'text' : 'password';
+  eye.textContent = pwVisible ? '🙈' : '👁';
+}
+
+function toggleRemember() {
+  rememberMe = !rememberMe;
+  const box = document.getElementById('remember-box');
+  box.style.background = rememberMe ? 'var(--sky)' : '';
+  box.style.borderColor = rememberMe ? 'var(--sky)' : '';
+  box.innerHTML = rememberMe ? '<span style="color:white;font-size:12px;font-weight:800">✓</span>' : '';
+}
+
+
+
+function checkAutoLogin() {
+  // If remembered session exists, skip auth
+  if (localStorage.getItem('ir_session') === '1') {
+    const account = JSON.parse(localStorage.getItem('ir_account') || '{}');
+    if (account.name || account.contact) {
+      enterApp();
+      return true;
+    }
+  }
+  return false;
+}
+
+
+function enterApp(){
+  try{
+    var authEl=document.getElementById('screen-auth');
+    if(authEl){authEl.classList.remove('active');authEl.style.display='none';}
+    var wEl=document.getElementById('screen-welcome');
+    if(wEl){wEl.classList.remove('active');wEl.style.display='none';}
+    goHome();
+  }catch(e){console.log('enterApp error',e);goHome();}
+}
+
+function nav(sc){
+  document.querySelectorAll('.mover').forEach(function(m){m.classList.remove('show');});
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');s.style.display='none';});
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  const target=document.getElementById('screen-'+sc);
+  if(target){target.classList.add('active');target.style.display='flex';}
+  const nb=document.getElementById('nav-'+sc);if(nb)nb.classList.add('active');
+  if(sc==='home'){try{initHome();buildCycleCircle();buildTomorrowCard();}catch(e){}}
+  if(sc==='home'){try{initHome();buildCycleCircle();buildTomorrowCard();}catch(e){}}
+  if(sc==='settings'){try{loadProfile();}catch(e){}}
+  if(sc==='patterns'){learnCycleFromLogs();buildPatterns();}
+  if(sc==='calendar')renderCal();
+  if(sc==='settings')loadNotifSettings();
+  if(sc==='patterns'){learnCycleFromLogs();buildPatterns();applyPlusGating();}
+  if(sc==='sharing'){updatePartnerPreview();const lnkEl=document.getElementById('companion-link-display');if(lnkEl){const pr=JSON.parse(localStorage.getItem('ir_profile')||'{}');lnkEl.textContent=pr.name?'innerrhythm.app/companion/'+pr.name.toLowerCase().replace(/\s+/g,'-'):'Set your name in Profile first';}}
+  if(sc==='ttc')updateTTCScreen();
+  if(sc==='checkin'){checkInDate=null;initCheckin();}
+}
+
+
+var welcomeCycleLen=28;
+
+function pickWelcomeCycle(el,len){
+  document.querySelectorAll('#welcome-cycle-pills .auth-cpill').forEach(function(p){p.classList.remove('picked');});
+  el.classList.add('picked');welcomeCycleLen=len;
+}
+
+function goHome(){
+  document.querySelectorAll('.mover').forEach(function(m){m.classList.remove('show');});
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');s.style.display='none';});
+  var navEl=document.getElementById('main-nav');if(navEl)navEl.style.display='flex';
+  var homeEl=document.getElementById('screen-home');
+  if(homeEl){homeEl.style.display='flex';homeEl.classList.add('active');}
+  document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('active');});
+  var nb=document.getElementById('nav-home');if(nb)nb.classList.add('active');
+  try{initHome();}catch(e){console.log('initHome error',e);}
+  setTimeout(function(){try{buildCycleCircle();buildTomorrowCard();}catch(e){}},100);
+}
+
+function finishWelcome(){
+  try{
+    var periodEl=document.getElementById('welcome-period');
+    var dateStr=periodEl?periodEl.value:'';
+    if(dateStr){
+      var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+      setup.start=dateStr;setup.cycleLen=welcomeCycleLen||28;setup.periodDur=5;setup._manualDate=true;
+      localStorage.setItem('ir_cycle_setup',JSON.stringify(setup));
+      userLP=new Date(dateStr+'T12:00:00');userCycleLen=welcomeCycleLen||28;userPeriodDur=5;
+    }else{
+      var s2=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+      s2.cycleLen=welcomeCycleLen||28;
+      localStorage.setItem('ir_cycle_setup',JSON.stringify(s2));
+      userCycleLen=welcomeCycleLen||28;
+    }
+    localStorage.setItem('ir_onboarded','1');
+    localStorage.setItem('ir_onboarded_at',Date.now().toString());
+    goHome();
+  }catch(e){console.log('finishWelcome error',e);goHome();}
+}
+
+function resetCI(){
+  mood='';energies=[];feels=[];syms=[];
+  var n=document.getElementById('ci-note');if(n)n.value='';
+  document.querySelectorAll('.mopt').forEach(function(e){e.classList.remove('sel');});
+  document.querySelectorAll('.eopt').forEach(function(e){e.classList.remove('sel');});
+  document.querySelectorAll('.flow-opt').forEach(function(e){e.classList.remove('self');});
+  document.querySelectorAll('.icon-tile').forEach(function(e){e.classList.remove('selp','sels');});
+}
+
+function saveCycleData(startStr,endStr,cycleLen,periodDur){
+  if(!startStr)return;
+  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  setup.start=startStr;setup._manualDate=true;
+  if(endStr)setup.end=endStr;
+  if(cycleLen)setup.cycleLen=cycleLen;
+  if(periodDur)setup.periodDur=periodDur;
+  localStorage.setItem('ir_cycle_setup',JSON.stringify(setup));
+  userLP=new Date(startStr+'T12:00:00');
+  userCycleLen=cycleLen||setup.cycleLen||28;
+  userPeriodDur=periodDur||setup.periodDur||5;
+  var homeEl=document.getElementById('screen-home');
+  if(homeEl&&homeEl.classList.contains('active')){buildCycleCircle();buildTomorrowCard();}
+}
+
+function buildCycleCircle(){
+  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  var dayEl=document.getElementById('circle-day');
+  var phaseEl=document.getElementById('circle-phase');
+  var nextEl=document.getElementById('circle-next');
+  var circleEl=document.getElementById('cycle-circle');
+  if(!dayEl)return;
+  if(!setup.start){if(dayEl)dayEl.textContent='--';if(phaseEl)phaseEl.textContent='Set up';if(nextEl)nextEl.textContent='Tap to set up your cycle';return;}
+  var day=cd(TODAY),phase=ph(day),daysLeft=userCycleLen-day;
+  var names={period:'Period',follicular:'Follicular',ovulation:'Ovulation',luteal:'Luteal'};
+  var colors={period:'linear-gradient(135deg,#E8A0C8,#D4709A)',follicular:'linear-gradient(135deg,#A8D8E8,#4AAAC4)',ovulation:'linear-gradient(135deg,#FFD080,#E8A840)',luteal:'linear-gradient(135deg,#C8B8E8,#9B7EC8)'};
+  if(dayEl)dayEl.textContent=day;
+  if(phaseEl)phaseEl.textContent=names[phase]||phase;
+  if(circleEl)circleEl.style.background=colors[phase]||'linear-gradient(135deg,#7DC8E0,#4AAAC4)';
+  if(nextEl){
+    var np=new Date(TODAY);np.setDate(np.getDate()+daysLeft);
+    var ms=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    if(daysLeft<=0)nextEl.textContent='Period starting today';
+    else if(daysLeft===1)nextEl.textContent='Period likely tomorrow';
+    else nextEl.textContent='Next period '+ms[np.getMonth()]+' '+np.getDate()+' - '+daysLeft+' days';
+  }
+}
+
+function buildTomorrowCard(){
+  var el=document.getElementById('tomorrow-card');if(!el)return;
+  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  if(!setup.start){el.style.display='none';return;}
+  var today=cd(TODAY),tDay=today+1>userCycleLen?1:today+1;
+  var tPhase=ph(tDay),todayPhase=ph(today),daysLeft=userCycleLen-today;
+  var pc={period:'#D4709A',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#9B7EC8'};
+  var pe={period:'&#128157;',follicular:'&#10024;',ovulation:'&#9728;&#65039;',luteal:'&#127769;'};
+  var pn={period:'Menstrual',follicular:'Follicular',ovulation:'Ovulation',luteal:'Luteal'};
+  var pd={period:'Rest where you can. Your body is doing real work.',follicular:'Energy starts returning. Good day for gentle momentum.',ovulation:'Peak clarity and confidence. Make the most of it.',luteal:'Energy turns inward. Better for finishing than starting.'};
+  var np=new Date(TODAY);np.setDate(np.getDate()+daysLeft);
+  var ms=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var c2=tPhase!==todayPhase
+    ?'<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><div style="width:36px;height:36px;border-radius:50%;background:'+pc[tPhase]+'22;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">'+pe[tPhase]+'</div><div><div style="font-size:13px;font-weight:800;color:#1A3A45">'+pn[tPhase]+' phase begins tomorrow</div><div style="font-size:12px;color:#6A8A9A;line-height:1.5;margin-top:2px">'+pd[tPhase]+'</div></div></div>'
+    :'<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><div style="width:36px;height:36px;border-radius:50%;background:'+pc[tPhase]+'22;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">'+pe[tPhase]+'</div><div><div style="font-size:13px;font-weight:800;color:#1A3A45">Tomorrow: Day '+tDay+'</div><div style="font-size:12px;color:#6A8A9A;line-height:1.5;margin-top:2px">'+pd[tPhase]+'</div></div></div>';
+  if(daysLeft===1)c2+='<div style="background:#FFF0F6;border-radius:10px;padding:8px 12px;font-size:12px;color:#C05080;font-weight:600">&#128157; Period likely starting tomorrow</div>';
+  else if(daysLeft>=2&&daysLeft<=4)c2+='<div style="background:#FFF0F6;border-radius:10px;padding:8px 12px;font-size:12px;color:#C05080;font-weight:600">&#128157; Period in '+daysLeft+' days - '+ms[np.getMonth()]+' '+np.getDate()+'</div>';
+  el.style.display='block';
+  el.innerHTML='<div class="tomorrow-card"><div class="tomorrow-card-eyebrow">Tomorrow - Day '+tDay+'</div>'+c2+'</div>';
+}
+
+
+var welcomeCycleLen=28;
+var bodyIntuition='';
+
+function pickWelcomeCycle(el,len){
+  document.querySelectorAll('#welcome-cycle-pills .auth-cpill').forEach(function(p){p.classList.remove('picked');});
+  el.classList.add('picked');welcomeCycleLen=len;
+}
+
+function goHome(){
+  document.querySelectorAll('.mover').forEach(function(m){m.classList.remove('show');});
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');s.style.display='none';});
+  var navEl=document.getElementById('main-nav');if(navEl)navEl.style.display='flex';
+  var homeEl=document.getElementById('screen-home');
+  if(homeEl){homeEl.style.display='flex';homeEl.classList.add('active');}
+  document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('active');});
+  var nb=document.getElementById('nav-home');if(nb)nb.classList.add('active');
+  try{initHome();}catch(e){}
+  setTimeout(function(){try{buildCycleCircle();buildTomorrowCard();}catch(e){}},100);
+}
+
+function finishWelcome(){
+  try{
+    var periodEl=document.getElementById('welcome-period');
+    var dateStr=periodEl?periodEl.value:'';
+    if(dateStr){var s=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');s.start=dateStr;s.cycleLen=welcomeCycleLen||28;s.periodDur=5;s._manualDate=true;localStorage.setItem('ir_cycle_setup',JSON.stringify(s));userLP=new Date(dateStr+'T12:00:00');userCycleLen=welcomeCycleLen||28;userPeriodDur=5;}
+    else{var s2=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');s2.cycleLen=welcomeCycleLen||28;localStorage.setItem('ir_cycle_setup',JSON.stringify(s2));userCycleLen=welcomeCycleLen||28;}
+    localStorage.setItem('ir_onboarded','1');localStorage.setItem('ir_onboarded_at',Date.now().toString());
+    goHome();
+  }catch(e){goHome();}
+}
+
+function doAuth(){
+  var nameEl=document.getElementById('inp-name');
+  var name=nameEl?nameEl.value.trim():'';
+  if(!name){toast('Please enter your name first.');return;}
+  localStorage.setItem('ir_account',JSON.stringify({name:name,createdAt:new Date().toISOString()}));
+  localStorage.setItem('ir_session','1');
+  var prof=JSON.parse(localStorage.getItem('ir_profile')||'{}');
+  prof.name=name;localStorage.setItem('ir_profile',JSON.stringify(prof));
+  var wMsg=document.getElementById('welcome-name-msg');
+  if(wMsg)wMsg.textContent='Nice to meet you, '+name+' \u2728';
+  var authEl=document.getElementById('screen-auth');
+  if(authEl){authEl.classList.remove('active');authEl.style.display='none';}
+  var wEl=document.getElementById('screen-welcome');
+  if(wEl){wEl.style.display='flex';wEl.classList.add('active');}
+}
+
+function enterApp(){
+  try{
+    var authEl=document.getElementById('screen-auth');
+    if(authEl){authEl.classList.remove('active');authEl.style.display='none';}
+    goHome();
+  }catch(e){goHome();}
+}
+
+function pickBI(el,val){
+  document.querySelectorAll('.bi-chip').forEach(function(c){c.classList.remove('sel');});
+  el.classList.add('sel');bodyIntuition=val;
+}
+
+function buildCycleCircle(){
+  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  var dayEl=document.getElementById('ring-day'),phaseEl=document.getElementById('ring-phase'),nextEl=document.getElementById('ring-next'),progEl=document.getElementById('ring-progress'),trackEl=document.getElementById('ring-track');
+  if(!dayEl)return;
+  if(!setup.start){dayEl.textContent='--';if(phaseEl)phaseEl.textContent='SET UP';if(nextEl)nextEl.textContent='Tap to set up your cycle';if(progEl)progEl.setAttribute('stroke-dashoffset','427');return;}
+  var day=cd(TODAY),phase=ph(day),daysLeft=userCycleLen-day;
+  var phaseColors={period:'#D4709A',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#9B7EC8'};
+  var phaseTracks={period:'#FBE0EC',follicular:'#E0F2FA',ovulation:'#FBEFD4',luteal:'#EDE6F8'};
+  var names={period:'PERIOD',follicular:'FOLLICULAR',ovulation:'OVULATION',luteal:'LUTEAL'};
+  var col=phaseColors[phase]||'#9B7EC8';
+  dayEl.textContent=day;
+  if(phaseEl){phaseEl.textContent=names[phase]||phase.toUpperCase();phaseEl.setAttribute('fill',col);}
+  if(progEl)progEl.setAttribute('stroke',col);
+  if(trackEl)trackEl.setAttribute('stroke',phaseTracks[phase]||'#EDE6F8');
+  var circumference=427,pct=Math.min(day/userCycleLen,1),offset=circumference*(1-pct);
+  if(progEl)progEl.setAttribute('stroke-dashoffset',offset);
+  if(nextEl){var ms=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];var np=new Date(TODAY);np.setDate(np.getDate()+daysLeft);if(daysLeft<=0)nextEl.textContent='Period likely starting today';else if(daysLeft===1)nextEl.textContent='Period likely tomorrow';else nextEl.textContent='Period likely in '+daysLeft+' days';}
+}
+
+function buildTomorrowCard(){
+  var el=document.getElementById('tomorrow-card');if(!el)return;
+  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  if(!setup.start){el.style.display='none';return;}
+  var today=cd(TODAY),tDay=today+1>userCycleLen?1:today+1,tPhase=ph(tDay),todayPhase=ph(today),daysLeft=userCycleLen-today;
+  var pc={period:'#D4709A',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#9B7EC8'};
+  var pe={period:'&#128157;',follicular:'&#10024;',ovulation:'&#9728;&#65039;',luteal:'&#127769;'};
+  var pn={period:'Menstrual',follicular:'Follicular',ovulation:'Ovulation',luteal:'Luteal'};
+  var pd={period:'Rest where you can. Your body is doing real work.',follicular:'Energy starts returning. Good day for gentle momentum.',ovulation:'Peak clarity and confidence. Make the most of it.',luteal:'Energy turns inward. Better for finishing than starting.'};
+  var ms=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var np=new Date(TODAY);np.setDate(np.getDate()+daysLeft);
+  var c2=tPhase!==todayPhase
+    ?'<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><div style="width:36px;height:36px;border-radius:50%;background:'+pc[tPhase]+'22;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">'+pe[tPhase]+'</div><div><div style="font-size:13px;font-weight:800;color:#1A3A45">'+pn[tPhase]+' phase begins tomorrow</div><div style="font-size:12px;color:#6A8A9A;line-height:1.5;margin-top:2px">'+pd[tPhase]+'</div></div></div>'
+    :'<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><div style="width:36px;height:36px;border-radius:50%;background:'+pc[tPhase]+'22;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">'+pe[tPhase]+'</div><div><div style="font-size:13px;font-weight:800;color:#1A3A45">Tomorrow: Day '+tDay+'</div><div style="font-size:12px;color:#6A8A9A;line-height:1.5;margin-top:2px">'+pd[tPhase]+'</div></div></div>';
+  if(daysLeft===1)c2+='<div style="background:#FFF0F6;border-radius:10px;padding:8px 12px;font-size:12px;color:#C05080;font-weight:600">&#128157; Period likely starting tomorrow</div>';
+  else if(daysLeft>=2&&daysLeft<=4)c2+='<div style="background:#FFF0F6;border-radius:10px;padding:8px 12px;font-size:12px;color:#C05080;font-weight:600">&#128157; Period in '+daysLeft+' days - '+ms[np.getMonth()]+' '+np.getDate()+'</div>';
+  el.style.display='block';
+  el.innerHTML='<div class="tomorrow-card"><div class="tomorrow-card-eyebrow">Tomorrow - Day '+tDay+'</div>'+c2+'</div>';
+}
+
+function resetCI(){
+  mood='';energies=[];feels=[];syms=[];bodyIntuition='';
+  var n=document.getElementById('ci-note');if(n)n.value='';
+  document.querySelectorAll('.mopt').forEach(function(e){e.classList.remove('sel');});
+  document.querySelectorAll('.eopt').forEach(function(e){e.classList.remove('sel');});
+  document.querySelectorAll('.flow-opt').forEach(function(e){e.classList.remove('self');});
+  document.querySelectorAll('.icon-tile').forEach(function(e){e.classList.remove('selp','sels');});
+  document.querySelectorAll('.bi-chip').forEach(function(e){e.classList.remove('sel');});
+  var ir=document.getElementById('ci-ir-response');if(ir)ir.style.display='none';
+  var mex=document.getElementById('mood-extra');if(mex)mex.style.display='none';
+  var fu=document.getElementById('mood-followup');if(fu)fu.style.display='none';
+}
+
+function saveCycleData(startStr,endStr,cycleLen,periodDur){
+  if(!startStr)return;
+  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  setup.start=startStr;setup._manualDate=true;
+  if(endStr)setup.end=endStr;
+  if(cycleLen)setup.cycleLen=cycleLen;
+  if(periodDur)setup.periodDur=periodDur;
+  localStorage.setItem('ir_cycle_setup',JSON.stringify(setup));
+  userLP=new Date(startStr+'T12:00:00');
+  userCycleLen=cycleLen||setup.cycleLen||28;
+  userPeriodDur=periodDur||setup.periodDur||5;
+}
+
+function pe(el,e){
+  if(el.classList.contains('sel')){
+    el.classList.remove('sel');
+    energies=energies.filter(function(x){return x!==e;});
+  }else{
+    el.classList.add('sel');
+    if(energies.indexOf(e)===-1)energies.push(e);
+  }
+}
+
+function pickEmoji(arr){return arr[Math.floor(Math.random()*arr.length)];}
+function escHtml(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function addCustomMood(){
+  var inp=document.getElementById('mood-custom');
+  var v=inp?inp.value.trim():'';if(!v)return;
+  var e=pickEmoji(["😄","😌","🥰","🤩","😔","😬","😴","😏","🫠","🥲","😤","🫶"]);
+  var extra=document.getElementById('mood-extra');
+  if(extra&&extra.style.display==='none')extra.style.display='block';
+  var wrap=extra?extra.querySelector('div'):null;if(!wrap)return;
+  var chip=document.createElement('div');
+  chip.className='mopt';
+  chip.style.cssText='display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:12px;cursor:pointer;background:#F8F9FB;';
+  chip.innerHTML='<span style="font-size:20px;line-height:1;">'+e+'</span><span style="font-size:12px;font-weight:700;color:#5A7A8A;">'+escHtml(v)+'</span>';
+  chip.onclick=function(){pm(chip,v);};
+  wrap.appendChild(chip);
+  if(inp)inp.value='';
+  pm(chip,v);
+}
+
+function renderCal(){
+  var lbl=document.getElementById('cmlbl');
+  if(lbl)lbl.textContent=new Date(calY,calM,1).toLocaleDateString('en-US',{month:'long',year:'numeric'});
+  var g=document.getElementById('cgrid');if(!g)return;
+  g.innerHTML='';
+  ['S','M','T','W','T','F','S'].forEach(function(d){var el=document.createElement('div');el.className='cdname';el.textContent=d;g.appendChild(el);});
+  var first=new Date(calY,calM,1),sd=first.getDay(),dim=new Date(calY,calM+1,0).getDate(),prev=new Date(calY,calM,0).getDate();
+  var nextPS=new Date(userLP);nextPS.setDate(nextPS.getDate()+userCycleLen);
+  var nextPE=new Date(nextPS);nextPE.setDate(nextPE.getDate()+userPeriodDur-1);
+  var moodEmoji={'Amazing':'\ud83e\udd29','Good':'\ud83d\ude0a','Meh':'\ud83d\ude10','Off':'\ud83d\ude14','Rough':'\ud83d\ude23'};
+  for(var i=sd-1;i>=0;i--){var el=document.createElement('div');el.className='ccell cother';el.textContent=prev-i;g.appendChild(el);}
+  for(var d=1;d<=dim;d++){
+    var date=new Date(calY,calM,d),c=cd(date),p=ph(c),el=document.createElement('div');
+    var isT=date.toDateString()===TODAY.toDateString(),k=date.toISOString().slice(0,10),log=logs[k],isPred=date>=nextPS&&date<=nextPE;
+    if(isT){el.className='ccell ctoday';el.textContent=d;}
+    else if(isPred&&!log){el.className='ccell cpredict';el.style.fontSize='11px';el.textContent=d;}
+    else if(log&&log.mood&&moodEmoji[log.mood]){el.className='ccell c'+p+' cemoji';el.textContent=moodEmoji[log.mood];}
+    else{el.className='ccell c'+p;el.textContent=d;}
+    (function(date,d,c,p,k,log,isPred){
+      el.onclick=function(){showCalDay(date,d,c,p,k,log,isPred);};
+    })(date,d,c,p,k,log,isPred);
+    g.appendChild(el);
+  }
+  var rem=7-((sd+dim)%7);if(rem<7){for(var d2=1;d2<=rem;d2++){var el2=document.createElement('div');el2.className='ccell cother';el2.textContent=d2;g.appendChild(el2);}}
+  var dd=document.getElementById('cal-day-detail');if(dd)dd.style.display='none';
+}
+
+function showCalDay(date,d,c,p,k,log,isPred){
+  var dd=document.getElementById('cal-day-detail');if(!dd)return;
+  var moodEmoji={'Amazing':'\ud83e\udd29','Good':'\ud83d\ude0a','Meh':'\ud83d\ude10','Off':'\ud83d\ude14','Rough':'\ud83d\ude23'};
+  var phaseNames={period:'Period',follicular:'Follicular',ovulation:'Ovulation',luteal:'Luteal'};
+  var phaseColors={period:'#C05080',follicular:'#4AAAC4',ovulation:'#A06800',luteal:'#9B7EC8'};
+  var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var col=phaseColors[p]||'#4AAAC4';
+  var isT=date.toDateString()===TODAY.toDateString();
+  var html='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">';
+  html+='<div style="font-size:12px;font-weight:800;color:'+col+';text-transform:uppercase;letter-spacing:.5px;">'+months[date.getMonth()]+' '+d+(isT?' · Today':'')+'</div>';
+  html+='<div style="background:'+col+'22;border-radius:8px;padding:3px 9px;font-size:10px;font-weight:700;color:'+col+';">'+phaseNames[p]+'</div>';
+  html+='</div>';
+  if(log&&log.mood){
+    html+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">';
+    html+='<div style="font-size:32px;">'+(moodEmoji[log.mood]||'')+'</div>';
+    html+='<div>';
+    html+='<div style="font-size:14px;font-weight:800;color:#1A3A45;margin-bottom:2px;">Felt '+log.mood+'</div>';
+    if(log.driver)html+='<div style="font-size:12px;color:#6A8A9A;margin-bottom:2px;">'+log.driver+'</div>';
+    if(log.energies&&log.energies.length)html+='<div style="font-size:11px;color:#8AAAB4;margin-bottom:2px;">&#9889; '+log.energies.join(', ')+'</div>';
+    if(log.flow&&log.flow!=='None')html+='<div style="font-size:11px;color:#C05080;margin-bottom:2px;">&#9679; '+log.flow+'</div>';
+    if(log.note)html+='<div style="font-size:12px;color:#5A7A8A;margin-top:6px;font-style:italic;">"'+log.note+'"</div>';
+    html+='</div></div>';
+    html+='<button onclick="checkInDate=new Date('+date.getFullYear()+','+date.getMonth()+','+d+');initCheckin();nav(\'checkin\');" style="width:100%;background:#F0F8FC;border:none;border-radius:11px;padding:11px;font-family:Nunito,sans-serif;font-size:13px;font-weight:800;color:#4AAAC4;cursor:pointer;margin-top:8px;">Edit this log &#8594;</button>';
+  }else if(isPred){
+    html+='<div style="font-size:13px;color:#C05080;font-weight:600;margin-bottom:10px;">Period predicted around this day.</div>';
+    html+='<button onclick="checkInDate=new Date('+date.getFullYear()+','+date.getMonth()+','+d+');initCheckin();nav(\'checkin\');" style="width:100%;background:linear-gradient(135deg,#D4709A,#C05080);color:white;border:none;border-radius:11px;padding:11px;font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer;">Log this day &#8594;</button>';
+  }else{
+    html+='<div style="font-size:13px;color:#8AAAB4;margin-bottom:10px;">No log for this day.</div>';
+    html+='<button onclick="checkInDate=new Date('+date.getFullYear()+','+date.getMonth()+','+d+');initCheckin();nav(\'checkin\');" style="width:100%;background:linear-gradient(135deg,#4AAAC4,#7DC8E0);color:white;border:none;border-radius:11px;padding:11px;font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer;">Log this day &#8594;</button>';
+  }
+  dd.innerHTML=html;dd.style.display='block';
+  dd.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function patTog(id,arrId){
+  var el=document.getElementById(id),arr=document.getElementById(arrId);
+  if(!el)return;
+  el.classList.toggle('open');
+  if(arr)arr.textContent=el.classList.contains('open')?'\u2193':'\u203A';
+}
+
+function initHome(){
+  try{checkTreatCard();}catch(e){}
+  try{
+    var streak2=0;var dd=new Date(TODAY);
+    while(true){var kk=dd.toISOString().slice(0,10);if(!logs[kk])break;streak2++;dd.setDate(dd.getDate()-1);}
+    var pill=document.getElementById('home-streak-pill');
+    var pillNum=document.getElementById('home-streak-num');
+    if(pill&&streak2>=1){pill.style.display='flex';if(pillNum)pillNum.textContent=streak2;}
+    else if(pill){pill.style.display='none';}
+  }catch(e){}
+  try{var acc=JSON.parse(localStorage.getItem('ir_account')||'{}');var nm=acc.name||'';var g=document.getElementById('greet');if(g)g.textContent=nm?('Hello, '+nm):'Hello';}catch(e){}
+  // Period alert on home
+  try{
+    var setup2=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+    var hAlert=document.getElementById('home-period-alert');
+    if(hAlert&&setup2.start){
+      var dLeft=userCycleLen-cd(TODAY);
+      if(dLeft>=1&&dLeft<=4){
+        hAlert.style.display='block';
+        var htitles={1:'Period likely tomorrow',2:'Period in 2 days',3:'Period in 3 days',4:'Period in 4 days'};
+        var hmsgs={1:'Your body is almost there. Heaviness and fatigue right now is real.',2:'Your body is winding down. Feeling heavier or more emotional makes sense.',3:'Your body is winding down. That heavy feeling is your hormones shifting \u2014 right on schedule.',4:'Late luteal. The fog and fatigue creeping in makes sense.'};
+        var ht=document.getElementById('home-period-title'),hm=document.getElementById('home-period-msg');
+        if(ht)ht.textContent=htitles[dLeft]||htitles[3];
+        if(hm)hm.textContent=hmsgs[dLeft]||hmsgs[3];
+      }else{hAlert.style.display='none';}
+    }
+  }catch(e){}
+  const h=new Date().getHours();
+  const _profile=JSON.parse(localStorage.getItem('ir_profile')||'{}');
+  const _firstName=_profile.name?_profile.name.split(' ')[0]:'';
+  const _timeGreet=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+  document.getElementById('greet').textContent=_firstName?_timeGreet+', '+_firstName:_timeGreet;
+  const day=cd(TODAY),p=ph(day);
+  document.getElementById('main-msg').textContent=getDailyMsg(p,day);
+  document.getElementById('pchip').textContent=phe(p)+' '+phn(p)+' · Day '+day;
+  document.getElementById('pstrip').style.background=phcol(p);
+  document.getElementById('emo-insight').textContent=getDailyEmo(p,day);
+  document.getElementById('soc-insight').textContent=getDailySoc(p,day);
+  loadPersonalisedMessages();
+  document.getElementById('uc-msg').textContent=UPC[p];
+  document.getElementById('youare').innerHTML=`You're on <strong>Day ${day} · ${phn(p)}</strong> — ${p==='luteal'?'the phase where emotions tend to sit closer to the surface':p==='period'?'your body is doing the hard work right now':p==='follicular'?'energy is rising and things are getting clearer':'your peak energy phase'}.`;
+  buildWeek();buildNotifs();
+  buildCycleWidget();
+  buildTomorrowCard();
+  checkCycleSetupNudge();buildUCDays();checkFeedbackNudge();updateProfileDisplay();updateStreakDisplay();buildWeeklySummary();buildMorningMessage();learnCycleFromLogs();showCycleLearningBadge();updateTodaySummary();
+  document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:false});
+}
+function buildWeek(){
+  const s=document.getElementById('wstrip');s.innerHTML='';
+  const dn=['S','M','T','W','T','F','S'];
+  for(let i=-3;i<=3;i++){const d=new Date(TODAY);d.setDate(d.getDate()+i);const c=cd(d),p=ph(c);const el=document.createElement('div');el.className='wd w'+p+(i===0?' wtoday':'');el.innerHTML=`<span class="wn">${d.getDate()}</span>${dn[d.getDay()]}`;s.appendChild(el);}
+}
+function buildNotifs(){document.getElementById('nlist').innerHTML=NOTIFS.map(n=>`<div class="nitem${n.unread?' unread':''}"><div class="norb" style="background:${n.bg}">${n.icon}</div><div><div class="nwhen">${n.when}</div><div class="ntxt">${n.txt}</div></div></div>`).join('')}
+function buildUCDays(){const dn=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];document.getElementById('uc-days').innerHTML=[1,2,3].map(i=>{const d=new Date(TODAY);d.setDate(d.getDate()+i*4);return`<div class="uc-day"><span class="dn">${phe(ph(cd(d)))}</span>${dn[d.getDay()]}</div>`}).join('')}
+
+function qlog(e,m){e.stopPropagation();document.querySelectorAll('.mpill').forEach(p=>p.classList.remove('picked'));e.currentTarget.classList.add('picked');const k=TODAY.toISOString().slice(0,10);logs[k]={mood:m,ts:Date.now()};localStorage.setItem('ir4',JSON.stringify(logs));toast('Got it ✓')}
+function pm(el,m){
+  // Toggle — tap again to deselect
+  if(el.classList.contains('sel')){
+    el.classList.remove('sel');
+    mood='';
+    var ir=document.getElementById('ci-ir-response');
+    if(ir)ir.style.display='none';
+    return;
+  }
+  document.querySelectorAll('.mopt').forEach(function(e){e.classList.remove('sel');});
+  el.classList.add('sel');
+  mood=m;
+
+  // IR responds based on mood + phase
+  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  var irEl=document.getElementById('ci-ir-response');
+  var irTxt=document.getElementById('ci-ir-text');
+  if(!irEl||!irTxt||!setup.start)return;
+  var day=cd(TODAY),phase=ph(day);
+  var allKeys=Object.keys(logs).sort();
+  var phaseLogs=allKeys.filter(function(k){var d=new Date(k);return ph(cd(d))===phase;});
+  var moodCount=phaseLogs.filter(function(k){return logs[k].mood===m;}).length;
+  var responses={
+    'Amazing':{period:'Feeling amazing during your period is worth noting.',follicular:'This is your window. Follicular is when you feel most like yourself.',ovulation:'Peak estrogen, peak you. This is your sharpest phase.',luteal:'Feeling amazing in luteal? Your body is handling this phase really well.'},
+    'Happy':{period:'Happy during your period is genuinely solid.',follicular:'This is your better week. Happy makes complete sense right now.',ovulation:'Good in ovulation — some people feel their absolute best here.',luteal:'Happy in luteal is something to celebrate. A lot of people find this phase harder.'},
+    'Good':{period:'Good during your period is solid. Rest and you are managing it well.',follicular:'This is your better week. Good makes complete sense right now.',ovulation:'Good in ovulation — some people feel their absolute best here.',luteal:'Good in luteal is something to note. A lot of people find this phase harder.'},
+    'Meh':{period:'Meh during your period is completely valid. Your body is doing a lot.',follicular:'Meh in follicular is worth paying attention to. This is usually your better phase.',ovulation:'Meh in ovulation is less common. Your body might be telling you something.',luteal:'Meh is very on-pattern for luteal. Progesterone dropping tends to flatten things out.'},
+    'Off':{period:'Feeling off during your period makes complete sense. Both hormones are at their lowest.',follicular:'Off in follicular is worth noting — this is usually your better week.',ovulation:'Off during ovulation is less common. Worth logging to see if this is a pattern.',luteal:moodCount>=2?'This is very on-pattern for you — you tend to feel Off in luteal almost every cycle. It is hormonal, not personal.':'Off in luteal is completely on-pattern. Progesterone dropping does this to almost everyone.'},
+    'Rough':{period:'Rough during your period is real. Both hormones drop and your body is working hard.',follicular:'Rough in follicular is unusual. Something beyond your cycle might be going on.',ovulation:'Rough in ovulation is worth noting — keep logging so I can see if this is a pattern.',luteal:'I hear you. Luteal can be the hardest phase. This will shift.'},
+    'Sensitive':{period:'Sensitivity during your period is very normal — everything feels amplified.',follicular:'Sensitivity in follicular is a little unusual for this phase.',ovulation:'Feeling sensitive during ovulation — your nervous system is heightened right now.',luteal:'Sensitivity in luteal is textbook. Your nervous system is more reactive this week.'},
+    'Irritated':{period:'Irritability during your period is real — low hormones affect your mood threshold.',follicular:'Irritation in follicular is less expected. Worth noting.',ovulation:'A little edge during ovulation can happen — high energy sometimes tips over.',luteal:'Irritation in luteal is one of the most common things I see logged. Your hormone drop does this.'},
+    'Anxious':{period:'Anxiety during your period can come from the hormonal drop and physical discomfort.',follicular:'Anxiety in follicular is worth looking at — this is usually a calmer phase.',ovulation:'Some people feel a surge of social anxiety around ovulation despite high energy.',luteal:'Anxiety in luteal is very common. Progesterone affects your nervous system directly.'},
+    'Sad':{period:'Sadness during your period can be hormonally driven. Be gentle with yourself.',follicular:'Feeling sad in follicular is worth paying attention to.',ovulation:'Sadness during ovulation is less common — worth logging.',luteal:'Sadness in late luteal is one of the most reported things. Your brain chemistry actually shifts here.'},
+    'Numb':{period:'Numbness during your period can be a sign your body is in survival mode.',follicular:'Feeling numb in follicular is unusual. How long has this been building?',ovulation:'Numbness during ovulation is worth noting.',luteal:'Feeling numb in luteal is more common than people realise. Low progesterone can do this.'},
+    'Weepy':{period:'Weepy during your period is so common. Low estrogen and progesterone together can do this.',follicular:'Feeling weepy in follicular is less expected.',ovulation:'Weepiness during ovulation can happen with the hormonal surge.',luteal:'Weepy in late luteal is almost universal. Your hormones are genuinely shifting here.'},
+    'Angry':{period:'Anger during your period is real and valid.',follicular:'Anger in follicular is less expected — something specific might be driving it.',ovulation:'High energy in ovulation can sometimes tip into anger.',luteal:'Anger in luteal is hormonally driven. Low progesterone raises your stress response.'}
+  };
+  var phaseResp=responses[m]||{};
+  var msg=phaseResp[phase]||'Got it. Tell me more about how you are feeling today.';
+  irTxt.innerHTML=msg;
+
+  // Update border/bg colour to match phase
+  var phaseColors={period:'#F9C8D8',follicular:'#B8E0F0',ovulation:'#FFE08A',luteal:'#EDE6F8'};
+  var phaseBorders={period:'#D4709A',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#9B7EC8'};
+  var phaseTextColors={period:'#7A1040',follicular:'#1A4A6A',ovulation:'#6A4800',luteal:'#3A2A5A'};
+  irEl.style.background='linear-gradient(135deg,'+phaseColors[phase]+','+phaseColors[phase]+'88)';
+  irEl.style.borderLeftColor=phaseBorders[phase]||'#4AAAC4';
+  if(irTxt)irTxt.style.color=phaseTextColors[phase]||'#1A4A6A';
+  irEl.style.display='block';
+}
+function tf(el,v,t){const cls=t==='p'?'selp':'sels';el.classList.toggle(cls);if(t==='p'){feels=feels.includes(v)?feels.filter(x=>x!==v):[...feels,v]}else{syms=syms.includes(v)?syms.filter(x=>x!==v):[...syms,v]}}
+function matchEmoji(text, type) {
+  var t = text.toLowerCase().trim();
+
+  // Simple but comprehensive word list — check if ANY keyword appears in the typed text
+  function has(words) {
+    return words.some(function(w) { return t.indexOf(w) !== -1; });
+  }
+
+  if (type === 'energy') {
+    // High / charged / ready
+    if (has(['full','high energy','loads','lots of energy','burst','caffein','wired','pumped','buzzing','alive','fired up','on fire','rushing','raring','electric','sprinting','unstoppable','cant stop','crushing','killing it','going strong','full power','supercharged','energised','energized','ready to go','all in','100'])) return '🔋';
+    // Drained / empty / nothing left
+    if (has(['drained','drain','exhausted','exhaust','depleted','wiped out','wiped','dead','zero','no energy','empty','crashed','crash','running on fumes','fumes','burnt out','burned out','shot','spent','nothing left','flatline','done in','running low','on my last','barely','hit a wall','completely gone','fading','fizzled'])) return '🪫';
+    // Foggy / slow / not with it
+    if (has(['foggy','fog','fuzzy','cloudy','hazy','slow','sluggish','heavy','groggy','thick','brain fog','cotton wool','muddled','unclear','cant focus','cant think','scattered','spacey','spaced','not with it','not here','half asleep','zombie','dissociat'])) return '💤';
+    // Calm / gentle / cosy low
+    if (has(['cosy','cozy','snug','gentle','soft','quiet','light','easy','calm','mellow','steady','floating','drifting','warm','relaxed','chill','chilled','peaceful','taking it easy','cruising','slow and steady'])) return '😌';
+    // Restless / hyper / too much
+    if (has(['restless','hyper','racing','scattered','everywhere','bouncing','jumping','antsy','fidgety','spinning','cant settle','cant sit still','too much energy','overloaded','jittery','frantic','frazzled'])) return '⚡';
+    // Tired / sleepy
+    if (has(['tired','sleepy','sleep','drowsy','dragging','crawling','zonked','lethargic','yawning','falling asleep','need a nap','nap','could sleep','half asleep','eyes heavy','crashing','barely awake'])) return '😴';
+    // Strong / focused / sharp
+    if (has(['strong','powerful','motivated','driven','focused','sharp','capable','beast','on it','in the zone','locked in','switched on','clear headed','clear','alert','productive','dialled in','dialed in'])) return '💪';
+    // Wired but tired / contradictory
+    if (has(['wired but tired','wired and tired','tired but wired','exhausted but wired','tired but cant sleep','wired yet tired'])) return '🫠';
+    // Anxious / wound up
+    if (has(['anxious','nervous','jittery','shaky','trembling','on edge','wound up','tightly wound','cant relax','tense energy','stressed out','stressed','frazzled'])) return '😬';
+    // Mixed / moderate / okay
+    if (has(['mixed','up and down','in between','moderate','average','okay','ok','alright','decent','not bad','fine','so so','medium','middling','getting there','improving','better than yesterday','not great not bad','some energy','half'])) return '🔆';
+    // Fallback
+    return '🔆';
+  }
+
+  if (type === 'sym') {
+    if (has(['cramp','cramping','cramps','spasm','contraction','period pain','stomach cramp','muscle cramp'])) return '😣';
+    if (has(['headache','head ache','migraine','head pain','head is pounding','pressure in my head','forehead','temple'])) return '🤕';
+    if (has(['bloated','bloating','bloat','puffy','swollen','gassy','gas','distended','stomach feels full','belly'])) return '🤰';
+    if (has(['nauseous','nausea','sick','queasy','vomit','throwing up','stomach ache','stomach pain','belly ache','gut','want to be sick'])) return '🤢';
+    if (has(['back pain','backache','back ache','lower back','spine','lumbar','back is killing','back hurts'])) return '😩';
+    if (has(['breast','boob','chest sore','nipple','tender chest','sore chest','chest pain','chest tight'])) return '😖';
+    if (has(['acne','breakout','spots','pimples','skin flare','blemish','spot','zit'])) return '😕';
+    if (has(['insomnia','cant sleep','cannot sleep','not sleeping','awake all night','tossing','turning','sleep issues','restless sleep','wide awake'])) return '😩';
+    if (has(['hot flash','hot flush','sweating','overheating','burning up','flushed','night sweat','boiling'])) return '🥵';
+    if (has(['cold','chills','chilly','shivering','freezing','goosebumps','cold sweats'])) return '🥶';
+    if (has(['craving','cravings','hungry','appetite','want to eat','need food','snacking','food','eating','starving'])) return '🤤';
+    if (has(['dizzy','dizziness','lightheaded','spinning','vertigo','woozy','off balance','dizzy spells'])) return '😵';
+    if (has(['tense','tension','tight','stiff','clenched','knotted','rigid','tense muscles','muscle tension'])) return '😬';
+    if (has(['pain','painful','hurting','hurts','sore','aching','sting','burning','raw','in pain','body pain'])) return '😫';
+    if (has(['heart racing','palpitations','heart pounding','fluttering heart','heart beating fast'])) return '😰';
+    if (has(['tired','fatigued','fatigue','exhausted','drained','no energy','wiped','worn out'])) return '😴';
+    if (has(['anxious','anxiety','nerves','nervous','on edge','wound up','jittery'])) return '😟';
+    if (has(['mood','moody','irritable','grumpy','low mood','emotional'])) return '😒';
+    if (has(['appetite loss','no appetite','not hungry','dont want to eat','cant eat'])) return '😶';
+    if (has(['joint','joints','achy joints','joint pain','knees','hips'])) return '🦵';
+    if (has(['dry','dehydrated','thirsty','dry skin','dry lips'])) return '😮';
+    return '🩹';
+  }
+
+  // MOODS — face emojis only
+  if (has(['mad','angry','anger','rage','fuming','livid','furious','irate','seething','heated','pissed'])) return '😡';
+  if (has(['sad','down','blue','unhappy','miserable','depressed','low','glum','gutted','crushed','heartbroken','devastated'])) return '😞';
+  if (has(['happy','joy','joyful','gleeful','delighted','cheerful','beaming','glowing','blissful','bliss','radiant'])) return '😄';
+  if (has(['anxious','anxiety','nervous','worried','worrying','stressed','stress','uneasy','dreading','panicking','apprehensive','on edge'])) return '😟';
+  if (has(['tired','exhausted','drained','fatigued','spent','wiped','zonked','depleted','running on empty'])) return '😪';
+  if (has(['lonely','isolated','alone','abandoned','forgotten','invisible'])) return '🥺';
+  if (has(['scared','afraid','terrified','frightened','fearful','spooked','petrified'])) return '😨';
+  if (has(['confused','lost','unsure','uncertain','muddled','bewildered','all over the place'])) return '😕';
+  if (has(['numb','empty','blank','hollow','void','flatline','dead inside','switched off','feel nothing'])) return '😶';
+  if (has(['guilty','regret','shame','ashamed','my fault','let them down'])) return '😔';
+  if (has(['jealous','envious'])) return '😒';
+  if (has(['hopeful','optimistic','looking up','better days'])) return '🥹';
+  if (has(['grateful','thankful','blessed','appreciative','lucky'])) return '🥰';
+  if (has(['loved','cherished','adored','treasured','safe','cared for','seen','heard','held'])) return '🥰';
+  if (has(['proud','accomplished','achieved','nailed it','did it','made it'])) return '😌';
+  if (has(['confident','capable','bold','certain','owning it','sure of myself'])) return '😏';
+  if (has(['excited','thrilled','hyped','stoked','psyched','cant wait'])) return '🤩';
+  if (has(['inspired','creative','artistic','in the zone','ideas flowing'])) return '🤔';
+  if (has(['motivated','driven','determined','purposeful','going for it'])) return '😤';
+  if (has(['peaceful','calm','serene','tranquil','zen','relaxed','at ease','still'])) return '😌';
+  if (has(['content','settled','satisfied','fulfilled','grounded','at peace'])) return '🙂';
+  if (has(['playful','silly','goofy','laughing','giggly','cheeky','fun'])) return '😄';
+  if (has(['sensitive','fragile','delicate','raw','vulnerable','emotional','on the verge','easily hurt'])) return '🥺';
+  if (has(['overwhelmed','swamped','buried','drowning','too much','cant cope'])) return '😩';
+  if (has(['irritated','irritable','annoyed','frustrated','grumpy','snappy','moody','touchy','agitated','narky'])) return '😒';
+  if (has(['resentful','bitter','betrayed','wronged','used','grudge'])) return '😤';
+  if (has(['weepy','crying','sobbing','tears','cant stop crying','in bits'])) return '😭';
+  if (has(['embarrassed','mortified','cringing','awkward','red faced','sheepish'])) return '😳';
+  if (has(['shy','bashful','timid','meek','self conscious','insecure','withdrawn'])) return '😶';
+  if (has(['needy','clingy','attached','want to be held','need reassurance'])) return '🥺';
+  if (has(['tense','tight','stiff','clenched','wound up','braced'])) return '😬';
+  if (has(['restless','antsy','fidgety','jumpy','pacing','unsettled'])) return '😤';
+  if (has(['disconnected','dissociating','zoning out','spacing out','far away','not here'])) return '😑';
+  if (has(['overthinking','spiralling','spiraling','ruminating','racing thoughts','cant switch off'])) return '😵';
+  if (has(['bored','unstimulated','listless','uninterested','nothing to do','dull'])) return '😑';
+  if (has(['meh','blah','indifferent','neutral','flat','whatever','so so','autopilot'])) return '😐';
+  if (has(['okay','ok','alright','getting by','surviving','managing','hanging in'])) return '🙂';
+  if (has(['strong','resilient','tough','warrior','fighter','survivor','got this'])) return '💪';
+  if (has(['hopeless','giving up','pointless','futile','no point','whats the point'])) return '😔';
+  if (has(['burnt out','burned out','running on fumes','nothing left','cannot anymore'])) return '😮';
+  if (has(['missing','longing','yearning','pining','aching for','wish you were here'])) return '😔';
+  if (has(['nostalgic','reminiscing','bittersweet','remember when'])) return '🥲';
+  if (has(['cosy','cozy','snug','comfy','warm inside','tucked in'])) return '🥰';
+  if (has(['free','light','lifted','weightless','unburdened'])) return '😄';
+  if (has(['soft','tender','gentle','open hearted','warmhearted'])) return '🥰';
+  if (has(['dark','heavy','gloom','burdened','sinking','weight'])) return '😔';
+  if (has(['weird','strange','odd','not myself','out of character'])) return '😶';
+  if (has(['mixed','up and down','complicated','hard to explain'])) return '😕';
+  if (has(['ecstatic','elated','euphoric','overjoyed','on top of the world'])) return '🤩';
+  if (has(['great','good','well','lovely','decent','pretty good','doing well'])) return '😊';
+  if (has(['mad'])) return '😡';
+
+  return null;
+}
+function addCustomMood(){
+  const inp=document.getElementById('mood-custom'), v=inp.value.trim();
+  if(!v)return;
+  const emoji=matchEmoji(v,'mood');
+  const g=document.getElementById('mood-grid');
+  const el=document.createElement('div');el.className='mopt sel';
+  el.style.position='relative';
+  el.innerHTML=(emoji
+    ? `<span class="moji">${emoji}</span><span class="mlbl">${v}</span>`
+    : `<span class="mlbl" style="font-size:13px;padding:6px 0;display:block">${v}</span>`)
+    + `<span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();if(mood==='${v}')mood='';" title="Remove">×</span>`;
+  el.onclick=()=>pm(el,v);g.appendChild(el);mood=v;inp.value='';
+  document.querySelectorAll('.mopt').forEach(e=>e.classList.remove('sel'));el.classList.add('sel');
+}
+function addCustomEnergy(){
+  var inp=document.getElementById('energy-custom');
+  var v=inp?inp.value.trim():'';if(!v)return;
+  var e=pickEmoji(["⚡","🔋","💫","🌿","🌊","☀️","🌙","🍃","✨","🫧"]);
+  var g=document.getElementById('energy-row');if(!g)return;
+  var el=document.createElement('div');
+  el.className='eopt sel';
+  el.innerHTML='<span class="ei" style="font-size:16px;line-height:1;">'+e+'</span>'+escHtml(v);
+  el.onclick=function(){pe(el,v);};
+  g.appendChild(el);
+  if(energies.indexOf(v)===-1)energies.push(v);
+  if(inp)inp.value='';
+}
+function addCustomFeel(){
+  var inp=document.getElementById('feel-custom');
+  var v=inp?inp.value.trim():'';if(!v)return;
+  var e=pickEmoji(["💭","🌸","🦋","🌻","🫂","🌈","💪","🎯","🌟","🩷"]);
+  var g=document.getElementById('feel-chips');if(!g)return;
+  var el=document.createElement('div');
+  el.className='icon-tile';
+  el.innerHTML='<span style="font-size:22px;line-height:1.2;display:block;">'+e+'</span><div class="icon-tile-label">'+escHtml(v)+'</div>';
+  el.onclick=function(){tfi(el,v,'p');};
+  g.appendChild(el);
+  if(inp)inp.value='';
+}
+function addCustomSym(){
+  var inp=document.getElementById('sym-custom');
+  var v=inp?inp.value.trim():'';if(!v)return;
+  var e=pickEmoji(["🤕","😮","😴","🌡️","💊","🩹","🧠","💆","🩸","😣"]);
+  var g=document.getElementById('sym-chips');if(!g)return;
+  var el=document.createElement('div');
+  el.className='icon-tile';
+  el.innerHTML='<span style="font-size:22px;line-height:1.2;display:block;">'+e+'</span><div class="icon-tile-label">'+escHtml(v)+'</div>';
+  el.onclick=function(){tfi(el,v,'s');};
+  g.appendChild(el);
+  if(inp)inp.value='';
+}
+function saveCI(){
+  if(!mood){toast('Pick a mood first');return}
+  const saveDate = checkInDate || TODAY;
+  const k=saveDate.toISOString().slice(0,10);
+  const isUpdate = !!logs[k];
+  const prevLog = logs[k];
+  logs[k]={mood,energies,feels,syms,flow:selectedFlow,note:document.getElementById('ci-note').value,ts:Date.now()};
+  localStorage.setItem('ir4',JSON.stringify(logs));
+  // Detect period start for auto-learning
+  if (selectedFlow && selectedFlow !== 'Not on period') {
+    const yesterday = new Date(TODAY); yesterday.setDate(yesterday.getDate()-1);
+    const yk = yesterday.toISOString().slice(0,10);
+    if (!logs[yk] || !logs[yk].flow || logs[yk].flow === 'Not on period') {
+      recordPeriodStart(k); // first day of this period
+    }
+  }
+  recalcPeriodDur();
+  // Invalidate AI message cache so it regenerates with new data tomorrow
+  const cached = JSON.parse(localStorage.getItem('ir_ai_msgs')||'{}');
+  if(cached.date === k) localStorage.removeItem('ir_ai_msgs');
+  toast(isUpdate ? 'Updated ✓' : 'Saved ✓');
+  updateStreakDisplay();
+  setTimeout(()=>nav('home'),700);
+}
+
+
+function getNextPeriodStart() {
+  const next = new Date(userLP);
+  next.setDate(next.getDate() + userCycleLen);
+  // If it's already passed, add another cycle
+  if (next < TODAY) next.setDate(next.getDate() + userCycleLen);
+  return next;
+}
+
+function renderCal(){
+  updateCalInfo(getNextPeriodStart(), userLP);
+  document.getElementById('cmlbl').textContent=new Date(calY,calM,1).toLocaleDateString('en-US',{month:'long',year:'numeric'});
+  const g=document.getElementById('cgrid');g.innerHTML='';
+  ['S','M','T','W','T','F','S'].forEach(d=>{const el=document.createElement('div');el.className='cdname';el.textContent=d;g.appendChild(el)});
+  const first=new Date(calY,calM,1),sd=first.getDay(),dim=new Date(calY,calM+1,0).getDate(),prev=new Date(calY,calM,0).getDate();
+
+  // Calculate last period start and next period start
+  const lastPeriodStart=new Date(userLP);
+  const nextPeriodStart=new Date(userLP);
+  nextPeriodStart.setDate(nextPeriodStart.getDate()+userCycleLen);
+  const lastPeriodEnd=new Date(userLP);
+  lastPeriodEnd.setDate(lastPeriodEnd.getDate()+userPeriodDur-1);
+
+  for(let i=sd-1;i>=0;i--){const el=document.createElement('div');el.className='ccell cother';el.textContent=prev-i;g.appendChild(el)}
+  for(let d=1;d<=dim;d++){
+    const date=new Date(calY,calM,d),c=cd(date),p=ph(c);
+    const el=document.createElement('div');
+    const isT=date.toDateString()===TODAY.toDateString();
+    el.className='ccell '+(isT?'ctoday':'c'+p);
+    const k=date.toISOString().slice(0,10);
+    if(logs[k])el.classList.add('clog');
+
+    // Check if this is a notable date
+    const isLastStart=date.toDateString()===lastPeriodStart.toDateString();
+    const isLastEnd=date.toDateString()===lastPeriodEnd.toDateString();
+    const isNextStart=date.toDateString()===nextPeriodStart.toDateString();
+
+    if(isNextStart && !isT){
+      el.style.outline='2px solid #C62828';
+      el.style.outlineOffset='-2px';
+      el.style.borderRadius='10px';
+      el.title='Next period expected';
+    }
+
+    // Just the number — no text labels
+    // Dots: bottom-left dot for period start, bottom-right dot for next period
+    el.innerHTML=d
+      + (isLastStart ? '<span style="position:absolute;bottom:3px;left:4px;width:5px;height:5px;background:#C62828;border-radius:50%;display:block"></span>' : '')
+      + (isNextStart && !isT ? '<span style="position:absolute;bottom:3px;right:4px;width:5px;height:5px;background:#C62828;border-radius:50%;opacity:.7;display:block"></span>' : '');
+
+    el.onclick=()=>openDayDetail(date, c, p, isLastStart, isLastEnd, isNextStart, k);
+    g.appendChild(el);
+  }
+  const rem=7-((sd+dim)%7);if(rem<7)for(let d=1;d<=rem;d++){const el=document.createElement('div');el.className='ccell cother';el.textContent=d;g.appendChild(el)}
+
+  // Update calendar info strip
+  updateCalInfo(getNextPeriodStart(), userLP);
+  buildCalOverview();
+}
+
+function updateCalInfo(nextStart, lastStart) {
+  const infoEl = document.getElementById('cal-info');
+  if (!infoEl) return;
+  const daysToNext = Math.ceil((nextStart - TODAY) / 86400000);
+  const daysSinceLast = Math.floor((TODAY - lastStart) / 86400000);
+  const nextFmt = nextStart.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  const lastFmt = lastStart.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  if (daysToNext > 0) {
+    infoEl.innerHTML = '<span style="color:var(--text2)">Last period: <strong style="color:var(--text)">' + lastFmt + '</strong></span><span style="color:var(--text2)">Next expected: <strong style="color:#C62828">' + nextFmt + ' · in ' + daysToNext + ' days</strong></span>';
+  } else {
+    infoEl.innerHTML = '<span style="color:#C62828;font-weight:700">Period may have started</span><span style="color:var(--text2)">Last: <strong style="color:var(--text)">' + lastFmt + '</strong></span>';
+  }
+}
+function chM(dir){calM+=dir;if(calM>11){calM=0;calY++}if(calM<0){calM=11;calY--}renderCal()}
+
+function setLevel(l){shareLevel=l;[0,1,2].forEach(i=>{const el=document.getElementById('lvl'+i);if(el)el.className='slr'+(i===l?' on':'')});if(l===0){shareToggles={mood:true,phase:false,day:false,needs:true,syms:false,notes:false}}else if(l===1){shareToggles={mood:true,phase:true,day:false,needs:true,syms:false,notes:false}}else{shareToggles={mood:true,phase:true,day:true,needs:true,syms:false,notes:false}}Object.keys(shareToggles).forEach(k=>{const el=document.getElementById('sh-'+k);if(el)el.className='tog'+(shareToggles[k]?' '+(k==='day'?'onp':'on'):'')})}
+function togShare(k){const el=document.getElementById('sh-'+k);if(!el)return;shareToggles[k]=!shareToggles[k];el.className='tog'+(shareToggles[k]?' '+(k==='day'?'onp':'on'):'')}
+function togCheck(id){const el=document.getElementById(id);if(!el)return;el.className='ntb'+(el.className.includes('on')?'':' on')}
+
+
+// TTC MODE
+let ttcMode = false;
+function setTTCMode(m) {
+  ttcMode = m === 'ttc';
+  document.getElementById('ttc-btn-ttc').className = 'ttc-mode-btn' + (ttcMode ? ' active' : '');
+  document.getElementById('ttc-btn-std').className = 'ttc-mode-btn' + (!ttcMode ? ' active' : '');
+  document.getElementById('ttc-status-val').textContent = ttcMode ? 'On' : 'Off';
+  updateTTCScreen();
+}
+function updateTTCScreen() {
+  const day = cd(TODAY);
+  document.getElementById('ttc-cycle-day').textContent = day;
+  // Ovulation typically around day 14; fertile window 9-15
+  const ovDay = 14;
+  const daysToOv = Math.max(0, ovDay - day);
+  document.getElementById('ttc-days-to-ov').textContent = daysToOv > 0 ? daysToOv : (day === ovDay ? '🌸' : day < 20 ? 'Passed' : ovDay + (28 - day));
+  const msgs = {
+    before: 'Your fertile window is coming up in a few days. Nothing to do yet — just good to know it is on the horizon.',
+    window: 'Your fertile window is open right now. Your body is doing its thing. No pressure — just awareness that this is your window.',
+    peak: 'Today is around your peak day. Your body is at its most fertile right now. However you are feeling about all of this — that is valid.',
+    luteal: 'Your fertile window has passed for this cycle. Now comes the two-week wait — which is genuinely hard. I will check in with you along the way.',
+    period: 'A new cycle is starting. However last cycle went — you made it through. Be gentle with yourself as your body resets.'
+  };
+  const p = ph(day);
+  let msgKey = p === 'period' ? 'period' : p === 'luteal' ? 'luteal' : day >= 9 && day <= 13 ? 'before' : day === 14 ? 'peak' : day >= 14 && day <= 16 ? 'window' : 'before';
+  const msgEl = document.getElementById('ttc-main-msg');
+  if (msgEl) msgEl.textContent = msgs[msgKey] || msgs.before;
+  buildTTCStrip(day, ovDay);
+}
+function buildTTCStrip(currentDay, ovDay) {
+  const strip = document.getElementById('ttc-day-strip');
+  if (!strip) return;
+  strip.innerHTML = '';
+  const dn = ['S','M','T','W','T','F','S'];
+  for (let i = -2; i <= 10; i++) {
+    const d = new Date(TODAY); d.setDate(d.getDate() + i);
+    const dc = cd(d);
+    const isToday = i === 0;
+    const isPeak = dc === ovDay;
+    const isFertile = dc >= ovDay - 5 && dc <= ovDay && !isPeak;
+    const el = document.createElement('div');
+    el.className = 'ttc-day' + (isToday ? ' ttc-today' : isPeak ? ' ttc-peak' : isFertile ? ' ttc-fertile' : '');
+    el.innerHTML = '<span class="td-num">' + d.getDate() + '</span><span class="td-lbl">' + (isPeak ? 'Peak' : isFertile ? 'Fertile' : dn[d.getDay()]) + '</span>';
+    strip.appendChild(el);
+  }
+}
+
+
+function setPlan(p) {
+  document.getElementById('ptab-month').className = 'plan-tab' + (p==='month' ? ' active' : '');
+  document.getElementById('ptab-year').className = 'plan-tab' + (p==='year' ? ' active' : '');
+  const amt = document.getElementById('price-amt');
+  const per = document.getElementById('price-period');
+  const sav = document.getElementById('price-saving');
+  if (p === 'month') {
+    amt.textContent = '$3.99'; per.textContent = 'per month';
+    sav.style.display = 'none';
+  } else {
+    amt.textContent = '$29.99'; per.textContent = 'per year — that’s $2.50 a month';
+    sav.style.display = 'inline-block';
+  }
+}
+
+
+// FEEDBACK
+const fbAnswers = {};
+const FB_TOTAL = 7;
+function fbUpdateProgress() {
+  const filled = Object.keys(fbAnswers).filter(k => {
+    const v = fbAnswers[k]; return v && (Array.isArray(v) ? v.length > 0 : v !== '');
+  }).length;
+  const pct = Math.min(Math.round((filled / FB_TOTAL) * 100), 100);
+  const el = document.getElementById('fb-prog-fill');
+  const pt = document.getElementById('fb-prog-text');
+  const pp = document.getElementById('fb-prog-pct');
+  if (el) el.style.width = pct + '%';
+  if (pp) pp.textContent = pct + '%';
+  if (pt) pt.textContent = filled >= FB_TOTAL ? 'All done!' : 'Question ' + (filled + 1) + ' of ' + FB_TOTAL;
+}
+function fbPick(el, key, val) {
+  el.closest('.fb-choice-stack').querySelectorAll('.fb-choice').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel'); fbAnswers[key] = val; fbUpdateProgress();
+}
+function fbScale(el, key, val) {
+  el.closest('.fb-scale').querySelectorAll('.fb-scale-opt').forEach(e => e.classList.remove('sel'));
+  el.classList.add('sel'); fbAnswers[key] = val; fbUpdateProgress();
+}
+function fbTog(el, key, val) {
+  el.classList.toggle('sel');
+  if (!fbAnswers[key]) fbAnswers[key] = [];
+  fbAnswers[key] = fbAnswers[key].includes(val) ? fbAnswers[key].filter(v => v !== val) : [...fbAnswers[key], val];
+  fbUpdateProgress();
+}
+function fbSubmit() {
+  fbAnswers.q3detail = document.getElementById('fb-q3-detail') ? document.getElementById('fb-q3-detail').value : '';
+  fbAnswers.q5 = document.getElementById('fb-q5') ? document.getElementById('fb-q5').value : '';
+  fbAnswers.q7 = document.getElementById('fb-q7') ? document.getElementById('fb-q7').value : '';
+  fbAnswers.name = document.getElementById('fb-name') ? document.getElementById('fb-name').value : '';
+  fbAnswers.submitted = new Date().toISOString();
+
+  // Save locally
+  const existing = JSON.parse(localStorage.getItem('ir_feedback') || '[]');
+  existing.push(fbAnswers);
+  localStorage.setItem('ir_feedback', JSON.stringify(existing));
+  localStorage.setItem('ir_fb_done', '1');
+
+  // Send to Formspree
+  fetch('https://formspree.io/f/mnjgleed', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({
+      name: fbAnswers.name || 'Anonymous',
+      'How long used': fbAnswers.q1 || '—',
+      'Felt human or app-like': fbAnswers.q2 || '—',
+      'Oh that is actually me moment': fbAnswers.q3 || '—',
+      'Details on that moment': fbAnswers.q3detail || '—',
+      'Parts used': Array.isArray(fbAnswers.q4) ? fbAnswers.q4.join(', ') : '—',
+      'What did not feel right': fbAnswers.q5 || '—',
+      'Would pay after 60 days': fbAnswers.q6 || '—',
+      'Would tell a friend because': fbAnswers.q7 || '—',
+      submitted: fbAnswers.submitted
+    })
+  }).catch(function(err) {
+    console.log('Formspree error:', err);
+  });
+
+  // Show thank you regardless of network
+  const fw = document.getElementById('fb-form-wrap');
+  const ty = document.getElementById('fb-thankyou');
+  if (fw) fw.style.display = 'none';
+  if (ty) ty.style.display = 'block';
+  document.getElementById('screen-feedback').scrollTo({ top: 0, behavior: 'smooth' });
+  document.getElementById('fb-nudge').style.display = 'none';
+}
+function dismissNudge() {
+  localStorage.setItem('ir_nudge_dismissed', '1');
+  document.getElementById('fb-nudge').style.display = 'none';
+}
+function checkFeedbackNudge() {
+  const done = localStorage.getItem('ir_fb_done');
+  const dismissed = localStorage.getItem('ir_nudge_dismissed');
+  const logsCount = Object.keys(logs).length;
+  const nudge = document.getElementById('fb-nudge');
+  if (nudge && !done && !dismissed && logsCount >= 3) {
+    nudge.style.display = 'block';
+  }
+}
+
+
+
+
+
+// LONG PRESS CONTEXT SHEET
+
+// PROFILE EDIT
+function openProfileEdit() {
+  const saved = JSON.parse(localStorage.getItem('ir_profile') || '{}');
+  const contact = localStorage.getItem('ir_contact') || '';
+  const contactType = localStorage.getItem('ir_contact_type') || 'email';
+
+  // Pre-fill fields
+  document.getElementById('prof-name-inp').value = saved.name || '';
+  document.getElementById('prof-email-inp').value = (saved.contactType === 'email' ? saved.contact : '') || (contactType === 'email' ? contact : '') || '';
+  document.getElementById('prof-phone-inp').value = (saved.phone || '') || (contactType === 'phone' ? contact : '') || '';
+
+  // Update avatar initial
+  const name = saved.name || '';
+  const avEl = document.getElementById('prof-edit-av');
+  if (avEl) avEl.textContent = name ? name.charAt(0).toUpperCase() : 'A';
+
+  const m = document.getElementById('profile-modal');
+  m.classList.add('show');
+  m.onclick = e => { if (e.target === m) m.classList.remove('show'); };
+}
+
+function saveProfile() {
+  const name = document.getElementById('prof-name-inp').value.trim();
+  const email = document.getElementById('prof-email-inp').value.trim();
+  const phone = document.getElementById('prof-phone-inp').value.trim();
+
+  if (!name) { toast('Add your name first'); return; }
+
+  // Primary contact is whichever is filled — prefer email
+  const contact = email || phone;
+  const contactType = email ? 'email' : 'phone';
+
+  const profile = { name, email, phone, contact, contactType };
+  localStorage.setItem('ir_profile', JSON.stringify(profile));
+  if (contact) {
+    localStorage.setItem('ir_contact', contact);
+    localStorage.setItem('ir_contact_type', contactType);
+  }
+
+  updateProfileDisplay();
+  toast('Profile updated ✓');
+  document.getElementById('profile-modal').classList.remove('show');
+}
+
+function confirmDeleteAccount() {
+  document.getElementById('profile-modal').classList.remove('show');
+  const m = document.getElementById('delete-modal');
+  m.classList.add('show');
+  m.onclick = e => { if (e.target === m) m.classList.remove('show'); };
+}
+
+function deleteAccount() {
+  // Clear everything
+  const keys = [];
+  for (let i = 0; i < localStorage.length; i++) keys.push(localStorage.key(i));
+  keys.forEach(k => localStorage.removeItem(k));
+  document.getElementById('delete-modal').classList.remove('show');
+  toast('Account deleted');
+  setTimeout(() => { nav('settings'); }, 1200);
+}
+
+function showCycleLearningBadge() {
+  const setup = JSON.parse(localStorage.getItem('ir_cycle_setup') || '{}');
+  const badge = document.getElementById('cycle-learning-badge');
+  const sub = document.getElementById('cycle-learning-sub');
+  if (!badge) return;
+  if (setup.learnedAt && setup.detectedStarts >= 2) {
+    badge.style.display = 'block';
+    if (sub) sub.textContent = 'Based on ' + setup.detectedStarts + ' cycles — avg ' + (setup.cycleLen||28) + ' days';
+  } else if (Object.keys(logs).length >= 7) {
+    badge.style.display = 'block';
+    if (sub) sub.textContent = 'Gathering data — keep logging flow';
+  }
+}
+
+function updateProfileDisplay() {
+  const saved = JSON.parse(localStorage.getItem('ir_profile') || '{}');
+  const account = JSON.parse(localStorage.getItem('ir_account') || '{}');
+  const name = saved.name || 'Your name';
+  const email = saved.email || '';
+  const phone = saved.phone || '';
+  const contact = email || phone || account.contact || localStorage.getItem('ir_contact') || '';
+  const initial = name.charAt(0).toUpperCase();
+
+  const nameEl = document.getElementById('prof-name');
+  const avEl = document.getElementById('prof-av');
+  const contactEl = document.getElementById('prof-contact');
+
+  if (nameEl) nameEl.textContent = name;
+  if (avEl) avEl.textContent = initial;
+  if (contactEl) {
+    if (email && phone) contactEl.textContent = email + ' · ' + phone;
+    else contactEl.textContent = contact || 'No contact added';
+  }
+}
+
+
+var selectedFlow = '';
+function pickFlow(el, val) {
+  document.querySelectorAll('.flow-opt').forEach(e => e.classList.remove('self'));
+  el.classList.add('self');
+  selectedFlow = val;
+}
+function checkFlowSection() { /* flow always visible */ }
+
+
+function openDayDetail(date, cycleDay, phase, isLastStart, isLastEnd, isNextStart, logKey) {
+  const log = logs[logKey] || null;
+  const dateFmt = date.toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric'});
+  const phaseNames = {period:'Menstrual Phase',follicular:'Follicular Phase',ovulation:'Ovulation Phase',luteal:'Luteal Phase'};
+  const phaseEmojis = {period:'🌑',follicular:'🌱',ovulation:'🌸',luteal:'🌙'};
+
+  let html = '<div class="day-detail-date">' + dateFmt + '</div>';
+  html += '<div class="day-detail-phase">' + phaseEmojis[phase] + ' ' + phaseNames[phase] + ' · Day ' + cycleDay + '</div>';
+
+  // Period markers
+  if (isLastStart) html += '<div class="day-detail-marker period-start">🩸 Period started</div>';
+  if (isLastEnd) html += '<div class="day-detail-marker period-end">✓ Period ended</div>';
+  if (isNextStart) html += '<div class="day-detail-marker next-period">📅 Next period expected</div>';
+
+  if (log) {
+    // Mood
+    if (log.mood) {
+      html += '<div class="day-detail-section"><div class="day-detail-label">Mood</div><div class="day-detail-chips"><span class="day-detail-chip mood">' + log.mood + '</span></div></div>';
+    }
+    // Energy
+    if (log.energies && log.energies.length > 0) {
+      html += '<div class="day-detail-section"><div class="day-detail-label">Energy</div><div class="day-detail-chips">' + log.energies.map(e=>'<span class="day-detail-chip mood">'+e+'</span>').join('') + '</div></div>';
+    }
+    // Feelings
+    if (log.feels && log.feels.length > 0) {
+      html += '<div class="day-detail-section"><div class="day-detail-label">Feelings</div><div class="day-detail-chips">' + log.feels.map(f=>'<span class="day-detail-chip feel">'+f+'</span>').join('') + '</div></div>';
+    }
+    // Symptoms
+    if (log.syms && log.syms.length > 0) {
+      html += '<div class="day-detail-section"><div class="day-detail-label">Body</div><div class="day-detail-chips">' + log.syms.map(s=>'<span class="day-detail-chip sym">'+s+'</span>').join('') + '</div></div>';
+    }
+    // Flow
+    if (log.flow) {
+      html += '<div class="day-detail-section"><div class="day-detail-label">Flow</div><div class="day-detail-chips"><span class="day-detail-chip flow">'+log.flow+'</span></div></div>';
+    }
+    // Note
+    if (log.note && log.note.trim()) {
+      html += '<div class="day-detail-section"><div class="day-detail-label">Note</div><div class="day-detail-note">"' + log.note + '"</div></div>';
+    }
+  } else {
+    html += '<div class="day-detail-empty">Nothing logged on this day yet.<br>Check in to start building your pattern.</div>';
+  }
+
+  // Store current date key for editing
+  currentDayKey = logKey;
+  currentDayDate = date;
+
+  document.getElementById('day-modal-content').innerHTML = html;
+
+  // Show/hide edit button based on whether there's a log
+  const editBtn = document.getElementById('dm-edit-btn');
+  if (editBtn) {
+    editBtn.style.display = log ? 'block' : 'none';
+    editBtn.onclick = () => openDayEdit(logKey, date);
+  }
+  // Always show log button
+  const logBtn = document.getElementById('dm-log-btn');
+  if (logBtn) {
+    logBtn.textContent = log ? 'Update check-in' : 'Log this day';
+    logBtn.onclick = () => openDayEdit(logKey, date);
+  }
+
+  const m = document.getElementById('day-modal');
+  m.classList.add('show');
+  m.onclick = e => { if(e.target===m) m.classList.remove('show'); };
+}
+
+
+var currentDayKey = '';
+var currentDayDate = null;
+
+function openDayEdit(key, date) {
+  const log = logs[key] || {};
+  document.getElementById('day-modal').classList.remove('show');
+
+  // Populate edit sheet
+  const dateFmt = date ? date.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) : '';
+  document.getElementById('edit-date-label').textContent = dateFmt;
+
+  // Pre-select mood
+  document.querySelectorAll('.edit-mood-opt').forEach(e => e.classList.remove('sel'));
+  if (log.mood) {
+    document.querySelectorAll('.edit-mood-opt').forEach(e => {
+      if (e.dataset.val === log.mood) e.classList.add('sel');
+    });
+  }
+
+  // Pre-select flow
+  document.querySelectorAll('.edit-flow-opt').forEach(e => e.classList.remove('eself'));
+  if (log.flow) {
+    document.querySelectorAll('.edit-flow-opt').forEach(e => {
+      if (e.dataset.val === log.flow) e.classList.add('eself');
+    });
+  }
+
+  // Pre-fill note
+  document.getElementById('edit-note').value = log.note || '';
+
+  // Pre-fill energy text
+  document.getElementById('edit-energy').value = (log.energies || []).join(', ');
+
+  // Pre-fill feelings text
+  document.getElementById('edit-feels').value = (log.feels || []).join(', ');
+
+  // Pre-fill symptoms text
+  document.getElementById('edit-syms').value = (log.syms || []).join(', ');
+
+  const em = document.getElementById('edit-modal');
+  em.classList.add('show');
+  em.onclick = e => { if(e.target===em) em.classList.remove('show'); };
+}
+
+function saveDayEdit() {
+  const key = currentDayKey;
+  if (!key) return;
+
+  const mood = document.querySelector('.edit-mood-opt.sel')?.dataset.val || '';
+  const flow = document.querySelector('.edit-flow-opt.eself')?.dataset.val || '';
+  const note = document.getElementById('edit-note').value;
+  const energies = document.getElementById('edit-energy').value.split(',').map(s=>s.trim()).filter(Boolean);
+  const feels = document.getElementById('edit-feels').value.split(',').map(s=>s.trim()).filter(Boolean);
+  const syms = document.getElementById('edit-syms').value.split(',').map(s=>s.trim()).filter(Boolean);
+
+  logs[key] = { ...logs[key], mood, flow, energies, feels, syms, note, ts: Date.now() };
+  localStorage.setItem('ir4', JSON.stringify(logs));
+
+  document.getElementById('edit-modal').classList.remove('show');
+  toast('Updated ✓');
+  renderCal();
+}
+
+function deleteDayLog() {
+  const key = currentDayKey;
+  if (!key) return;
+  delete logs[key];
+  localStorage.setItem('ir4', JSON.stringify(logs));
+  document.getElementById('edit-modal').classList.remove('show');
+  toast('Entry deleted');
+  renderCal();
+}
+
+
+// NOTIFICATION SETTINGS
+var notifSettings = JSON.parse(localStorage.getItem('ir_notif') || '{"freq":"daily","awareness":true,"phase":true,"period":true,"pattern":true,"partner":false,"quietFrom":"22:00","quietTo":"08:00"}');
+
+function setFreq(f) {
+  notifSettings.freq = f;
+  ['daily','every2','weekly','off'].forEach(k => {
+    const el = document.getElementById('freq-' + k);
+    if (el) el.className = 'notif-freq-btn' + (k === f ? ' active' : '');
+  });
+  saveNotifSettings();
+  const msgs = {daily:'Daily reminders on', every2:'Reminders every 2 days', weekly:'Weekly reminders only', off:'Reminders turned off'};
+  toast(msgs[f]);
+}
+
+function togNotif(el, key) {
+  el.classList.toggle('on');
+  notifSettings[key] = el.classList.contains('on');
+  saveNotifSettings();
+}
+
+function saveNotifSettings() {
+  const qf = document.getElementById('quiet-from');
+  const qt = document.getElementById('quiet-to');
+  if (qf) notifSettings.quietFrom = qf.value;
+  if (qt) notifSettings.quietTo = qt.value;
+  localStorage.setItem('ir_notif', JSON.stringify(notifSettings));
+}
+
+function loadNotifSettings() {
+  loadCustToggles();
+  const s = notifSettings;
+  // Frequency
+  ['daily','every2','weekly','off'].forEach(k => {
+    const el = document.getElementById('freq-' + k);
+    if (el) el.className = 'notif-freq-btn' + (k === s.freq ? ' active' : '');
+  });
+  // Toggles
+  const toggleMap = {awareness:'tog-awareness', phase:'tog-phase', period:'tog-period', pattern:'tog-pattern', partner:'tog-partner'};
+  Object.keys(toggleMap).forEach(k => {
+    const el = document.getElementById(toggleMap[k]);
+    if (el) {
+      el.className = 'tog' + (s[k] !== false ? ' on' : '');
+    }
+  });
+  // Quiet hours
+  const qf = document.getElementById('quiet-from');
+  const qt = document.getElementById('quiet-to');
+  if (qf) qf.value = s.quietFrom || '22:00';
+  if (qt) qt.value = s.quietTo || '08:00';
+}
+
+
+// ── PERSONALISED AI MESSAGES ─────────────────────────────────────────────────
+
+function buildUserContext() {
+  // Gather everything we know about this person
+  const profile = JSON.parse(localStorage.getItem('ir_profile') || '{}');
+  const setup = JSON.parse(localStorage.getItem('ir_cycle_setup') || '{}');
+  const day = cd(TODAY);
+  const phase = ph(day);
+  const phaseNames = {period:'menstrual',follicular:'follicular',ovulation:'ovulation',luteal:'luteal'};
+
+  // Last 14 days of logs
+  const recentLogs = [];
+  for (let i = 0; i < 14; i++) {
+    const d = new Date(TODAY);
+    d.setDate(d.getDate() - i);
+    const k = d.toISOString().slice(0, 10);
+    if (logs[k]) {
+      recentLogs.push({
+        daysAgo: i,
+        mood: logs[k].mood,
+        energy: (logs[k].energies || []).join(', '),
+        feelings: (logs[k].feels || []).join(', '),
+        symptoms: (logs[k].syms || []).join(', '),
+        flow: logs[k].flow,
+        note: logs[k].note
+      });
+    }
+  }
+
+  // Count total logs for experience level
+  const totalLogs = Object.keys(logs).length;
+  const name = profile.name || '';
+  const cycleLen = setup.cycleLen || userCycleLen;
+  const periodDur = setup.periodDur || userPeriodDur;
+
+  return {
+    name,
+    cycleDay: day,
+    phase: phaseNames[phase],
+    cycleLength: cycleLen,
+    periodDuration: periodDur,
+    daysUntilNextPeriod: cycleLen - day,
+    totalCheckIns: totalLogs,
+    recentLogs,
+    isNewUser: totalLogs < 5,
+    hasPatterns: totalLogs >= 10
+  };
+}
+
+async function fetchPersonalisedMessage(ctx, type) {
+  const phaseDescriptions = {
+    menstrual: 'their period has arrived, their body is doing the hard work, they may feel tired, crampy, or emotionally raw',
+    follicular: 'their period just ended, energy is rising, fog is lifting, they may feel more themselves',
+    ovulation: 'peak energy phase, feeling confident and social, most energetic and communicative time',
+    luteal: 'post-ovulation, emotions intensifying, things feeling heavier, PMS territory, needs extra gentleness'
+  };
+
+  const recentMoods = ctx.recentLogs.slice(0,5).map(l => l.mood).filter(Boolean).join(', ');
+  const recentFeelings = ctx.recentLogs.slice(0,5).map(l => l.feelings).filter(Boolean).join(', ');
+  const recentNotes = ctx.recentLogs.filter(l => l.note).slice(0,3).map(l => `"${l.note}"`).join(' | ');
+  const recentSymptoms = ctx.recentLogs.slice(0,5).map(l => l.symptoms).filter(Boolean).join(', ');
+
+  const prompts = {
+    main: `You are the voice of Inner Rhythm, a period tracking app that talks like a best friend — warm, honest, a little direct, never clinical. Write ONE short message (3-5 sentences max) for someone in their ${ctx.phase} phase (day ${ctx.cycleDay} of a ${ctx.cycleLength}-day cycle).
+
+Context about this person:
+${ctx.name ? `- Their name is ${ctx.name}` : '- Name unknown'}
+- They have logged ${ctx.totalCheckIns} check-ins${ctx.isNewUser ? ' (fairly new user)' : ctx.hasPatterns ? ' (you have good insight into their patterns)' : ''}
+- Recent moods: ${recentMoods || 'not much data yet'}
+- Recent feelings: ${recentFeelings || 'not much data yet'}
+- Recent symptoms: ${recentSymptoms || 'none logged'}
+${recentNotes ? `- Things they've written in their own words: ${recentNotes}` : ''}
+- Phase context: ${phaseDescriptions[ctx.phase]}
+
+Rules:
+- Sound like THEIR friend who knows them, not a generic wellness app
+- If you have their notes or words, subtly mirror their communication style — casual if they're casual, more reflective if they write more
+- If you have patterns, reference something specific (e.g. "you tend to go quiet around now" or "your energy usually dips here")
+- If they're new, be warm and welcoming without fake intimacy
+- Never use the word "journey", "empower", "self-care", or "hormones" more than once
+- No bullet points. Just talk to them like a person.
+- Do NOT start with their name`,
+
+    emotional: `You are Inner Rhythm, a period tracking app that talks like a trusted friend. Write ONE short emotional insight (2-3 sentences) for someone in their ${ctx.phase} phase.
+
+Context: ${recentMoods ? `They've recently been feeling: ${recentMoods}.` : ''} ${recentFeelings ? `Feelings logged: ${recentFeelings}.` : ''} ${recentNotes ? `In their words: ${recentNotes}` : ''}
+
+Be specific to what they've actually logged. If there's nothing, give a warm phase-appropriate insight. No fluff, no lists.`,
+
+    social: `You are Inner Rhythm. Write ONE short observation about how this person might be relating to people around them right now (2-3 sentences). They are in their ${ctx.phase} phase, day ${ctx.cycleDay}.
+
+${recentFeelings ? `Recent feelings: ${recentFeelings}` : ''} ${recentNotes ? `Their words: ${recentNotes}` : ''}
+
+Be honest and specific. Reference what they've logged if you can. Talk to them like you know them.`
+  };
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompts[type] }]
+      })
+    });
+    const data = await response.json();
+    return data.content?.[0]?.text?.trim() || null;
+  } catch(e) {
+    return null;
+  }
+}
+
+async function loadPersonalisedMessages() {
+  const day = cd(TODAY);
+  const p = ph(day);
+
+  // Always show static message immediately
+  document.getElementById('main-msg').textContent = MSGS[p];
+  document.getElementById('emo-insight').textContent = EMO[p];
+  document.getElementById('soc-insight').textContent = SOC[p];
+
+  // Only call AI if they have at least 3 check-ins — enough to personalise
+  const totalLogs = Object.keys(logs).length;
+  if (totalLogs < 3) {
+    // New user — show a warm generic welcome message
+    const welcomeMsgs = {
+      period: "Hey, welcome to Inner Rhythm. Your period just started — take it easy today. As you log more check-ins, I'll start getting to know your patterns and talking to you specifically.",
+      follicular: "Hey, welcome to Inner Rhythm. You're in your follicular phase — energy is rising. The more you log, the more personalised these messages will get. I'm looking forward to getting to know you.",
+      ovulation: "Hey, welcome to Inner Rhythm. You're in your ovulation phase — peak energy time. Keep logging and I'll start tailoring everything you see here specifically to you.",
+      luteal: "Hey, welcome to Inner Rhythm. You're in your luteal phase — things might feel heavier than usual this week. Log how you're feeling and I'll start learning what your cycle actually looks like."
+    };
+    document.getElementById('main-msg').textContent = welcomeMsgs[p];
+    return;
+  }
+
+  // Check if we already fetched today — keyed per user
+  const today = new Date().toISOString().slice(0, 10);
+  const userKey = localStorage.getItem('ir_contact') || 'default';
+  const cacheKey = 'ir_ai_msgs_' + userKey.replace(/[^a-zA-Z0-9]/g,'_');
+  const cached = JSON.parse(localStorage.getItem(cacheKey) || '{}');
+  if (cached.date === today) {
+    if (cached.main) document.getElementById('main-msg').textContent = cached.main;
+    if (cached.emotional) document.getElementById('emo-insight').textContent = cached.emotional;
+    if (cached.social) document.getElementById('soc-insight').textContent = cached.social;
+    return;
+  }
+
+  // Show loading dots while fetching
+  const mainEl = document.getElementById('main-msg');
+  const emoEl = document.getElementById('emo-insight');
+  const socEl = document.getElementById('soc-insight');
+
+  mainEl.innerHTML = '<div class="msg-loading"><span></span><span></span><span></span></div>';
+
+  const ctx = buildUserContext();
+
+  // Fetch all three in parallel
+  const [main, emotional, social] = await Promise.all([
+    fetchPersonalisedMessage(ctx, 'main'),
+    fetchPersonalisedMessage(ctx, 'emotional'),
+    fetchPersonalisedMessage(ctx, 'social')
+  ]);
+
+  // Apply results (fall back to static if API failed)
+  if (main) {
+    mainEl.textContent = main;
+  } else {
+    mainEl.textContent = MSGS[p];
+  }
+  if (emotional) emoEl.textContent = emotional;
+  if (social) socEl.textContent = social;
+
+  // Cache so we don't hit the API on every home screen visit today
+  localStorage.setItem(cacheKey, JSON.stringify({
+    date: today,
+    main: main || MSGS[p],
+    emotional: emotional || EMO[p],
+    social: social || SOC[p]
+  }));
+}
+
+
 
 function showWelcomeScreen(name) {
   onbStep = 0;
