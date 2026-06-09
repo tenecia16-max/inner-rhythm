@@ -832,6 +832,16 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
   .status{display:none!important;}
 }
 
+
+.card-ci{background:white;border-radius:16px;padding:15px 16px;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 10px rgba(0,0,0,.04);}
+.ci-sec{font-size:11px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;}
+.ci-mood-btn{flex:1;text-align:center;cursor:pointer;padding:8px 2px;border-radius:12px;-webkit-tap-highlight-color:transparent;}
+.ci-mood-btn.sel{background:#F0EAF8;border:1.5px solid #9B7EC8;}
+.ci-extra-chip{display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:12px;cursor:pointer;background:#F8F9FB;font-size:12px;font-weight:700;color:#5A7A8A;-webkit-tap-highlight-color:transparent;}
+.ci-extra-chip.sel{background:#9B7EC8;color:white;}
+.ci-chip{border-radius:20px;padding:7px 13px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid #E0EAF0;color:#5A7A8A;background:white;display:inline-block;margin:3px;-webkit-tap-highlight-color:transparent;}
+.ci-chip.sel{background:#9B7EC8;border-color:#9B7EC8;color:white;}
+
 </style>
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
 </head>
@@ -1152,76 +1162,123 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
 
   <!-- ======= CHECK-IN ======= -->
   <div class="screen" id="screen-checkin">
-    <div class="scroll">
-      <div style="padding:20px 0 14px">
-        <button class="back-btn" onclick="nav('home')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>Back</button>
-        <div style="display:flex;align-items:flex-start;justify-content:space-between">
-          <div style="font-family:'Playfair Display',serif;font-size:28px;line-height:1.2" id="ci-title-label">How's today going?</div>
-          <button id="log-diff-day-btn" onclick="openDayPicker()" style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:6px 12px;font-family:'Nunito',sans-serif;font-size:11px;font-weight:800;color:var(--text2);cursor:pointer;margin-top:4px;white-space:nowrap">Log a past day</button>
+
+    <!-- Phase-shifting header -->
+    <div id="ci-header" style="background:linear-gradient(160deg,#9B7EC8,#7B5EA8);padding:max(44px,env(safe-area-inset-top)) 18px 24px;flex-shrink:0;transition:background .4s;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+        <button onclick="nav('home')" style="background:rgba(255,255,255,.2);border:none;border-radius:50%;width:32px;height:32px;color:white;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#8592;</button>
+        <div style="font-size:12px;color:rgba(255,255,255,.8);font-weight:700;" id="ci-date-label">Today</div>
+        <button id="log-diff-day-btn" onclick="openDayPicker()" style="margin-left:auto;background:rgba(255,255,255,.15);border:none;border-radius:9px;padding:5px 10px;font-family:Nunito,sans-serif;font-size:10px;font-weight:800;color:white;cursor:pointer;">Past day</button>
+      </div>
+      <!-- Mode toggle -->
+      <div id="ci-mode-toggle" style="background:rgba(0,0,0,.2);border-radius:12px;padding:3px;display:flex;margin-bottom:14px;">
+        <div id="toggle-quick" onclick="setCiMode('quick')" style="flex:1;background:white;border-radius:9px;padding:8px;text-align:center;cursor:pointer;transition:all .2s;">
+          <div style="font-size:12px;font-weight:800;color:#9B7EC8;" id="toggle-quick-label">&#9889; Quick</div>
+          <div style="font-size:9px;color:#A8C0CC;margin-top:1px;">~30 seconds</div>
         </div>
-        <div style="font-size:13px;font-weight:700;color:var(--sky);margin-top:5px" id="ci-date-label"></div>
-        <div id="ci-already-logged" style="display:none;background:var(--sky-soft);border-radius:12px;padding:10px 14px;margin-top:10px;font-size:13px;color:var(--steel);font-weight:600">
-          ✏️ Already logged this day — filling in what you saved. Edit and save to update it.
-        </div>
-        <!-- Day picker dropdown -->
-        <div id="day-picker" style="display:none;background:var(--card);border-radius:16px;border:1px solid var(--border);padding:8px;margin-top:10px;box-shadow:0 4px 20px rgba(0,0,0,.1)">
-          <div style="font-size:11px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;padding:6px 8px 8px">Which day?</div>
-          <div id="day-picker-options"></div>
+        <div id="toggle-deep" onclick="setCiMode('deep')" style="flex:1;border-radius:9px;padding:8px;text-align:center;cursor:pointer;transition:all .2s;">
+          <div style="font-size:12px;font-weight:800;color:rgba(255,255,255,.6);">&#127754; Deep</div>
+          <div style="font-size:9px;color:rgba(255,255,255,.4);margin-top:1px;">Take your time</div>
         </div>
       </div>
-      <div class="qblock">
-        <div class="qlbl">Overall vibe today?</div>
-        <div class="mood-grid" id="mood-grid">
-          <div class="mopt" onclick="pm(this,'Amazing')" style="position:relative"><span class="moji">🤩</span><span class="mlbl">Amazing</span><span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();if(mood==='Amazing')mood='';">×</span></div>
-          <div class="mopt" onclick="pm(this,'Happy')" style="position:relative"><span class="moji">😊</span><span class="mlbl">Happy</span><span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();if(mood==='Happy')mood='';">×</span></div>
-          <div class="mopt" onclick="pm(this,'Good')" style="position:relative"><span class="moji">🙂</span><span class="mlbl">Good</span><span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();if(mood==='Good')mood='';">×</span></div>
-          <div class="mopt" onclick="pm(this,'Meh')" style="position:relative"><span class="moji">😑</span><span class="mlbl">Meh</span><span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();if(mood==='Meh')mood='';">×</span></div>
-          <div class="mopt" onclick="pm(this,'Sensitive')" style="position:relative"><span class="moji">🥺</span><span class="mlbl">Sensitive</span><span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();if(mood==='Sensitive')mood='';">×</span></div>
-          <div class="mopt" onclick="pm(this,'Irritated')" style="position:relative"><span class="moji">😒</span><span class="mlbl">Irritated</span><span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();if(mood==='Irritated')mood='';">×</span></div>
-          <div class="mopt" onclick="pm(this,'Anxious')" style="position:relative"><span class="moji">😟</span><span class="mlbl">Anxious</span><span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();if(mood==='Anxious')mood='';">×</span></div>
-          <div class="mopt" onclick="pm(this,'Sad')" style="position:relative"><span class="moji">😞</span><span class="mlbl">Sad</span><span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();if(mood==='Sad')mood='';">×</span></div>
-          <div class="mopt" onclick="pm(this,'Angry')" style="position:relative"><span class="moji">😡</span><span class="mlbl">Angry</span><span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();if(mood==='Angry')mood='';">×</span></div>
-          <div class="mopt" onclick="pm(this,'Numb')" style="position:relative"><span class="moji">😶</span><span class="mlbl">Numb</span><span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();if(mood==='Numb')mood='';">×</span></div>
-          <div class="mopt" onclick="pm(this,'Weepy')" style="position:relative"><span class="moji">😭</span><span class="mlbl">Weepy</span><span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();if(mood==='Weepy')mood='';">×</span></div>
-          <div class="mopt" onclick="pm(this,'Rough')" style="position:relative"><span class="moji">😩</span><span class="mlbl">Rough</span><span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();if(mood==='Rough')mood='';">×</span></div>
+      <div style="font-family:Playfair Display,serif;font-size:20px;color:white;font-weight:700;line-height:1.3;" id="ci-title-label">Hey. Give me the honest version.</div>
+      <!-- Day picker -->
+      <div id="day-picker" style="display:none;background:rgba(255,255,255,.15);border-radius:14px;padding:10px;margin-top:12px;">
+        <div style="font-size:11px;font-weight:800;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.6px;padding:4px 6px 8px;">Which day?</div>
+        <div id="day-picker-options"></div>
+      </div>
+    </div>
+
+    <!-- Scroll content -->
+    <div class="scroll" id="ci-scroll" style="background:#F7F5FA;border-radius:26px 26px 0 0;margin-top:-18px;padding:18px 16px max(28px,env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:11px;position:relative;z-index:1;">
+
+      <div id="ci-already-logged" style="display:none;background:#EEF8FC;border-radius:12px;padding:10px 14px;font-size:13px;color:#2A6A8A;font-weight:600;">&#9999;&#65039; Already logged &#8212; editing your saved entry.</div>
+      <div id="period-alert" style="display:none;background:linear-gradient(135deg,#FFF0F6,#FFE4F0);border-radius:16px;padding:15px 16px;border:1.5px solid #F4C0D1;position:relative;">
+        <button onclick="document.getElementById('period-alert').style.display='none'" style="position:absolute;top:10px;right:12px;background:none;border:none;font-size:14px;color:#C0A0B0;cursor:pointer;">&#x2715;</button>
+        <div style="display:flex;align-items:flex-start;gap:11px;"><div style="font-size:22px;flex-shrink:0;margin-top:2px;">&#129768;</div><div><div style="font-size:12px;font-weight:800;color:#C05080;margin-bottom:5px;" id="period-alert-title">Period approaching</div><div style="font-size:12px;color:#7A3050;line-height:1.7;" id="period-alert-msg">Your body is winding down.</div></div></div>
+      </div>
+
+      <!-- ═══ MOOD (both modes) ═══ -->
+      <div class="card-ci" id="ci-mood-block">
+        <div class="ci-sec" id="ci-mood-label">How are you?</div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px;" id="mood-top-row">
+          <div class="mopt ci-mood-btn" onclick="pm(this,'Amazing')"><span style="font-size:26px;display:block;">&#129321;</span><span style="font-size:9px;font-weight:700;color:#8AAAB4;display:block;margin-top:3px;">Amazing</span></div>
+          <div class="mopt ci-mood-btn" onclick="pm(this,'Good')"><span style="font-size:26px;display:block;">&#128522;</span><span style="font-size:9px;font-weight:700;color:#8AAAB4;display:block;margin-top:3px;">Good</span></div>
+          <div class="mopt ci-mood-btn" onclick="pm(this,'Meh')"><span style="font-size:26px;display:block;">&#128529;</span><span style="font-size:9px;font-weight:700;color:#8AAAB4;display:block;margin-top:3px;">Meh</span></div>
+          <div class="mopt ci-mood-btn" onclick="pm(this,'Off')"><span style="font-size:26px;display:block;">&#128532;</span><span style="font-size:9px;font-weight:700;color:#8AAAB4;display:block;margin-top:3px;">Off</span></div>
+          <div class="mopt ci-mood-btn" onclick="pm(this,'Rough')"><span style="font-size:26px;display:block;">&#128542;</span><span style="font-size:9px;font-weight:700;color:#8AAAB4;display:block;margin-top:3px;">Rough</span></div>
         </div>
-                <div class="add-custom" style="margin-top:10px">
-          <input class="custom-inp" id="mood-custom" placeholder="Add your own mood..." onkeydown="if(event.key==='Enter'){addCustomMood()}">
-          <button class="add-btn" onclick="addCustomMood()">+ Add</button>
+        <div id="mood-extra" style="display:none;margin-bottom:8px;">
+          <div style="display:flex;flex-wrap:wrap;gap:6px;">
+            <div class="mopt ci-extra-chip" onclick="pm(this,'Happy')"><span style="font-size:18px;">&#128522;</span><span>Happy</span></div>
+            <div class="mopt ci-extra-chip" onclick="pm(this,'Sensitive')"><span style="font-size:18px;">&#129394;</span><span>Sensitive</span></div>
+            <div class="mopt ci-extra-chip" onclick="pm(this,'Irritated')"><span style="font-size:18px;">&#128530;</span><span>Irritated</span></div>
+            <div class="mopt ci-extra-chip" onclick="pm(this,'Anxious')"><span style="font-size:18px;">&#128543;</span><span>Anxious</span></div>
+            <div class="mopt ci-extra-chip" onclick="pm(this,'Sad')"><span style="font-size:18px;">&#128542;</span><span>Sad</span></div>
+            <div class="mopt ci-extra-chip" onclick="pm(this,'Angry')"><span style="font-size:18px;">&#128545;</span><span>Angry</span></div>
+            <div class="mopt ci-extra-chip" onclick="pm(this,'Numb')"><span style="font-size:18px;">&#128566;</span><span>Numb</span></div>
+            <div class="mopt ci-extra-chip" onclick="pm(this,'Weepy')"><span style="font-size:18px;">&#128557;</span><span>Weepy</span></div>
+          </div>
+        </div>
+        <button onclick="var e=document.getElementById('mood-extra');var b=this;if(e.style.display==='none'){e.style.display='block';b.textContent='Less moods &#8593;';}else{e.style.display='none';b.textContent='More moods &#8595;';}" style="width:100%;background:#F8F9FB;border:none;border-radius:10px;padding:7px;font-family:Nunito,sans-serif;font-size:11px;font-weight:700;color:#A8C0CC;cursor:pointer;">More moods &#8595;</button>
+        <div class="add-custom" style="margin-top:8px;"><input class="custom-inp" id="mood-custom" placeholder="Add your own..." onkeydown="if(event.key===&#39;Enter&#39;){addCustomMood()}"><button class="add-btn" onclick="addCustomMood()">+ Add</button></div>
+      </div>
+
+      <!-- IR responds to mood -->
+      <div id="ci-ir-response" style="display:none;border-radius:14px;padding:13px 14px;border-left:3px solid #4AAAC4;background:linear-gradient(135deg,#EEF8FF,#E0F2FA);">
+        <div style="display:flex;gap:9px;align-items:flex-start;">
+          <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#4AAAC4,#2A8AAC);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;">IR</div>
+          <div style="font-size:12px;color:#1A4A6A;line-height:1.65;" id="ci-ir-text"></div>
         </div>
       </div>
 
-      <div class="qblock" id="flow-section">
-        <div class="qlbl">Period flow</div>
-        <div class="qsub" id="flow-sub">Are you on your period today?</div>
-        <div class="flow-row">
-          <div class="flow-opt" onclick="pickFlow(this,'Not on period')"><span class="ficon">✗</span><span class="flbl">Not on period</span></div>
-          <div class="flow-opt" onclick="pickFlow(this,'Spotting')"><span class="ficon">🩸</span><span class="flbl">Spotting</span></div>
-          <div class="flow-opt" onclick="pickFlow(this,'Light')"><span class="ficon">🩸🩸</span><span class="flbl">Light</span></div>
-          <div class="flow-opt" onclick="pickFlow(this,'Medium')"><span class="ficon">🩸🩸🩸</span><span class="flbl">Medium</span></div>
-          <div class="flow-opt" onclick="pickFlow(this,'Heavy')"><span class="ficon">🩸🩸🩸🩸</span><span class="flbl">Heavy</span></div>
+      <!-- ═══ QUICK: What is it mostly ═══ -->
+      <div class="card-ci ci-quick-only" id="ci-driver-block">
+        <div class="ci-sec">What is it most like?</div>
+        <div style="display:flex;flex-wrap:wrap;gap:0;margin:-3px;" id="driver-chips">
+          <div class="ci-chip" onclick="pickDriver(this,'Tired')">&#128558; Tired</div>
+          <div class="ci-chip" onclick="pickDriver(this,'Anxious')">&#128543; Anxious</div>
+          <div class="ci-chip" onclick="pickDriver(this,'Flat')">&#128566; Flat</div>
+          <div class="ci-chip" onclick="pickDriver(this,'Irritable')">&#128530; Irritable</div>
+          <div class="ci-chip" onclick="pickDriver(this,'Achy')">&#129314; Achy</div>
+          <div class="ci-chip" onclick="pickDriver(this,'Exhausted')">&#128164; Exhausted</div>
+          <div class="ci-chip" onclick="pickDriver(this,'Content')">&#128522; Content</div>
+          <div class="ci-chip" onclick="pickDriver(this,'Energized')">&#9889; Energized</div>
         </div>
       </div>
 
-      <div class="qblock">
-        <div class="qlbl">Energy level</div>
-        <div class="qsub">Pick everything that fits — energy can be complicated</div>
+      <!-- ═══ FLOW (both modes — always present) ═══ -->
+      <div class="card-ci" id="ci-flow-block">
+        <div class="ci-sec">Period flow</div>
+        <div class="flow-row" id="flow-row-ci">
+          <div class="flow-opt" onclick="pickFlow(this,'None')"><span class="flbl">None</span></div>
+          <div class="flow-opt" onclick="pickFlow(this,'Spotting')"><span style="font-size:10px;color:#D4709A;display:block;line-height:1.2;">&#9679;</span><span class="flbl">Spotting</span></div>
+          <div class="flow-opt" onclick="pickFlow(this,'Light')"><span style="font-size:10px;color:#C05080;display:block;line-height:1.2;">&#9679;&#9679;</span><span class="flbl">Light</span></div>
+          <div class="flow-opt" onclick="pickFlow(this,'Medium')"><span style="font-size:10px;color:#A03060;display:block;line-height:1.2;">&#9679;&#9679;&#9679;</span><span class="flbl">Medium</span></div>
+          <div class="flow-opt" onclick="pickFlow(this,'Heavy')"><span style="font-size:10px;color:#80204A;display:block;line-height:1.2;">&#9679;&#9679;&#9679;&#9679;</span><span class="flbl">Heavy</span></div>
+        </div>
+      </div>
+
+      <!-- ═══ DEEP ONLY sections ═══ -->
+
+      <!-- Energy -->
+      <div class="card-ci ci-deep-only" id="ci-energy-block" style="display:none;">
+        <div class="ci-sec">Energy today</div>
         <div class="erow" id="energy-row">
-          <div class="eopt" onclick="pe(this,'Full energy')" style="position:relative"><span class="ei">🔋</span>Full energy<span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();energies=energies.filter(function(x){return x!=='Full energy';})" >×</span></div>
-          <div class="eopt" onclick="pe(this,'Wired but tired')" style="position:relative"><span class="ei">🫠</span>Wired but tire<span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();energies=energies.filter(function(x){return x!=='Wired but tired';})" >×</span></div>
-          <div class="eopt" onclick="pe(this,'Running on empty')" style="position:relative"><span class="ei">🪫</span>Running on empty<span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();energies=energies.filter(function(x){return x!=='Running on empty';})" >×</span></div>
-          <div class="eopt" onclick="pe(this,'Foggy')" style="position:relative"><span class="ei">💤</span>Foggy<span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();energies=energies.filter(function(x){return x!=='Foggy';})" >×</span></div>
-          <div class="eopt" onclick="pe(this,'Cozy low')" style="position:relative"><span class="ei">😌</span>Cozy low<span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();energies=energies.filter(function(x){return x!=='Cozy low';})" >×</span></div>
-          <div class="eopt" onclick="pe(this,'Just okay')" style="position:relative"><span class="ei">🔆</span>Just okay<span class="custom-del" onclick="event.stopPropagation();this.parentElement.remove();energies=energies.filter(function(x){return x!=='Just okay';})" >×</span></div>
+          <div class="eopt" onclick="pe(this,'Full energy')"><span class="ei">&#128267;</span>Full energy</div>
+          <div class="eopt" onclick="pe(this,'Wired but tired')"><span class="ei">&#129760;</span>Wired but tired</div>
+          <div class="eopt" onclick="pe(this,'Running on empty')"><span class="ei">&#128251;</span>Running on empty</div>
+          <div class="eopt" onclick="pe(this,'Foggy')"><span class="ei">&#128164;</span>Foggy</div>
+          <div class="eopt" onclick="pe(this,'Cozy low')"><span class="ei">&#128524;</span>Cozy low</div>
+          <div class="eopt" onclick="pe(this,'Just okay')"><span class="ei">&#128262;</span>Just okay</div>
         </div>
-                <div class="add-custom" style="margin-top:10px">
-          <input class="custom-inp" id="energy-custom" placeholder="Add your own..." onkeydown="if(event.key==='Enter'){addCustomEnergy()}">
-          <button class="add-btn" onclick="addCustomEnergy()">+ Add</button>
-        </div>
+        <div class="add-custom" style="margin-top:8px;"><input class="custom-inp" id="energy-custom" placeholder="Add your own..." onkeydown="if(event.key===&#39;Enter&#39;){addCustomEnergy()}"><button class="add-btn" onclick="addCustomEnergy()">+ Add</button></div>
       </div>
-      <div class="qblock">
-        <div class="qlbl">What feelings are showing up?</div>
-        <div class="qsub">Pick anything that feels true — even if it doesn't make sense yet</div>
+
+      <!-- Feelings -->
+      <div class="card-ci ci-deep-only" id="ci-feels-block" style="display:none;">
+        <div class="ci-sec">Feelings showing up</div>
+        <div style="font-size:11px;color:#C0CDD6;margin-bottom:10px;">Pick anything that feels true</div>
         <div class="icon-grid" id="feel-chips">
           <div class="icon-tile" onclick="tfi(this,'Overwhelmed','p')"><i class="ph ph-waves"></i><div class="icon-tile-label">Overwhelmed</div></div>
           <div class="icon-tile" onclick="tfi(this,'Anxious','p')"><i class="ph ph-heartbeat"></i><div class="icon-tile-label">Anxious</div></div>
@@ -1230,23 +1287,19 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
           <div class="icon-tile" onclick="tfi(this,'Craving connection','p')"><i class="ph ph-hand-heart"></i><div class="icon-tile-label">Craving connection</div></div>
           <div class="icon-tile" onclick="tfi(this,'Wanting space','p')"><i class="ph ph-arrows-in"></i><div class="icon-tile-label">Wanting space</div></div>
           <div class="icon-tile" onclick="tfi(this,'Unmotivated','p')"><i class="ph ph-battery-low"></i><div class="icon-tile-label">Unmotivated</div></div>
-          <div class="icon-tile" onclick="tfi(this,'Weepy','p')"><i class="ph ph-drop"></i><div class="icon-tile-label">Weepy</div></div>
           <div class="icon-tile" onclick="tfi(this,'Confident','p')"><i class="ph ph-sparkle"></i><div class="icon-tile-label">Confident</div></div>
           <div class="icon-tile" onclick="tfi(this,'Creative','p')"><i class="ph ph-paint-brush"></i><div class="icon-tile-label">Creative</div></div>
           <div class="icon-tile" onclick="tfi(this,'Peaceful','p')"><i class="ph ph-moon-stars"></i><div class="icon-tile-label">Peaceful</div></div>
           <div class="icon-tile" onclick="tfi(this,'Disconnected','p')"><i class="ph ph-cloud-fog"></i><div class="icon-tile-label">Disconnected</div></div>
           <div class="icon-tile" onclick="tfi(this,'Hopeful','p')"><i class="ph ph-plant"></i><div class="icon-tile-label">Hopeful</div></div>
-          <div class="icon-tile" onclick="tfi(this,'Lonely','p')"><i class="ph ph-user"></i><div class="icon-tile-label">Lonely</div></div>
-          <div class="icon-tile" onclick="tfi(this,'Resentful','p')"><i class="ph ph-fire"></i><div class="icon-tile-label">Resentful</div></div>
-          <div class="icon-tile" onclick="tfi(this,'Foggy','p')"><i class="ph ph-wind"></i><div class="icon-tile-label">Foggy</div></div>
         </div>
-                <div class="add-custom" style="margin-top:8px">
-          <input class="custom-inp" id="feel-custom" placeholder="Add something more specific..." onkeydown="if(event.key==='Enter'){addCustomFeel()}">
-          <button class="add-btn" onclick="addCustomFeel()">+ Add</button>
-        </div>
+        <div class="add-custom" style="margin-top:8px;"><input class="custom-inp" id="feel-custom" placeholder="Add something more specific..." onkeydown="if(event.key===&#39;Enter&#39;){addCustomFeel()}"><button class="add-btn" onclick="addCustomFeel()">+ Add</button></div>
       </div>
-      <div class="qblock">
-        <div class="qlbl">Body check (optional)</div>
+
+      <!-- Body -->
+      <div class="card-ci ci-deep-only" id="ci-body-block" style="display:none;">
+        <div class="ci-sec">Body check</div>
+        <div style="font-size:11px;color:#C0CDD6;margin-bottom:10px;">Optional</div>
         <div class="icon-grid" id="sym-chips">
           <div class="icon-tile" onclick="tfi(this,'Cramps','s')"><i class="ph ph-smiley-nervous"></i><div class="icon-tile-label">Cramps</div></div>
           <div class="icon-tile" onclick="tfi(this,'Headache','s')"><i class="ph ph-brain"></i><div class="icon-tile-label">Headache</div></div>
@@ -1261,17 +1314,46 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
           <div class="icon-tile" onclick="tfi(this,'Insomnia','s')"><i class="ph ph-bed"></i><div class="icon-tile-label">Insomnia</div></div>
           <div class="icon-tile" onclick="tfi(this,'Hot flashes','s')"><i class="ph ph-thermometer-hot"></i><div class="icon-tile-label">Hot flashes</div></div>
         </div>
-                <div class="add-custom" style="margin-top:8px">
-          <input class="custom-inp" id="sym-custom" placeholder="Add your own symptom..." onkeydown="if(event.key==='Enter'){addCustomSym()}">
-          <button class="add-btn" onclick="addCustomSym()">+ Add</button>
+        <div class="add-custom" style="margin-top:8px;"><input class="custom-inp" id="sym-custom" placeholder="Add your own symptom..." onkeydown="if(event.key===&#39;Enter&#39;){addCustomSym()}"><button class="add-btn" onclick="addCustomSym()">+ Add</button></div>
+      </div>
+
+      <!-- IR phase deep question -->
+      <div class="ci-deep-only" id="ci-deep-q-block" style="display:none;background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-radius:16px;padding:15px 16px;border:1.5px solid #E4D8F4;">
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px;">
+          <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;">IR</div>
+          <div style="font-size:11px;font-weight:800;color:#7B5EA8;" id="deep-q-label">Something I always wonder</div>
+        </div>
+        <div style="font-size:13px;color:#3A2A5A;line-height:1.75;margin-bottom:11px;font-style:italic;" id="deep-q-text">What is the loudest feeling you are carrying today?</div>
+        <div style="display:flex;flex-wrap:wrap;gap:0;margin:-3px;" id="deep-q-chips"></div>
+      </div>
+
+      <!-- IR one more thing (both modes — always last) -->
+      <div id="ci-body-intuition" style="background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-radius:16px;padding:15px 16px;border:1.5px solid #E4D8F4;">
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:11px;">
+          <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;">IR</div>
+          <div style="font-size:11px;font-weight:800;color:#7B5EA8;" id="body-intuition-q">What would actually help you right now?</div>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:7px;" id="body-intuition-chips">
+          <div class="bi-chip" onclick="pickBI(this,'Rest')">&#128564; Rest</div>
+          <div class="bi-chip" onclick="pickBI(this,'Movement')">&#127939; Movement</div>
+          <div class="bi-chip" onclick="pickBI(this,'Connection')">&#129309; Connection</div>
+          <div class="bi-chip" onclick="pickBI(this,'Solitude')">&#127807; Solitude</div>
+          <div class="bi-chip" onclick="pickBI(this,'Nourishment')">&#127861; Nourishment</div>
+          <div class="bi-chip" onclick="pickBI(this,'Release')">&#127754; Release</div>
+          <div class="bi-chip" onclick="pickBI(this,'Creativity')">&#127912; Creativity</div>
+          <div class="bi-chip" onclick="pickBI(this,'Nothing clear')">&#129335; Nothing clear</div>
         </div>
       </div>
 
-      <div class="qblock">
-        <div class="qlbl">Anything you want to say? (optional)</div>
-        <textarea class="notebox" id="ci-note" placeholder="Vent. Ramble. Say the thing you can't say out loud. It's just us."></textarea>
+      <!-- Unsent letter (deep only) -->
+      <div class="card-ci ci-deep-only" id="ci-note-block" style="display:none;">
+        <div class="ci-sec">Unsent letter</div>
+        <div style="font-size:12px;color:#A8C0CC;font-style:italic;margin-bottom:10px;">Say what you cannot say out loud. Just us.</div>
+        <textarea class="notebox" id="ci-note" placeholder="Write freely..."></textarea>
       </div>
-      <button class="savebtn" onclick="saveCI()" id="ci-save-btn">Save today's check-in</button>
+
+      <button class="savebtn" onclick="saveCI()" id="ci-save-btn">Save &#8594;</button>
+
     </div>
   </div>
 
@@ -5417,6 +5499,89 @@ function saveNotifPref(key,val){
   var prefs=JSON.parse(localStorage.getItem('ir_notif_prefs')||'{}');
   prefs[key]=val;
   localStorage.setItem('ir_notif_prefs',JSON.stringify(prefs));
+}
+
+
+var ciMode='quick';
+var ciDriver='';
+
+function setCiMode(mode){
+  ciMode=mode;
+  var tq=document.getElementById('toggle-quick');
+  var td=document.getElementById('toggle-deep');
+  var title=document.getElementById('ci-title-label');
+
+  if(tq&&td){
+    if(mode==='quick'){
+      tq.style.background='white';
+      tq.querySelector('div').style.color='#9B7EC8';
+      td.style.background='transparent';
+      td.querySelector('div').style.color='rgba(255,255,255,.6)';
+      if(title)title.textContent='Hey. Give me the honest version.';
+    }else{
+      td.style.background='white';
+      td.querySelector('div').style.color='#9B7EC8';
+      tq.style.background='transparent';
+      tq.querySelector('div').style.color='rgba(255,255,255,.6)';
+      if(title)title.textContent='I want to really know how you are.';
+    }
+  }
+
+  // Show/hide sections
+  document.querySelectorAll('.ci-quick-only').forEach(function(el){
+    el.style.display=mode==='quick'?'':'none';
+  });
+  document.querySelectorAll('.ci-deep-only').forEach(function(el){
+    el.style.display=mode==='deep'?'':'none';
+  });
+
+  // Always show flow and body intuition
+  var flow=document.getElementById('ci-flow-block');
+  if(flow)flow.style.display='';
+  var bi=document.getElementById('ci-body-intuition');
+  if(bi)bi.style.display='';
+
+  // Set deep question chips
+  if(mode==='deep'){
+    var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+    if(setup.start){
+      var phase=ph(cd(TODAY));
+      var qs={
+        period:{label:'What does your body need permission for today?',chips:['To do nothing','To feel bad','To cancel plans','To eat what I want','To sleep all day','To cry if needed']},
+        follicular:{label:'What are you most looking forward to this week?',chips:['Something creative','Being social','Getting things done','Trying something new','Feeling like myself','Honestly nothing yet']},
+        ovulation:{label:'What do you feel like doing with all this energy?',chips:['Being around people','Creating something','Taking on a challenge','Saying yes to things','Physical movement','Quiet time actually']},
+        luteal:{label:'What is the loudest feeling you are carrying today?',chips:['Dread about nothing','Tired but wired','Irritated at small things','Sad without reason','Just done','Actually okay']}
+      };
+      var q=qs[phase]||qs.luteal;
+      var ql=document.getElementById('deep-q-label');
+      var qt=document.getElementById('deep-q-text');
+      var qc=document.getElementById('deep-q-chips');
+      if(ql)ql.textContent='Something I always wonder';
+      if(qt)qt.textContent=q.label;
+      if(qc){
+        qc.innerHTML='';
+        q.chips.forEach(function(c){
+          var el=document.createElement('div');
+          el.className='ci-chip';
+          el.textContent=c;
+          el.onclick=function(){
+            qc.querySelectorAll('.ci-chip').forEach(function(x){x.classList.remove('sel');});
+            el.classList.add('sel');
+          };
+          qc.appendChild(el);
+        });
+      }
+    }
+  }
+}
+
+function pickDriver(el,v){
+  document.querySelectorAll('#driver-chips .ci-chip').forEach(function(c){c.classList.remove('sel');});
+  el.classList.add('sel');
+  ciDriver=v;
+  // Save driver to current log data
+  var k=(checkInDate||TODAY).toISOString().slice(0,10);
+  if(logs[k]){logs[k].driver=v;localStorage.setItem('ir4',JSON.stringify(logs));}
 }
 
 </script>
