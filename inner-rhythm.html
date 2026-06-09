@@ -1886,86 +1886,117 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
 
   <!-- ======= SETTINGS ======= -->
   <div class="screen" id="screen-settings">
-    <div class="scroll">
-      <div style="padding:20px 0 18px"><div style="font-family:'Playfair Display',serif;font-size:30px">Profile</div></div>
-      <div class="profcard">
-        <div style="display:flex;align-items:center;gap:16px;width:100%">
-          <div class="profav" id="prof-av">A</div>
-          <div style="flex:1">
-            <div style="font-size:20px;font-weight:700" id="prof-name">Your name</div>
-            <div style="font-size:13px;opacity:.7;margin-top:2px" id="prof-contact">Add your email or phone</div>
+    <div class="scroll" style="padding-bottom:24px;">
+
+      <!-- Phase-tinted hero -->
+      <div id="prof-hero" style="background:linear-gradient(160deg,#9B7EC8,#7B5EA8);padding:max(44px,env(safe-area-inset-top)) 20px 30px;position:relative;flex-shrink:0;">
+        <div style="position:absolute;top:max(14px,calc(env(safe-area-inset-top) - 10px));right:16px;">
+          <button onclick="openProfileEdit()" style="background:rgba(255,255,255,.2);border:none;border-radius:10px;padding:6px 13px;font-family:Nunito,sans-serif;font-size:11px;font-weight:800;color:white;cursor:pointer;">Edit</button>
+        </div>
+        <div style="text-align:center;margin-bottom:18px;">
+          <div id="prof-av" style="width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:white;margin:0 auto 10px;border:3px solid rgba(255,255,255,.4);">?</div>
+          <div style="font-family:Playfair Display,serif;font-size:22px;color:white;font-weight:700;margin-bottom:3px;" id="prof-name">Your name</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.65);" id="prof-contact">Add your email</div>
+        </div>
+        <!-- Journey stats -->
+        <div style="display:flex;gap:8px;justify-content:center;">
+          <div style="background:rgba(255,255,255,.15);border-radius:12px;padding:9px 0;text-align:center;flex:1;">
+            <div style="font-size:20px;font-weight:800;color:white;line-height:1;" id="prof-log-count">0</div>
+            <div style="font-size:9px;color:rgba(255,255,255,.6);font-weight:700;margin-top:3px;">LOGS</div>
+          </div>
+          <div style="background:rgba(255,255,255,.15);border-radius:12px;padding:9px 0;text-align:center;flex:1;">
+            <div style="font-size:18px;font-weight:800;color:#FFD060;line-height:1;" id="prof-streak-count">&#128293; 0</div>
+            <div style="font-size:9px;color:rgba(255,255,255,.6);font-weight:700;margin-top:3px;">STREAK</div>
+          </div>
+          <div style="background:rgba(255,255,255,.15);border-radius:12px;padding:9px 0;text-align:center;flex:1;">
+            <div style="font-size:20px;font-weight:800;color:white;line-height:1;" id="prof-cycle-count">0</div>
+            <div style="font-size:9px;color:rgba(255,255,255,.6);font-weight:700;margin-top:3px;">CYCLES</div>
+          </div>
+          <div style="background:rgba(255,255,255,.15);border-radius:12px;padding:9px 0;text-align:center;flex:1;">
+            <div style="font-size:12px;font-weight:800;color:white;line-height:1.3;" id="prof-since">--</div>
+            <div style="font-size:9px;color:rgba(255,255,255,.6);font-weight:700;margin-top:3px;">SINCE</div>
           </div>
         </div>
-        <button class="prof-edit-btn" onclick="openProfileEdit()">Edit profile</button>
       </div>
-      <!-- Badge shelf -->
-      <div class="sec">Your badges</div>
-      <div id="badge-shelf" style="display:flex;flex-wrap:wrap;gap:12px;background:var(--card);border-radius:20px;padding:16px;border:0.5px solid var(--border);margin-bottom:14px;min-height:80px;align-items:center;"></div>
 
+      <!-- White content -->
+      <div style="background:#F7F5FA;border-radius:26px 26px 0 0;margin-top:-18px;position:relative;z-index:1;">
 
-      <div class="sec">My cycle</div>
-      <div style="margin-bottom:20px">
-        <div class="sitem" onclick="openM()"><div class="si-l"><div class="si-ic" style="background:var(--sky-soft)">🗓</div><div class="si-n">Last period started</div></div><div class="si-v" id="lpval">Feb 28</div></div>
-        <div id="cycle-learning-badge" style="display:none"><div class="sitem" style="background:var(--sage-soft)"><div class="si-l"><div class="si-ic" style="background:rgba(74,140,114,.2)">🧠</div><div><div class="si-n" style="color:var(--sage)">Learning your cycle</div><div style="font-size:11px;color:var(--sage);opacity:.8;margin-top:1px" id="cycle-learning-sub">Tracking pattern detected</div></div></div></div></div>
-        <div class="sitem" onclick="openM()"><div class="si-l"><div class="si-ic" style="background:var(--sky-soft)">⏱</div><div class="si-n">Average cycle length</div></div><div class="si-v" id="cycle-len-display">28 days</div></div>
-        <div class="sitem" onclick="openM()"><div class="si-l"><div class="si-ic" style="background:var(--sage-soft)">📅</div><div class="si-n">Period duration</div></div><div class="si-v" id="period-dur-display">5 days</div></div>
-      </div>
-      <div class="sec">Sharing</div>
-      <div style="margin-bottom:20px">
-        <div class="sitem" onclick="nav('sharing')"><div class="si-l"><div class="si-ic" style="background:var(--sky-soft)">🤝</div><div class="si-n">Partner sharing</div></div><div class="si-v">Set up →</div></div>
-      </div>
-      <div class="sec">My journey</div>
-      <div style="margin-bottom:20px">
-        <div class="sitem" onclick="nav('ttc')"><div class="si-l"><div class="si-ic" style="background:var(--sage-soft)">🌱</div><div class="si-n">Trying to conceive</div></div><div class="si-v" id="ttc-status-val">Off</div></div>
-      </div>
-      <div class="sec">Notifications</div>
-      <div style="margin-bottom:20px"><div class="sitem" onclick="nav('notifs')"><div class="si-l"><div class="si-ic" style="background:var(--sky-soft)">&#128276;</div><div><div class="si-n">Notification settings</div><div style="font-size:12px;color:var(--text3);margin-top:2px">Reminders, quiet hours and more</div></div></div><div class="si-v">&#8594;</div></div></div>
-      <div class="sec">Inner Rhythm Plus</div>
-      <div style="margin-bottom:20px">
-        <div class="sitem" onclick="nav(\'upgrade\')" style="background:linear-gradient(135deg,#EBF4FA,#E4EFF7)"><div class="si-l"><div class="si-ic" style="background:var(--sky-soft)">⭐</div><div><div class="si-n">Upgrade to Plus</div><div style="font-size:11px;color:var(--steel);margin-top:2px;font-weight:600">60-day free trial · from $2.50/mo</div></div></div><div class="si-v" style="color:var(--steel)">View →</div></div>
-      </div>
-      <div class="sec">Beta testing</div>
-      <div style="margin-bottom:20px">
-        <div class="sitem" onclick="nav('feedback')" style="background:var(--sky-soft)">
-          <div class="si-l">
-            <div class="si-ic" style="background:var(--steel-soft)">💬</div>
-            <div>
-              <div class="si-n">Share your feedback</div>
-              <div style="font-size:11px;color:var(--steel);margin-top:2px;font-weight:600">Help shape what gets built next</div>
+        <!-- IR personal note -->
+        <div style="padding:18px 16px 0;">
+          <div style="background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-radius:14px;padding:13px 14px;border:1.5px solid #E4D8F4;">
+            <div style="display:flex;gap:9px;align-items:flex-start;">
+              <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;">IR</div>
+              <div style="font-size:12px;color:#3A2A5A;line-height:1.65;" id="prof-ir-text">Start logging and I will begin building your picture.</div>
             </div>
           </div>
-          <div class="si-v" style="color:var(--sky)">Open →</div>
         </div>
-      </div>
-      <div class="sec">Your data</div>
-      <div style="margin-bottom:20px">
-        <div class="sitem" onclick="nav('about')"><div class="si-l"><div class="si-ic" style="background:var(--sky-soft)">ℹ️</div><div class="si-n">About Inner Rhythm</div></div><div class="si-v">Privacy & terms →</div></div>
-        <div class="sitem" onclick="toast('All data lives on your device only — we never see it')"><div class="si-l"><div class="si-ic" style="background:var(--sage-soft)">🔒</div><div class="si-n">Data storage</div></div><div class="si-v">On device only</div></div>
-        <div class="sitem" onclick="toast('We never sell or share your data')"><div class="si-l"><div class="si-ic" style="background:var(--sage-soft)">🚫</div><div class="si-n">Data selling / sharing</div></div><div class="si-v">Never</div></div>
-        <div class="sitem" onclick="nav('settings')"><div class="si-l"><div class="si-ic" style="background:var(--slate-soft)">🚪</div><div class="si-n">Sign out</div></div><div class="si-v" style="color:var(--slate)">Sign out</div></div>
-      </div>
-    
-      <!-- CUSTOMISE -->
-      <div style="background:var(--card);border-radius:22px;border:0.5px solid var(--border);overflow:hidden;margin-bottom:14px">
-        <div style="padding:16px 20px;border-bottom:0.5px solid var(--border)"><div class="slc-title">Customise home screen</div><div class="slc-sub" style="margin-top:4px">Choose what shows when you open the app</div></div>
-        <div style="padding:12px 20px">
-          <div class="cust-toggle-row"><div><div class="cust-toggle-label">Cycle wave</div><div class="cust-toggle-sub">Moon phases and wave tracker</div></div><div class="cust-toggle on" id="cust-wave" onclick="toggleCust(this,'wave')"></div></div>
-          <div class="cust-toggle-row"><div><div class="cust-toggle-label">Tomorrow preview</div><div class="cust-toggle-sub">What to expect tomorrow</div></div><div class="cust-toggle on" id="cust-tomorrow" onclick="toggleCust(this,'tomorrow')"></div></div>
-          <div class="cust-toggle-row"><div><div class="cust-toggle-label">Daily message</div><div class="cust-toggle-sub">Inner Rhythm phase insight</div></div><div class="cust-toggle on" id="cust-message" onclick="toggleCust(this,'message')"></div></div>
-          <div class="cust-toggle-row"><div><div class="cust-toggle-label">Mood tap</div><div class="cust-toggle-sub">Quick one-tap mood logging</div></div><div class="cust-toggle on" id="cust-moodtap" onclick="toggleCust(this,'moodtap')"></div></div>
+
+        <!-- Badge shelf -->
+        <div style="font-size:10px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.6px;padding:16px 18px 8px;">Your badges</div>
+        <div style="padding:0 12px 4px;">
+          <div id="badge-shelf" style="display:flex;flex-wrap:wrap;gap:12px;background:white;border-radius:16px;padding:16px;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 8px rgba(0,0,0,.04);min-height:80px;align-items:center;"></div>
         </div>
+
+        <!-- My cycle -->
+        <div style="font-size:10px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.6px;padding:16px 18px 8px;">My cycle</div>
+        <div style="background:white;border-radius:16px;margin:0 12px;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 8px rgba(0,0,0,.04);">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;" onclick="openM()">
+            <div style="display:flex;align-items:center;"><div style="width:34px;height:34px;border-radius:10px;background:#EEF8FC;display:flex;align-items:center;justify-content:center;font-size:16px;margin-right:12px;">&#128197;</div><div style="font-size:13px;font-weight:700;color:#1A3A45;">Last period started</div></div>
+            <div style="font-size:13px;color:#4AAAC4;font-weight:700;" id="lpval">Set up</div>
+          </div>
+          <div style="height:0.5px;background:#F0F4F8;margin:0 16px;"></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;" onclick="openM()">
+            <div style="display:flex;align-items:center;"><div style="width:34px;height:34px;border-radius:10px;background:#EEF8FC;display:flex;align-items:center;justify-content:center;font-size:16px;margin-right:12px;">&#9202;</div><div style="font-size:13px;font-weight:700;color:#1A3A45;">Cycle length</div></div>
+            <div style="font-size:13px;color:#4AAAC4;font-weight:700;" id="cycle-len-display">28 days</div>
+          </div>
+          <div style="height:0.5px;background:#F0F4F8;margin:0 16px;"></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;" onclick="openM()">
+            <div style="display:flex;align-items:center;"><div style="width:34px;height:34px;border-radius:10px;background:#FFF0F6;display:flex;align-items:center;justify-content:center;font-size:16px;margin-right:12px;">&#128197;</div><div style="font-size:13px;font-weight:700;color:#1A3A45;">Period duration</div></div>
+            <div style="font-size:13px;color:#4AAAC4;font-weight:700;" id="period-dur-display">5 days</div>
+          </div>
+        </div>
+
+        <!-- Preferences -->
+        <div style="font-size:10px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.6px;padding:16px 18px 8px;">Preferences</div>
+        <div style="background:white;border-radius:16px;margin:0 12px;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 8px rgba(0,0,0,.04);">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;" onclick="nav('notifs')">
+            <div style="display:flex;align-items:center;"><div style="width:34px;height:34px;border-radius:10px;background:#EEF8FC;display:flex;align-items:center;justify-content:center;font-size:16px;margin-right:12px;">&#128276;</div><div><div style="font-size:13px;font-weight:700;color:#1A3A45;">Notifications</div><div style="font-size:11px;color:#A8C0CC;margin-top:1px;">Reminders and quiet hours</div></div></div>
+            <div style="font-size:16px;color:#C0CDD6;">&#8250;</div>
+          </div>
+          <div style="height:0.5px;background:#F0F4F8;margin:0 16px;"></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;" onclick="nav('sharing')">
+            <div style="display:flex;align-items:center;"><div style="width:34px;height:34px;border-radius:10px;background:#F0EAF8;display:flex;align-items:center;justify-content:center;font-size:16px;margin-right:12px;">&#129309;</div><div style="font-size:13px;font-weight:700;color:#1A3A45;">Partner sharing</div></div>
+            <div style="font-size:16px;color:#C0CDD6;">&#8250;</div>
+          </div>
+        </div>
+
+        <!-- Your data -->
+        <div style="font-size:10px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.6px;padding:16px 18px 8px;">Your data</div>
+        <div style="background:white;border-radius:16px;margin:0 12px;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 8px rgba(0,0,0,.04);">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px;">
+            <div style="display:flex;align-items:center;"><div style="width:34px;height:34px;border-radius:10px;background:#F0F8EC;display:flex;align-items:center;justify-content:center;font-size:16px;margin-right:12px;">&#128274;</div><div><div style="font-size:13px;font-weight:700;color:#1A3A45;">Data storage</div><div style="font-size:11px;color:#8AAAB4;margin-top:1px;">Your device only. Always.</div></div></div>
+          </div>
+          <div style="height:0.5px;background:#F0F4F8;margin:0 16px;"></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;" onclick="exportData()">
+            <div style="display:flex;align-items:center;"><div style="width:34px;height:34px;border-radius:10px;background:#EEF8FC;display:flex;align-items:center;justify-content:center;font-size:16px;margin-right:12px;">&#11015;&#65039;</div><div style="font-size:13px;font-weight:700;color:#1A3A45;">Export my data</div></div>
+            <div style="font-size:16px;color:#C0CDD6;">&#8250;</div>
+          </div>
+          <div style="height:0.5px;background:#F0F4F8;margin:0 16px;"></div>
+          <div style="display:flex;align-items:center;padding:13px 16px;cursor:pointer;" onclick="if(confirm('Sign out?')){localStorage.removeItem('ir_session');location.reload();}">
+            <div style="width:34px;height:34px;border-radius:10px;background:#FFF4F0;display:flex;align-items:center;justify-content:center;font-size:16px;margin-right:12px;">&#128250;</div>
+            <div style="font-size:13px;font-weight:700;color:#E05050;">Sign out</div>
+          </div>
+          <div style="height:0.5px;background:#F0F4F8;margin:0 16px;"></div>
+          <div style="display:flex;align-items:center;padding:13px 16px;cursor:pointer;" onclick="if(confirm('Reset all data? Cannot be undone.')){localStorage.clear();location.reload();}">
+            <div style="width:34px;height:34px;border-radius:10px;background:#FFF0F0;display:flex;align-items:center;justify-content:center;font-size:16px;margin-right:12px;">&#129529;</div>
+            <div><div style="font-size:13px;font-weight:700;color:#E05050;">Reset all data</div><div style="font-size:11px;color:#B09090;margin-top:1px;">Testing only</div></div>
+          </div>
+        </div>
+
+        <div style="height:24px;"></div>
       </div>
-      <!-- EXPORT -->
-      <div style="background:var(--card);border-radius:22px;border:0.5px solid var(--border);overflow:hidden;margin-bottom:14px">
-        <div style="padding:16px 20px;border-bottom:0.5px solid var(--border)"><div class="slc-title">Your data</div><div class="slc-sub" style="margin-top:4px">Your data belongs to you.</div></div>
-        <div style="padding:16px 20px"><button class="export-btn" onclick="exportData()">&#11015;&#65039; Download my data</button><div style="font-size:11px;color:var(--text3);text-align:center;margin-top:8px">Exports as .txt. Nothing is sent anywhere.</div></div>
-      </div>
-      <!-- RESET -->
-      <div style="height:1px;background:var(--border);margin:8px 0;opacity:.4"></div>
-      <div class="sitem" onclick="if(confirm('Reset all data?')){{localStorage.clear();location.reload();}}" style="cursor:pointer">
-        <div class="si-l"><div class="si-ic" style="background:#FFF0F0">&#129529;</div><div><div class="si-n" style="color:#E05050">Reset &amp; start fresh</div><div style="font-size:11px;color:#B09090;margin-top:1px">For testing only &#183; clears all data</div></div></div>
-      </div>
-</div>
+    </div>
   </div>
 
   <!-- NAV -->
