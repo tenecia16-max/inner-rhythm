@@ -2546,6 +2546,54 @@ function finishWelcome(){
   }catch(e){goHome();}
 }
 
+function doAuth(){
+  var inp=document.getElementById('name-inp');
+  var name=inp?inp.value.trim():'';
+  if(!name){if(inp){inp.style.border='1.5px solid #E05050';inp.placeholder='Please enter your name';}return;}
+  var acc={name:name,createdAt:Date.now()};
+  localStorage.setItem('ir_account',JSON.stringify(acc));
+  localStorage.setItem('ir_session','1');
+  var authEl=document.getElementById('screen-auth');
+  if(authEl){authEl.classList.remove('active');authEl.style.display='none';}
+  var welEl=document.getElementById('screen-welcome');
+  if(welEl){welEl.style.display='flex';welEl.classList.add('active');}
+  var gn=document.getElementById('greet-name');
+  if(gn)gn.textContent=name;
+}
+
+function saveCI(){
+  var k=(checkInDate||TODAY).toISOString().slice(0,10);
+  var noteEl=document.getElementById('ci-note');
+  var logData={
+    mood:moods.length?moods[0]:mood,
+    moods:moods.length?moods:(mood?[mood]:[]),
+    energies:energies,
+    feels:feels,
+    syms:syms,
+    note:noteEl?noteEl.value:'',
+    ts:Date.now(),
+    flow:selectedFlow||'',
+    bodyIntuition:bodyIntuition,
+    driver:ciDriver||''
+  };
+  var existing=logs[k]||{};
+  if(logData.mood)existing.mood=logData.mood;
+  if(logData.moods&&logData.moods.length)existing.moods=logData.moods;
+  if(logData.energies&&logData.energies.length)existing.energies=logData.energies;
+  if(logData.feels&&logData.feels.length)existing.feels=logData.feels;
+  if(logData.syms&&logData.syms.length)existing.syms=logData.syms;
+  if(logData.flow&&logData.flow!=='None')existing.flow=logData.flow;
+  if(logData.note&&logData.note.trim())existing.note=logData.note;
+  if(logData.bodyIntuition)existing.bodyIntuition=logData.bodyIntuition;
+  if(logData.driver)existing.driver=logData.driver;
+  existing.ts=Date.now();
+  logs[k]=existing;
+  localStorage.setItem('ir4',JSON.stringify(logs));
+  toast('Saved ✓');
+  setTimeout(function(){checkRewards();},500);
+  nav('home');
+}
+
 function enterApp(){
   try{
     var authEl=document.getElementById('screen-auth');
