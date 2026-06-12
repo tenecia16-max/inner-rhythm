@@ -2976,6 +2976,266 @@ function openBadgeSheet(){
 
 function closeBadgeSheet(){var sheet=document.getElementById('badge-sheet');if(sheet)sheet.style.display='none';}
 
+
+function chM(dir){
+  calM+=dir;
+  if(calM>11){calM=0;calY++;}
+  if(calM<0){calM=11;calY--;}
+  renderCal();
+}
+
+function renderCal(){
+  var lbl=document.getElementById('cmlbl');
+  if(lbl)lbl.textContent=new Date(calY,calM,1).toLocaleDateString('en-US',{month:'long',year:'numeric'});
+  var g=document.getElementById('cgrid');
+  if(!g)return;
+  g.innerHTML='';
+  var moodEmoji={'Amazing':'\ud83e\udd29','Good':'\ud83d\ude0a','Happy':'\ud83d\ude0a','Meh':'\ud83d\ude10','Off':'\ud83d\ude14','Rough':'\ud83d\ude23','Anxious':'\ud83d\ude1f','Sad':'\ud83d\ude22','Irritated':'\ud83d\ude21','Sensitive':'\ud83e\udd79','Weepy':'\ud83d\ude22','Numb':'\ud83d\ude36','Angry':'\ud83d\ude21'};
+  ['S','M','T','W','T','F','S'].forEach(function(d){var el=document.createElement('div');el.className='cdname';el.textContent=d;g.appendChild(el);});
+  var first=new Date(calY,calM,1),sd=first.getDay(),dim=new Date(calY,calM+1,0).getDate(),prev=new Date(calY,calM,0).getDate();
+  var nextPS=new Date(userLP);nextPS.setDate(nextPS.getDate()+userCycleLen);
+  var nextPE=new Date(nextPS);nextPE.setDate(nextPE.getDate()+userPeriodDur-1);
+  for(var i=sd-1;i>=0;i--){var el=document.createElement('div');el.className='ccell cother';el.textContent=prev-i;g.appendChild(el);}
+  for(var d=1;d<=dim;d++){
+    var date=new Date(calY,calM,d);
+    var c=cd(date),p=ph(c);
+    var el=document.createElement('div');
+    var isT=date.toDateString()===TODAY.toDateString();
+    var k=date.toISOString().slice(0,10);
+    var log=logs[k];
+    var isPred=date>=nextPS&&date<=nextPE;
+    if(isT){el.className='ccell ctoday';el.textContent=d;}
+    else if(isPred&&!log){el.className='ccell cpredict';el.textContent=d;el.style.fontSize='11px';}
+    else if(log&&(log.mood||(log.moods&&log.moods.length))){
+      var dm=log.mood||(log.moods&&log.moods[0])||'';
+      el.className='ccell c'+p+' cemoji';
+      el.textContent=moodEmoji[dm]||String(d);
+    }else{el.className='ccell c'+p;el.textContent=d;}
+    (function(date,d,c,p,k,log,isPred){el.onclick=function(){showCalDay(date,d,c,p,k,log,isPred);};})(date,d,c,p,k,log,isPred);
+    g.appendChild(el);
+  }
+  var rem=7-((sd+dim)%7);
+  if(rem<7){for(var d2=1;d2<=rem;d2++){var el2=document.createElement('div');el2.className='ccell cother';el2.textContent=d2;g.appendChild(el2);}}
+  var dd=document.getElementById('cal-day-detail');if(dd)dd.style.display='none';
+  // Today strip
+  var todayKey=TODAY.toISOString().slice(0,10);
+  var todayLog=logs[todayKey];
+  var strip=document.getElementById('today-cal-strip');
+  var stripContent=document.getElementById('today-strip-content');
+  var stripLabel=document.getElementById('today-strip-label');
+  if(strip&&stripContent){
+    if(calY===TODAY.getFullYear()&&calM===TODAY.getMonth()){
+      strip.style.display='block';
+      if(todayLog&&todayLog.mood){
+        var mEmoji=moodEmoji[todayLog.mood]||'';
+        var parts=[mEmoji+' '+todayLog.mood];
+        if(todayLog.driver)parts.push(todayLog.driver);
+        if(todayLog.energies&&todayLog.energies.length)parts.push(todayLog.energies[0]);
+        if(todayLog.flow&&todayLog.flow!=='None')parts.push('Flow: '+todayLog.flow);
+        stripContent.textContent=parts.join(' \u00b7 ');
+        if(stripLabel)stripLabel.textContent='Today \u2014 tap to edit';
+        strip.style.cursor='pointer';
+        strip.onclick=function(){checkInDate=null;initCheckin();nav('checkin');};
+      }else{
+        var _s1=document.createElement('span');_s1.style.color='#A8C0CC';_s1.textContent='Nothing logged yet today \u2014 ';
+        var _s2=document.createElement('span');_s2.style.cssText='color:#9B7EC8;font-weight:700;cursor:pointer;';_s2.textContent='Log now \u2192';_s2.onclick=function(){checkInDate=null;initCheckin();nav('checkin');};
+        stripContent.innerHTML='';stripContent.appendChild(_s1);stripContent.appendChild(_s2);
+        if(stripLabel)stripLabel.textContent='Today';
+        strip.onclick=null;strip.style.cursor='default';
+      }
+    }else{strip.style.display='none';}
+  }
+}
+
+function buildPatterns(){
+  var allKeys=Object.keys(logs).sort();
+  var total=allKeys.length;
+  var heroSub=document.getElementById('pat-hero-sub');
+  var heroBar=document.getElementById('pat-hero-bar');
+  var todayLbl=document.getElementById('pat-today-lbl');
+  var cycleEnd=document.getElementById('pat-cycle-end');
+  if(heroSub){
+    var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+    if(setup.start){
+      var day=cd(TODAY),phase=ph(day);
+      var phNames={period:'Period',follicular:'Follicular',ovulation:'Ovulation',luteal:'Luteal'};
+      heroSub.textContent=(phNames[phase]||phase)+' \u00b7 Day '+day+' of '+userCycleLen;
+      if(heroBar)heroBar.style.width=Math.round(day/userCycleLen*100)+'%';
+      if(todayLbl)todayLbl.textContent='TODAY \u00b7 DAY '+day;
+      if(cycleEnd)cycleEnd.textContent='DAY '+userCycleLen;
+      var phaseGrads={period:'linear-gradient(160deg,#C05080,#D4709A)',follicular:'linear-gradient(160deg,#4AAAC4,#7DC8E0)',ovulation:'linear-gradient(160deg,#C07820,#E8A840)',luteal:'linear-gradient(160deg,#9B7EC8,#7B5EA8)'};
+      var hero=document.getElementById('pat-hero');
+      if(hero)hero.style.background=phaseGrads[phase]||phaseGrads.luteal;
+      patTab(phase);
+    }
+  }
+  var phaseMoods={period:[],follicular:[],ovulation:[],luteal:[]};
+  var phaseSyms={period:[],follicular:[],ovulation:[],luteal:[]};
+  var phaseEnergy={period:[],follicular:[],ovulation:[],luteal:[]};
+  var phaseBI={period:[],follicular:[],ovulation:[],luteal:[]};
+  allKeys.forEach(function(k){
+    var log=logs[k];var date=new Date(k);var c=cd(date),p=ph(c);
+    var moodVal=log.mood||(log.moods&&log.moods[0])||'';
+    if(moodVal)phaseMoods[p].push(moodVal);
+    if(log.syms&&log.syms.length)phaseSyms[p]=phaseSyms[p].concat(log.syms);
+    if(log.energies&&log.energies.length)phaseEnergy[p]=phaseEnergy[p].concat(log.energies);
+    if(log.bodyIntuition)phaseBI[p].push(log.bodyIntuition);
+  });
+  function scorePhase(moods){if(!moods.length)return null;var score=0;moods.forEach(function(m){if(m==='Amazing')score+=10;else if(m==='Good'||m==='Happy')score+=8;else if(m==='Meh')score+=5;else if(m==='Off'||m==='Sensitive'||m==='Anxious'||m==='Sad')score+=3;else score+=1;});return Math.round(score/moods.length);}
+  var phases=['period','follicular','ovulation','luteal'];
+  phases.forEach(function(p){var s=scorePhase(phaseMoods[p]);var el=document.getElementById('pscore-'+p);if(el)el.textContent=s?s+'/10':'--';});
+  function topItem(arr){if(!arr||!arr.length)return null;var freq={};arr.forEach(function(m){freq[m]=(freq[m]||0)+1;});return Object.entries(freq).sort(function(a,b){return b[1]-a[1];})[0][0];}
+  window.patPhaseData={
+    period:{color:'#C05080',bg:'#FFF0F6',note:phaseMoods.period.length?'Your period phase tends to be tougher. Both estrogen and progesterone drop to their lowest here. You always come through it.':'Log during your period so I can learn how it affects you.',chips:[]},
+    follicular:{color:'#4AAAC4',bg:'#EEF8FF',note:phaseMoods.follicular.length?'Follicular tends to be where you feel most like yourself. Rising estrogen lifts your mood and energy.':'Log during follicular phase so I can see how your energy shifts.',chips:[]},
+    ovulation:{color:'#E8A840',bg:'#FFFAF0',note:phaseMoods.ovulation.length?'Ovulation is brief but powerful. A surge in estrogen tends to make you feel more social and confident.':'Log during ovulation so I can see how those high-hormone days feel for you.',chips:[]},
+    luteal:{color:'#9B7EC8',bg:'#F8F4FF',note:phaseMoods.luteal.length?'Luteal tends to be your most complex phase. As progesterone drops, your nervous system becomes more reactive.':'Log during your luteal phase so I can track how the hormone shift affects you.',chips:[]}
+  };
+  var insights=[];
+  if(total>=5){
+    phases.forEach(function(p){
+      var top=topItem(phaseMoods[p]);
+      if(top&&phaseMoods[p].length>=3){
+        var pName={period:'period',follicular:'follicular phase',ovulation:'ovulation',luteal:'luteal phase'}[p];
+        insights.push({color:{period:'#C05080',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#9B7EC8'}[p],title:'You often feel '+top.toLowerCase()+' in '+pName,body:'This has shown up consistently in your '+pName+' logs. Your body is telling you something real.'});
+      }
+    });
+  }
+  var insEl=document.getElementById('pat-insights');
+  var insHdr=document.getElementById('pat-insights-hdr');
+  var emptyEl=document.getElementById('pat-empty');
+  if(insEl){
+    if(insights.length>0){
+      if(insHdr)insHdr.style.display='block';
+      if(emptyEl)emptyEl.style.display='none';
+      insEl.innerHTML='';
+      insights.forEach(function(ins){
+        var pill=document.createElement('div');
+        pill.style.cssText='display:flex;align-items:flex-start;gap:10px;background:white;border-radius:14px;padding:13px 14px;margin-bottom:8px;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 8px rgba(0,0,0,.04);cursor:pointer;';
+        var dot=document.createElement('div');dot.style.cssText='width:8px;height:8px;border-radius:50%;background:'+ins.color+';flex-shrink:0;margin-top:4px;';
+        var tw=document.createElement('div');tw.style.flex='1';
+        var tt=document.createElement('div');tt.style.cssText='font-size:12px;font-weight:800;color:#1A3A45;';tt.textContent=ins.title;
+        var tb=document.createElement('div');tb.style.cssText='font-size:12px;color:#5A7A8A;line-height:1.7;margin-top:8px;padding-top:8px;border-top:0.5px solid #F0F4F8;display:none;';tb.textContent=ins.body;
+        var plus=document.createElement('div');plus.style.cssText='font-size:14px;color:#C0CDD6;font-weight:800;flex-shrink:0;';plus.textContent='+';
+        tw.appendChild(tt);tw.appendChild(tb);pill.appendChild(dot);pill.appendChild(tw);pill.appendChild(plus);
+        pill.onclick=function(){var open=tb.style.display==='block';tb.style.display=open?'none':'block';plus.textContent=open?'+':'\u2212';plus.style.color=open?'#C0CDD6':ins.color;};
+        insEl.appendChild(pill);
+      });
+    }else{if(insHdr)insHdr.style.display='none';if(emptyEl)emptyEl.style.display='block';}
+  }
+  var irNote=document.getElementById('pat-ir-note');
+  if(irNote){
+    if(total===0)irNote.textContent='Start logging and I will begin building your picture.';
+    else if(total<5)irNote.textContent=total+' days logged. Keep going \u2014 patterns start forming around 5 days.';
+    else{var acc=JSON.parse(localStorage.getItem('ir_account')||'{}');var name=acc.name||'';irNote.textContent=(name?name+', I':' I')+' have '+total+' days of your data now. Tap each phase below to see what I have noticed about you.';}
+  }
+}
+
+function initCheckin(){
+  ciMode='quick';ciDriver='';mood='';moods=[];energies=[];feels=[];syms=[];bodyIntuition='';selectedFlow='';
+  document.querySelectorAll('.mopt').forEach(function(e){e.classList.remove('sel');});
+  document.querySelectorAll('.eopt').forEach(function(e){e.classList.remove('sel');});
+  document.querySelectorAll('.flow-opt').forEach(function(e){e.classList.remove('self');});
+  document.querySelectorAll('.icon-tile').forEach(function(e){e.classList.remove('selp','sels');});
+  document.querySelectorAll('.bi-chip').forEach(function(e){e.classList.remove('sel');});
+  document.querySelectorAll('.ci-chip').forEach(function(e){e.classList.remove('sel');});
+  var n=document.getElementById('ci-note');if(n)n.value='';
+  var ir=document.getElementById('ci-ir-response');if(ir)ir.style.display='none';
+  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  var header=document.getElementById('ci-header');
+  var phaseGrads={period:'linear-gradient(160deg,#C05080,#D4709A)',follicular:'linear-gradient(160deg,#4AAAC4,#7DC8E0)',ovulation:'linear-gradient(160deg,#C07820,#E8A840)',luteal:'linear-gradient(160deg,#9B7EC8,#7B5EA8)'};
+  if(setup.start&&header){
+    var phase=ph(cd(TODAY));
+    header.style.background=phaseGrads[phase]||phaseGrads.luteal;
+    var biQ=document.getElementById('body-intuition-q');
+    var biQuestions={period:'What does your body need most right now?',follicular:'What is your body asking for today?',ovulation:'What do you feel like doing with all this energy?',luteal:'What would actually help you get through today?'};
+    if(biQ)biQ.textContent=biQuestions[phase]||biQuestions.follicular;
+  }
+  var dl=document.getElementById('ci-date-label');
+  if(dl){var isToday=!checkInDate||checkInDate.toDateString()===TODAY.toDateString();if(isToday){checkInDate=null;dl.textContent='Today';}else{dl.textContent=checkInDate.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});}}
+  var k=(checkInDate||TODAY).toISOString().slice(0,10);
+  var alEl=document.getElementById('ci-already-logged');
+  if(logs[k]&&logs[k].mood){
+    if(alEl)alEl.style.display='block';
+    var l=logs[k];
+    if(l.mood){mood=l.mood;moods=l.moods||[l.mood];document.querySelectorAll('.mopt').forEach(function(e){var lbl=e.querySelector('span:last-child');if(lbl&&(lbl.textContent.trim()===l.mood))e.classList.add('sel');});}
+    if(l.energies)energies=l.energies;
+    if(l.flow)selectedFlow=l.flow;
+    if(l.note){var n=document.getElementById('ci-note');if(n)n.value=l.note;}
+  }else{if(alEl)alEl.style.display='none';}
+  try{
+    if(setup.start){
+      var daysLeft=userCycleLen-cd(TODAY);
+      var alertEl=document.getElementById('period-alert');
+      if(alertEl&&daysLeft>=1&&daysLeft<=4){
+        alertEl.style.display='block';
+        var msgs={1:{title:'Period likely starting tomorrow',msg:'Your body is almost there.'},2:{title:'Period in 2 days',msg:'Feeling heavier makes complete sense right now.'},3:{title:'Period in 3 days',msg:'That heavy feeling is your hormones shifting.'},4:{title:'Period in about 4 days',msg:'Late luteal. The fog creeping in makes sense.'}};
+        var am=msgs[daysLeft]||msgs[3];
+        var at=document.getElementById('period-alert-title');var am2=document.getElementById('period-alert-msg');
+        if(at)at.textContent=am.title;if(am2)am2.textContent=am.msg;
+      }else if(alertEl){alertEl.style.display='none';}
+    }
+  }catch(e){}
+  setCiMode('quick');
+}
+
+function loadProfile(){
+  var acc=JSON.parse(localStorage.getItem('ir_account')||'{}');
+  var prof=JSON.parse(localStorage.getItem('ir_profile')||'{}');
+  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  var name=prof.name||acc.name||'';
+  var av=document.getElementById('prof-av');
+  var pn=document.getElementById('prof-name');
+  var pc=document.getElementById('prof-contact');
+  if(av)av.textContent=name?name[0].toUpperCase():'?';
+  if(pn)pn.textContent=name||'Your name';
+  if(pc)pc.textContent=prof.email||acc.email||'Add your email';
+  var allKeys=Object.keys(logs);
+  var lc=document.getElementById('prof-log-count');if(lc)lc.textContent=allKeys.length;
+  var streak=0;var d=new Date(TODAY);
+  while(true){var k=d.toISOString().slice(0,10);if(!logs[k])break;streak++;d.setDate(d.getDate()-1);}
+  var sc=document.getElementById('prof-streak-count');if(sc)sc.innerHTML='\ud83d\udd25 '+streak;
+  var cycles=setup.start?Math.max(1,Math.floor((TODAY-new Date(setup.start+'T12:00:00'))/(userCycleLen*86400000))):0;
+  var cyc=document.getElementById('prof-cycle-count');if(cyc)cyc.textContent=cycles||0;
+  var ms=document.getElementById('prof-since');
+  if(ms&&acc.createdAt){var d2=new Date(acc.createdAt);ms.textContent=d2.toLocaleDateString('en-US',{month:'short',year:'numeric'});}
+  if(setup.start){var lp=document.getElementById('lpval');if(lp){var d3=new Date(setup.start+'T12:00:00');lp.textContent=d3.toLocaleDateString('en-US',{month:'short',day:'numeric'});}}
+  var cld=document.getElementById('cycle-len-display');if(cld)cld.textContent=(setup.cycleLen||28)+' days';
+  var pdd=document.getElementById('period-dur-display');if(pdd)pdd.textContent=(setup.periodDur||5)+' days';
+  var hero=document.getElementById('prof-hero');
+  if(hero&&setup.start){var phaseGrads2={period:'linear-gradient(160deg,#C05080,#D4709A)',follicular:'linear-gradient(160deg,#4AAAC4,#7DC8E0)',ovulation:'linear-gradient(160deg,#C07820,#E8A840)',luteal:'linear-gradient(160deg,#9B7EC8,#7B5EA8)'};var phase2=ph(cd(TODAY));hero.style.background=phaseGrads2[phase2]||phaseGrads2.luteal;}
+  var irTxt=document.getElementById('prof-ir-text');
+  if(irTxt){var lc2=allKeys.length;if(lc2===0)irTxt.textContent='Start logging and I will begin building your picture.';else if(lc2<7)irTxt.textContent=lc2+' logs in. Keep going \u2014 patterns start showing up around 7 days.';else{var mf={};allKeys.forEach(function(k){var l=logs[k];if(l.mood)mf[l.mood]=(mf[l.mood]||0)+1;});var tm=Object.entries(mf).sort(function(a,b){return b[1]-a[1];})[0];if(tm)irTxt.textContent=lc2+' days logged. Your most common feeling is '+tm[0].toLowerCase()+'. Keep going.';else irTxt.textContent=lc2+' days logged. Your patterns are forming. Keep going.';}}
+  var shelf=document.getElementById('badge-shelf');
+  if(shelf){
+    var earnedB=JSON.parse(localStorage.getItem('ir_badges')||'[]');
+    var allB=[{id:'streak7',icon:'\ud83d\udd25',lbl:'7 Day Streak',bg:'linear-gradient(135deg,#B86000,#E8A000)',glow:'rgba(255,160,0,.4)'},{id:'streak14',icon:'\ud83d\udd25',lbl:'14 Day',bg:'linear-gradient(135deg,#B86000,#E8A000)',glow:'rgba(255,160,0,.4)'},{id:'streak30',icon:'\ud83c\udfc6',lbl:'30 Day',bg:'linear-gradient(135deg,#8A7000,#D4B000)',glow:'rgba(220,180,0,.4)'},{id:'cycle1',icon:'\ud83c\udf00',lbl:'1st Cycle',bg:'linear-gradient(135deg,#2A6A3A,#4A9A6A)',glow:'rgba(74,154,106,.4)'},{id:'cycle3',icon:'\ud83c\udf3f',lbl:'3 Cycles',bg:'linear-gradient(135deg,#2A6A3A,#4A9A6A)',glow:'rgba(74,154,106,.4)'},{id:'period_known',icon:'\ud83e\ude78',lbl:'Period Known',bg:'linear-gradient(135deg,#A02060,#D45080)',glow:'rgba(212,80,128,.4)'},{id:'follicular_known',icon:'\ud83c\udf31',lbl:'Follicular',bg:'linear-gradient(135deg,#2A8AAA,#4AAAC4)',glow:'rgba(74,170,196,.4)'},{id:'ovulation_known',icon:'\u2600\ufe0f',lbl:'Ovulation',bg:'linear-gradient(135deg,#A07000,#D4A000)',glow:'rgba(212,160,0,.4)'},{id:'luteal_known',icon:'\ud83c\udf19',lbl:'Luteal Known',bg:'linear-gradient(135deg,#5A3A90,#9B7EC8)',glow:'rgba(155,126,200,.4)'}];
+    shelf.innerHTML='';
+    allB.forEach(function(b){var isE=earnedB.indexOf(b.id)!==-1;var el=document.createElement('div');el.style.cssText='text-align:center;flex-shrink:0;';var ring=document.createElement('div');ring.style.cssText='width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 5px;background:'+b.bg+';'+(isE?'box-shadow:0 0 0 3px white,0 0 0 5px '+b.glow+';':'filter:grayscale(1);opacity:.3;');ring.textContent=b.icon;var lbl=document.createElement('div');lbl.style.cssText='font-size:8px;font-weight:800;color:'+(isE?'#1A3A45':'#C0CDD6')+';text-align:center;line-height:1.3;max-width:50px;';lbl.textContent=b.lbl;el.appendChild(ring);el.appendChild(lbl);shelf.appendChild(el);});
+  }
+}
+
+function checkRewards(){
+  var earned=JSON.parse(localStorage.getItem('ir_badges')||'[]');
+  var newBadge=null;
+  var streak=0;var d=new Date(TODAY);
+  while(true){var k=d.toISOString().slice(0,10);if(!logs[k])break;streak++;d.setDate(d.getDate()-1);}
+  if(streak>=30&&earned.indexOf('streak30')===-1)newBadge='streak30';
+  else if(streak>=14&&earned.indexOf('streak14')===-1)newBadge='streak14';
+  else if(streak>=7&&earned.indexOf('streak7')===-1)newBadge='streak7';
+  if(!newBadge){
+    var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+    if(setup.start){var cycles=Math.floor((TODAY-new Date(setup.start+'T12:00:00'))/(userCycleLen*86400000));if(cycles>=3&&earned.indexOf('cycle3')===-1)newBadge='cycle3';else if(cycles>=1&&earned.indexOf('cycle1')===-1)newBadge='cycle1';}
+  }
+  if(newBadge){earned.push(newBadge);localStorage.setItem('ir_badges',JSON.stringify(earned));showReward(newBadge);}
+  // Update streak pill
+  var pill=document.getElementById('home-streak-pill');var pillNum=document.getElementById('home-streak-num');
+  if(pill&&streak>=1){pill.style.display='flex';if(pillNum)pillNum.textContent=streak;}
+  else if(pill){pill.style.display='none';}
+  // Check treat card
+  checkTreatCard();
+}
+
 </script>
 </body>
 </html>
