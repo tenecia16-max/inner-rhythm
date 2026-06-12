@@ -841,7 +841,15 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
 .ci-extra-chip{display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:12px;cursor:pointer;background:#F8F9FB;font-size:12px;font-weight:700;color:#5A7A8A;-webkit-tap-highlight-color:transparent;}
 .ci-extra-chip.sel{background:#9B7EC8;color:white;}
 .ci-chip{border-radius:20px;padding:7px 13px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid #E0EAF0;color:#5A7A8A;background:white;display:inline-block;margin:3px;-webkit-tap-highlight-color:transparent;}
-.ci-chip.sel{background:#9B7EC8;border-color:#9B7EC8;color:white;}
+.ci-chip.sel{background:#9B7EC8;border-color:#9B7EC8;color:white;}.ci-chip.sel .ci-chip-del{color:rgba(255,255,255,.7);}
+
+
+.ci-chip{position:relative;}
+.ci-chip-del{display:none;position:absolute;top:-5px;right:-5px;width:16px;height:16px;border-radius:50%;background:#E05050;color:white;font-size:9px;font-weight:800;cursor:pointer;align-items:center;justify-content:center;line-height:1;border:none;z-index:2;}
+.ci-chip.sel .ci-chip-del{display:flex;}
+.eopt{position:relative;}
+.eopt-del{display:none;position:absolute;top:-5px;right:-5px;width:16px;height:16px;border-radius:50%;background:#E05050;color:white;font-size:9px;font-weight:800;cursor:pointer;align-items:center;justify-content:center;line-height:1;z-index:2;}
+.eopt.sel .eopt-del{display:flex;}
 
 </style>
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
@@ -1280,19 +1288,19 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
       <div class="card-ci ci-deep-only" id="ci-feels-block" style="display:none;">
         <div class="ci-sec">Feelings showing up</div>
         <div style="font-size:11px;color:#C0CDD6;margin-bottom:10px;">Pick anything that feels true</div>
-        <div class="icon-grid" id="feel-chips">
-          <div class="icon-tile" onclick="tfi(this,'Overwhelmed','p')"><i class="ph ph-waves"></i><div class="icon-tile-label">Overwhelmed</div></div>
-          <div class="icon-tile" onclick="tfi(this,'Anxious','p')"><i class="ph ph-heartbeat"></i><div class="icon-tile-label">Anxious</div></div>
-          <div class="icon-tile" onclick="tfi(this,'Irritable','p')"><i class="ph ph-lightning"></i><div class="icon-tile-label">Irritable</div></div>
-          <div class="icon-tile" onclick="tfi(this,'Sensitive','p')"><i class="ph ph-butterfly"></i><div class="icon-tile-label">Sensitive</div></div>
-          <div class="icon-tile" onclick="tfi(this,'Craving connection','p')"><i class="ph ph-hand-heart"></i><div class="icon-tile-label">Craving connection</div></div>
-          <div class="icon-tile" onclick="tfi(this,'Wanting space','p')"><i class="ph ph-arrows-in"></i><div class="icon-tile-label">Wanting space</div></div>
-          <div class="icon-tile" onclick="tfi(this,'Unmotivated','p')"><i class="ph ph-battery-low"></i><div class="icon-tile-label">Unmotivated</div></div>
-          <div class="icon-tile" onclick="tfi(this,'Confident','p')"><i class="ph ph-sparkle"></i><div class="icon-tile-label">Confident</div></div>
-          <div class="icon-tile" onclick="tfi(this,'Creative','p')"><i class="ph ph-paint-brush"></i><div class="icon-tile-label">Creative</div></div>
-          <div class="icon-tile" onclick="tfi(this,'Peaceful','p')"><i class="ph ph-moon-stars"></i><div class="icon-tile-label">Peaceful</div></div>
-          <div class="icon-tile" onclick="tfi(this,'Disconnected','p')"><i class="ph ph-cloud-fog"></i><div class="icon-tile-label">Disconnected</div></div>
-          <div class="icon-tile" onclick="tfi(this,'Hopeful','p')"><i class="ph ph-plant"></i><div class="icon-tile-label">Hopeful</div></div>
+        <div id="feel-chips" style="display:flex;flex-wrap:wrap;gap:0;margin:-3px;">
+          <div class="ci-chip" onclick="tfi(this,'Overwhelmed','p')">&#127754; Overwhelmed</div>
+          <div class="ci-chip" onclick="tfi(this,'Anxious','p')">&#128543; Anxious</div>
+          <div class="ci-chip" onclick="tfi(this,'Irritable','p')">&#128530; Irritable</div>
+          <div class="ci-chip" onclick="tfi(this,'Sensitive','p')">&#129394; Sensitive</div>
+          <div class="ci-chip" onclick="tfi(this,'Craving connection','p')">&#129309; Craving connection</div>
+          <div class="ci-chip" onclick="tfi(this,'Wanting space','p')">&#127807; Wanting space</div>
+          <div class="ci-chip" onclick="tfi(this,'Unmotivated','p')">&#128251; Unmotivated</div>
+          <div class="ci-chip" onclick="tfi(this,'Confident','p')">&#10024; Confident</div>
+          <div class="ci-chip" onclick="tfi(this,'Creative','p')">&#127912; Creative</div>
+          <div class="ci-chip" onclick="tfi(this,'Peaceful','p')">&#127769; Peaceful</div>
+          <div class="ci-chip" onclick="tfi(this,'Disconnected','p')">&#128566; Disconnected</div>
+          <div class="ci-chip" onclick="tfi(this,'Hopeful','p')">&#127807; Hopeful</div>
         </div>
         <div class="add-custom" style="margin-top:8px;"><input class="custom-inp" id="feel-custom" placeholder="Add something more specific..." onkeydown="if(event.key===&#39;Enter&#39;){addCustomFeel()}"><button class="add-btn" onclick="addCustomFeel()">+ Add</button></div>
       </div>
@@ -1301,19 +1309,19 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
       <div class="card-ci ci-deep-only" id="ci-body-block" style="display:none;">
         <div class="ci-sec">Body check</div>
         <div style="font-size:11px;color:#C0CDD6;margin-bottom:10px;">Optional</div>
-        <div class="icon-grid" id="sym-chips">
-          <div class="icon-tile" onclick="tfi(this,'Cramps','s')"><i class="ph ph-smiley-nervous"></i><div class="icon-tile-label">Cramps</div></div>
-          <div class="icon-tile" onclick="tfi(this,'Headache','s')"><i class="ph ph-brain"></i><div class="icon-tile-label">Headache</div></div>
-          <div class="icon-tile" onclick="tfi(this,'Bloating','s')"><i class="ph ph-cloud-rain"></i><div class="icon-tile-label">Bloating</div></div>
-          <div class="icon-tile" onclick="tfi(this,'Tired','s')"><i class="ph ph-moon"></i><div class="icon-tile-label">Tired</div></div>
-          <div class="icon-tile" onclick="tfi(this,'Acne','s')"><i class="ph ph-circles-three"></i><div class="icon-tile-label">Acne</div></div>
-          <div class="icon-tile" onclick="tfi(this,'Tense','s')"><i class="ph ph-arrows-out"></i><div class="icon-tile-label">Tense</div></div>
-          <div class="icon-tile" onclick="tfi(this,'Backache','s')"><i class="ph ph-person-simple-walk"></i><div class="icon-tile-label">Backache</div></div>
-          <div class="icon-tile" onclick="tfi(this,'Nausea','s')"><i class="ph ph-wave-sine"></i><div class="icon-tile-label">Nausea</div></div>
-          <div class="icon-tile" onclick="tfi(this,'Tender chest','s')"><i class="ph ph-heart-half"></i><div class="icon-tile-label">Tender chest</div></div>
-          <div class="icon-tile" onclick="tfi(this,'Cravings','s')"><i class="ph ph-fork-knife"></i><div class="icon-tile-label">Cravings</div></div>
-          <div class="icon-tile" onclick="tfi(this,'Insomnia','s')"><i class="ph ph-bed"></i><div class="icon-tile-label">Insomnia</div></div>
-          <div class="icon-tile" onclick="tfi(this,'Hot flashes','s')"><i class="ph ph-thermometer-hot"></i><div class="icon-tile-label">Hot flashes</div></div>
+        <div id="sym-chips" style="display:flex;flex-wrap:wrap;gap:0;margin:-3px;">
+          <div class="ci-chip" onclick="tfi(this,'Cramps','s')">&#129768; Cramps</div>
+          <div class="ci-chip" onclick="tfi(this,'Headache','s')">&#129314; Headache</div>
+          <div class="ci-chip" onclick="tfi(this,'Bloating','s')">&#128534; Bloating</div>
+          <div class="ci-chip" onclick="tfi(this,'Tired','s')">&#128164; Tired</div>
+          <div class="ci-chip" onclick="tfi(this,'Acne','s')">&#128142; Acne</div>
+          <div class="ci-chip" onclick="tfi(this,'Tense','s')">&#128245; Tense</div>
+          <div class="ci-chip" onclick="tfi(this,'Backache','s')">&#129463; Backache</div>
+          <div class="ci-chip" onclick="tfi(this,'Nausea','s')">&#129314; Nausea</div>
+          <div class="ci-chip" onclick="tfi(this,'Tender chest','s')">&#129293; Tender chest</div>
+          <div class="ci-chip" onclick="tfi(this,'Cravings','s')">&#127860; Cravings</div>
+          <div class="ci-chip" onclick="tfi(this,'Insomnia','s')">&#128336; Insomnia</div>
+          <div class="ci-chip" onclick="tfi(this,'Hot flashes','s')">&#127798; Hot flashes</div>
         </div>
         <div class="add-custom" style="margin-top:8px;"><input class="custom-inp" id="sym-custom" placeholder="Add your own symptom..." onkeydown="if(event.key===&#39;Enter&#39;){addCustomSym()}"><button class="add-btn" onclick="addCustomSym()">+ Add</button></div>
       </div>
@@ -2654,13 +2662,13 @@ function saveCycleData(startStr,endStr,cycleLen,periodDur){
   userPeriodDur=periodDur||setup.periodDur||5;
 }
 
-function pe(el,e){
+function pe(el,v){
   if(el.classList.contains('sel')){
     el.classList.remove('sel');
-    energies=energies.filter(function(x){return x!==e;});
+    energies=energies.filter(function(x){return x!==v;});
   }else{
     el.classList.add('sel');
-    if(energies.indexOf(e)===-1)energies.push(e);
+    if(energies.indexOf(v)===-1)energies.push(v);
   }
 }
 
@@ -3177,6 +3185,7 @@ function initCheckin(){
     }
   }catch(e){}
   setCiMode('quick');
+  loadCustomItems();
 }
 
 function loadProfile(){
@@ -3248,11 +3257,21 @@ document.addEventListener('DOMContentLoaded', function(){
 // ── CHECK-IN INTERACTIONS ─────────────────────────────────────────────
 function tfi(el,v,type){
   if(type==='p'){
-    if(el.classList.contains('selp')){el.classList.remove('selp');feels=feels.filter(function(x){return x!==v;});}
-    else{el.classList.add('selp');if(feels.indexOf(v)===-1)feels.push(v);}
+    if(el.classList.contains('sel')){
+      el.classList.remove('sel');
+      feels=feels.filter(function(x){return x!==v;});
+    }else{
+      el.classList.add('sel');
+      if(feels.indexOf(v)===-1)feels.push(v);
+    }
   }else{
-    if(el.classList.contains('sels')){el.classList.remove('sels');syms=syms.filter(function(x){return x!==v;});}
-    else{el.classList.add('sels');if(syms.indexOf(v)===-1)syms.push(v);}
+    if(el.classList.contains('sel')){
+      el.classList.remove('sel');
+      syms=syms.filter(function(x){return x!==v;});
+    }else{
+      el.classList.add('sel');
+      if(syms.indexOf(v)===-1)syms.push(v);
+    }
   }
 }
 
@@ -3290,44 +3309,77 @@ function addCustomMood(){
 function addCustomEnergy(){
   var inp=document.getElementById('energy-custom');
   var v=inp?inp.value.trim():'';if(!v)return;
-  var emojis=['\u26a1','\ud83d\udd0b','\ud83d\udca7','\ud83c\udf3f','\ud83c\udf0a','\u2600\ufe0f'];
-  var emoji=emojis[Math.floor(Math.random()*emojis.length)];
-  var g=document.getElementById('energy-row');if(!g)return;
-  var el=document.createElement('div');el.className='eopt sel';el.style.position='relative';
-  el.innerHTML='<span class="ei">'+emoji+'</span>'+escHtml(v);
-  el.onclick=function(){pe(el,v);};
-  g.appendChild(el);
+  var emojis=['\u26a1','\ud83d\udd0b','\ud83d\udca7','\ud83c\udf3f','\ud83c\udf0a','\u2600\ufe0f','\ud83c\udf19','\ud83e\udeb7'];
+  var emoji=pickEmoji(emojis);
+  addEnergyChip(v,emoji,true);
   if(energies.indexOf(v)===-1)energies.push(v);
+  saveCustomItems();
   if(inp)inp.value='';
+}
+function addEnergyChip(v,emoji,select){
+  var g=document.getElementById('energy-row');if(!g)return;
+  var el=document.createElement('div');
+  el.className='eopt'+(select?' sel':'');
+  el.dataset.val=v;
+  var eiSpan=document.createElement('span');eiSpan.className='ei';eiSpan.textContent=emoji;
+  el.appendChild(eiSpan);
+  el.appendChild(document.createTextNode(v));
+  var del=document.createElement('button');
+  del.className='eopt-del';del.textContent='\u00d7';del.title='Remove';
+  del.onclick=function(e){e.stopPropagation();el.remove();energies=energies.filter(function(x){return x!==v;});saveCustomItems();};
+  el.appendChild(del);
+  el.onclick=function(e){if(e.target===del)return;pe(el,v);};
+  g.appendChild(el);
 }
 
 function addCustomFeel(){
   var inp=document.getElementById('feel-custom');
   var v=inp?inp.value.trim():'';if(!v)return;
-  var emojis=['\ud83d\udcad','\ud83c\udf38','\ud83e\udd8b','\ud83c\udf3b','\ud83e\udef6','\ud83c\udf08'];
-  var emoji=emojis[Math.floor(Math.random()*emojis.length)];
-  var g=document.getElementById('feel-chips');if(!g)return;
-  var el=document.createElement('div');el.className='icon-tile';
-  el.innerHTML='<span style="font-size:20px;line-height:1.3;display:block;">'+emoji+'</span><div class="icon-tile-label">'+escHtml(v)+'</div>';
-  el.onclick=function(){tfi(el,v,'p');};
-  g.appendChild(el);
+  var emojis=['\ud83d\udcad','\ud83c\udf38','\ud83e\udd8b','\ud83c\udf3b','\ud83e\udef6','\ud83c\udf08','\ud83d\udcaa','\ud83c\udfaf'];
+  var emoji=pickEmoji(emojis);
+  addFeelChip(v,emoji,true);
+  if(feels.indexOf(v)===-1)feels.push(v);
+  saveCustomItems();
   if(inp)inp.value='';
+}
+function addFeelChip(v,emoji,select){
+  var g=document.getElementById('feel-chips');if(!g)return;
+  var el=document.createElement('div');
+  el.className='ci-chip'+(select?' sel':'');
+  el.dataset.val=v;el.dataset.type='p';
+  el.textContent=emoji+' '+v;
+  var del=document.createElement('button');
+  del.className='ci-chip-del';del.textContent='\u00d7';del.title='Remove';
+  del.onclick=function(e){e.stopPropagation();el.remove();feels=feels.filter(function(x){return x!==v;});saveCustomItems();};
+  el.onclick=function(e){if(e.target===del)return;tfi(el,v,'p');};
+  el.appendChild(del);
+  g.appendChild(el);
 }
 
 function addCustomSym(){
   var inp=document.getElementById('sym-custom');
   var v=inp?inp.value.trim():'';if(!v)return;
-  var emojis=['\ud83e\udd15','\ud83d\ude2e','\ud83d\ude34','\ud83c\udf21\ufe0f','\ud83d\udc8a','\ud83e\ude79'];
-  var emoji=emojis[Math.floor(Math.random()*emojis.length)];
-  var g=document.getElementById('sym-chips');if(!g)return;
-  var el=document.createElement('div');el.className='icon-tile';
-  el.innerHTML='<span style="font-size:20px;line-height:1.3;display:block;">'+emoji+'</span><div class="icon-tile-label">'+escHtml(v)+'</div>';
-  el.onclick=function(){tfi(el,v,'s');};
-  g.appendChild(el);
+  var emojis=['\ud83e\udd15','\ud83d\ude2e','\ud83d\ude34','\ud83c\udf21\ufe0f','\ud83d\udc8a','\ud83e\ude79','\ud83e\udde0','\ud83d\udcaa'];
+  var emoji=pickEmoji(emojis);
+  addSymChip(v,emoji,true);
+  if(syms.indexOf(v)===-1)syms.push(v);
+  saveCustomItems();
   if(inp)inp.value='';
 }
+function addSymChip(v,emoji,select){
+  var g=document.getElementById('sym-chips');if(!g)return;
+  var el=document.createElement('div');
+  el.className='ci-chip'+(select?' sel':'');
+  el.dataset.val=v;el.dataset.type='s';
+  el.textContent=emoji+' '+v;
+  var del=document.createElement('button');
+  del.className='ci-chip-del';del.textContent='\u00d7';del.title='Remove';
+  del.onclick=function(e){e.stopPropagation();el.remove();syms=syms.filter(function(x){return x!==v;});saveCustomItems();};
+  el.onclick=function(e){if(e.target===del)return;tfi(el,v,'s');};
+  el.appendChild(del);
+  g.appendChild(el);
+}
 
-// ── CYCLE MODAL ───────────────────────────────────────────────────────
 function openM(){
   var m=document.getElementById('modal');
   if(!m)return;
@@ -3462,6 +3514,28 @@ function toast(msg){
   if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#1A3A45;color:white;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;font-family:Nunito,sans-serif;';document.body.appendChild(t);}
   t.textContent=msg;t.style.opacity='1';
   setTimeout(function(){t.style.opacity='0';},2000);
+}
+
+
+function saveCustomItems(){
+  var items={energy:[],feel:[],sym:[]};
+  document.querySelectorAll('#energy-row [data-val]').forEach(function(el){items.energy.push({v:el.dataset.val,e:el.querySelector('.ei')?el.querySelector('.ei').textContent:'\u26a1'});});
+  document.querySelectorAll('#feel-chips [data-val]').forEach(function(el){var txt=el.textContent.replace('\u00d7','').trim();var parts=txt.split(' ');var emoji=parts[0];var label=parts.slice(1).join(' ');items.feel.push({v:el.dataset.val,e:emoji});});
+  document.querySelectorAll('#sym-chips [data-val]').forEach(function(el){var txt=el.textContent.replace('\u00d7','').trim();var parts=txt.split(' ');var emoji=parts[0];var label=parts.slice(1).join(' ');items.sym.push({v:el.dataset.val,e:emoji});});
+  localStorage.setItem('ir_custom_ci',JSON.stringify(items));
+}
+
+function loadCustomItems(){
+  var items=JSON.parse(localStorage.getItem('ir_custom_ci')||'{"energy":[],"feel":[],"sym":[]}');
+  items.energy.forEach(function(i){
+    if(!document.querySelector('#energy-row [data-val="'+i.v+'"]'))addEnergyChip(i.v,i.e,false);
+  });
+  items.feel.forEach(function(i){
+    if(!document.querySelector('#feel-chips [data-val="'+i.v+'"]'))addFeelChip(i.v,i.e,false);
+  });
+  items.sym.forEach(function(i){
+    if(!document.querySelector('#sym-chips [data-val="'+i.v+'"]'))addSymChip(i.v,i.e,false);
+  });
 }
 
 </script>
