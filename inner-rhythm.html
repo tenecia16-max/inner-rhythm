@@ -2547,7 +2547,7 @@ function finishWelcome(){
 }
 
 function doAuth(){
-  var inp=document.getElementById('name-inp');
+  var inp=document.getElementById('inp-name');
   var name=inp?inp.value.trim():'';
   if(!name){if(inp){inp.style.border='1.5px solid #E05050';inp.placeholder='Please enter your name';}return;}
   var acc={name:name,createdAt:Date.now()};
@@ -2559,6 +2559,8 @@ function doAuth(){
   if(welEl){welEl.style.display='flex';welEl.classList.add('active');}
   var gn=document.getElementById('greet-name');
   if(gn)gn.textContent=name;
+  // Also update any welcome screen name references
+  document.querySelectorAll('.welcome-name').forEach(function(el){el.textContent=name;});
 }
 
 function saveCI(){
@@ -2837,7 +2839,7 @@ function pm(el,m){
         strip.style.cursor='pointer';
         strip.onclick=function(){checkInDate=null;initCheckin();nav('checkin');};
       }else{
-        stripContent.innerHTML='<span style="color:#A8C0CC;">Nothing logged yet today — </span><span style="color:#9B7EC8;font-weight:700;cursor:pointer;" onclick="checkInDate=null;initCheckin();nav('checkin');">Log now →</span>';
+        var _s1=document.createElement('span');_s1.style.color='#A8C0CC';_s1.textContent='Nothing logged yet today — ';var _s2=document.createElement('span');_s2.style.cssText='color:#9B7EC8;font-weight:700;cursor:pointer;';_s2.textContent='Log now →';_s2.onclick=function(){checkInDate=null;initCheckin();nav('checkin');};stripContent.innerHTML='';stripContent.appendChild(_s1);stripContent.appendChild(_s2);
         if(stripLabel)stripLabel.textContent='Today';
         strip.onclick=null;
         strip.style.cursor='default';
@@ -2848,3 +2850,132 @@ function pm(el,m){
   }
 
 
+
+
+function showReward(badgeId){
+  var b=typeof BADGES!=='undefined'?BADGES[badgeId]:null;
+  if(!b)return;
+  var ov=document.getElementById('reward-overlay');
+  var card=document.getElementById('reward-card');
+  if(!ov||!card)return;
+  var icon=document.getElementById('reward-badge-icon');
+  var lbl=document.getElementById('reward-badge-label');
+  var ttl=document.getElementById('reward-title');
+  var msg=document.getElementById('reward-msg');
+  var earned=document.getElementById('reward-badge-earned');
+  var btn=document.getElementById('reward-btn');
+  if(icon)icon.innerHTML=b.icon;
+  if(lbl)lbl.textContent=b.label;
+  if(ttl)ttl.textContent=b.title;
+  if(msg)msg.textContent=b.msg;
+  if(earned){earned.innerHTML=b.earned;earned.style.cssText='border-radius:12px;padding:8px 16px;display:inline-block;margin-bottom:24px;font-size:11px;font-weight:800;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);color:white;';}
+  if(btn){btn.textContent=b.btnText;btn.style.background=b.bg;}
+  card.style.background=b.bg;
+  card.style.boxShadow='0 0 60px '+b.glow;
+  var sp=document.getElementById('reward-sparkles');
+  if(sp){sp.innerHTML='';var spArr=['\u2728','\u2606','\u2605','\u2728'];for(var i=0;i<8;i++){var s=document.createElement('div');s.style.cssText='position:absolute;font-size:'+(12+Math.random()*14)+'px;top:'+(Math.random()*80)+'%;left:'+(Math.random()*90)+'%;opacity:'+(0.3+Math.random()*0.5)+';';s.textContent=spArr[Math.floor(Math.random()*spArr.length)];sp.appendChild(s);}}
+  ov.style.display='flex';
+}
+
+function closeReward(){
+  var ov=document.getElementById('reward-overlay');
+  if(ov)ov.style.display='none';
+}
+
+function setCiMode(mode){
+  ciMode=mode;
+  var tq=document.getElementById('toggle-quick');
+  var td=document.getElementById('toggle-deep');
+  var title=document.getElementById('ci-title-label');
+  if(tq&&td){
+    if(mode==='quick'){
+      tq.style.background='white';if(tq.querySelector('div'))tq.querySelector('div').style.color='#9B7EC8';
+      td.style.background='transparent';if(td.querySelector('div'))td.querySelector('div').style.color='rgba(255,255,255,.6)';
+      if(title)title.textContent='Hey. Give me the honest version.';
+    }else{
+      td.style.background='white';if(td.querySelector('div'))td.querySelector('div').style.color='#9B7EC8';
+      tq.style.background='transparent';if(tq.querySelector('div'))tq.querySelector('div').style.color='rgba(255,255,255,.6)';
+      if(title)title.textContent='I want to really know how you are.';
+    }
+  }
+  document.querySelectorAll('.ci-quick-only').forEach(function(el){el.style.display=mode==='quick'?'':'none';});
+  document.querySelectorAll('.ci-deep-only').forEach(function(el){el.style.display=mode==='deep'?'':'none';});
+  var flow=document.getElementById('ci-flow-block');if(flow)flow.style.display='';
+  var bi=document.getElementById('ci-body-intuition');if(bi)bi.style.display='';
+  if(mode==='deep'){
+    var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+    if(setup.start){
+      var phase=ph(cd(TODAY));
+      var qs={period:{label:'What does your body need permission for today?',chips:['To do nothing','To feel bad','To cancel plans','To eat what I want','To sleep all day','To cry if needed']},follicular:{label:'What are you most looking forward to this week?',chips:['Something creative','Being social','Getting things done','Trying something new','Feeling like myself','Honestly nothing yet']},ovulation:{label:'What do you feel like doing with all this energy?',chips:['Being around people','Creating something','Taking on a challenge','Saying yes to things','Physical movement','Quiet time actually']},luteal:{label:'What is the loudest feeling you are carrying today?',chips:['Dread about nothing','Tired but wired','Irritated at small things','Sad without reason','Just done','Actually okay']}};
+      var q=qs[phase]||qs.luteal;
+      var ql=document.getElementById('deep-q-label');
+      var qt=document.getElementById('deep-q-text');
+      var qc=document.getElementById('deep-q-chips');
+      if(ql)ql.textContent='Something I always wonder';
+      if(qt)qt.textContent=q.label;
+      if(qc){qc.innerHTML='';q.chips.forEach(function(c){var el=document.createElement('div');el.className='ci-chip';el.textContent=c;el.onclick=function(){qc.querySelectorAll('.ci-chip').forEach(function(x){x.classList.remove('sel');});el.classList.add('sel');};qc.appendChild(el);});}
+    }
+  }
+}
+
+function patTab(phase){
+  var phaseGrads={period:'linear-gradient(160deg,#C05080,#D4709A)',follicular:'linear-gradient(160deg,#4AAAC4,#7DC8E0)',ovulation:'linear-gradient(160deg,#C07820,#E8A840)',luteal:'linear-gradient(160deg,#9B7EC8,#7B5EA8)'};
+  var phaseBgs={period:'#FFF0F6',follicular:'#EEF8FF',ovulation:'#FFFAF0',luteal:'#F8F4FF'};
+  var phaseCols={period:'#C05080',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#9B7EC8'};
+  var hero=document.getElementById('pat-hero');
+  if(hero)hero.style.background=phaseGrads[phase]||phaseGrads.luteal;
+  ['period','follicular','ovulation','luteal'].forEach(function(p){
+    var t=document.getElementById('ptab-'+p);
+    if(!t)return;
+    t.style.background=p===phase?phaseBgs[p]:'transparent';
+    t.style.borderColor=p===phase?phaseCols[p]:'transparent';
+  });
+  var card=document.getElementById('pat-phase-card');
+  var contentEl=document.getElementById('pat-phase-content');
+  if(!card||!contentEl)return;
+  card.style.opacity='0';
+  setTimeout(function(){
+    var d=window.patPhaseData&&window.patPhaseData[phase];
+    if(d){
+      var col=d.color;
+      var html='<div style="font-size:11px;font-weight:800;color:'+col+';text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;">What I notice in your '+phase+' phase</div>';
+      html+='<div style="font-size:13px;color:#3A2A5A;line-height:1.75;margin-bottom:10px;">'+d.note+'</div>';
+      if(d.chips&&d.chips.length){html+='<div style="display:flex;flex-wrap:wrap;gap:6px;">';d.chips.forEach(function(c){html+='<div style="background:'+c.bg+';border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;color:'+c.color+';">'+c.label+'</div>';});html+='</div>';}
+      contentEl.innerHTML=html;
+    }else{
+      contentEl.innerHTML='<div style="font-size:13px;color:#8AAAB4;">Log during this phase so I can learn how it affects you.</div>';
+    }
+    card.style.opacity='1';
+  },150);
+}
+
+function openBadgeSheet(){
+  var sheet=document.getElementById('badge-sheet');
+  var grid=document.getElementById('sheet-badge-grid');
+  var countEl=document.getElementById('sheet-badge-count');
+  var noteEl=document.getElementById('sheet-ir-note');
+  if(!sheet||!grid)return;
+  var earnedB=JSON.parse(localStorage.getItem('ir_badges')||'[]');
+  var allB=[{id:'streak7',icon:'\ud83d\udd25',lbl:'7 Day Streak',bg:'linear-gradient(135deg,#B86000,#E8A000)',glow:'rgba(255,160,0,.4)'},{id:'streak14',icon:'\ud83d\udd25',lbl:'14 Day',bg:'linear-gradient(135deg,#B86000,#E8A000)',glow:'rgba(255,160,0,.4)'},{id:'streak30',icon:'\ud83c\udfc6',lbl:'30 Day',bg:'linear-gradient(135deg,#8A7000,#D4B000)',glow:'rgba(220,180,0,.4)'},{id:'cycle1',icon:'\ud83c\udf00',lbl:'1st Cycle',bg:'linear-gradient(135deg,#2A6A3A,#4A9A6A)',glow:'rgba(74,154,106,.4)'},{id:'cycle3',icon:'\ud83c\udf3f',lbl:'3 Cycles',bg:'linear-gradient(135deg,#2A6A3A,#4A9A6A)',glow:'rgba(74,154,106,.4)'},{id:'period_known',icon:'\ud83e\ude78',lbl:'Period Known',bg:'linear-gradient(135deg,#A02060,#D45080)',glow:'rgba(212,80,128,.4)'},{id:'follicular_known',icon:'\ud83c\udf31',lbl:'Follicular',bg:'linear-gradient(135deg,#2A8AAA,#4AAAC4)',glow:'rgba(74,170,196,.4)'},{id:'ovulation_known',icon:'\u2600\ufe0f',lbl:'Ovulation',bg:'linear-gradient(135deg,#A07000,#D4A000)',glow:'rgba(212,160,0,.4)'},{id:'luteal_known',icon:'\ud83c\udf19',lbl:'Luteal Known',bg:'linear-gradient(135deg,#5A3A90,#9B7EC8)',glow:'rgba(155,126,200,.4)'}];
+  grid.innerHTML='';
+  var earnedCount=0;
+  allB.forEach(function(b){
+    var isE=earnedB.indexOf(b.id)!==-1;
+    if(isE)earnedCount++;
+    var el=document.createElement('div');el.style.cssText='text-align:center;flex-shrink:0;';
+    var ring=document.createElement('div');ring.style.cssText='width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 6px;background:'+b.bg+';'+(isE?'box-shadow:0 0 0 3px white,0 0 0 5px '+b.glow+';':'filter:grayscale(1);opacity:.3;');
+    ring.textContent=b.icon;
+    var lbl=document.createElement('div');lbl.style.cssText='font-size:9px;font-weight:800;color:'+(isE?'#1A3A45':'#C0CDD6')+';text-align:center;line-height:1.3;max-width:56px;';
+    lbl.textContent=b.lbl;
+    el.appendChild(ring);el.appendChild(lbl);grid.appendChild(el);
+  });
+  if(countEl)countEl.textContent=earnedCount+' earned \u00b7 '+(allB.length-earnedCount)+' to unlock';
+  if(noteEl)noteEl.textContent=earnedCount===0?'Start logging to earn your first badge.':earnedCount+' badge'+(earnedCount>1?'s':'')+' earned. Keep showing up.';
+  sheet.style.display='block';
+}
+
+function closeBadgeSheet(){var sheet=document.getElementById('badge-sheet');if(sheet)sheet.style.display='none';}
+
+</script>
+</body>
+</html>
