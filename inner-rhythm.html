@@ -3236,6 +3236,234 @@ function checkRewards(){
   checkTreatCard();
 }
 
+
+// ── PAGE LOAD ─────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function(){
+  if(!checkAutoLogin()){
+    var authEl=document.getElementById('screen-auth');
+    if(authEl){authEl.style.display='flex';authEl.classList.add('active');}
+  }
+});
+
+// ── CHECK-IN INTERACTIONS ─────────────────────────────────────────────
+function tfi(el,v,type){
+  if(type==='p'){
+    if(el.classList.contains('selp')){el.classList.remove('selp');feels=feels.filter(function(x){return x!==v;});}
+    else{el.classList.add('selp');if(feels.indexOf(v)===-1)feels.push(v);}
+  }else{
+    if(el.classList.contains('sels')){el.classList.remove('sels');syms=syms.filter(function(x){return x!==v;});}
+    else{el.classList.add('sels');if(syms.indexOf(v)===-1)syms.push(v);}
+  }
+}
+
+function pickFlow(el,v){
+  document.querySelectorAll('.flow-opt').forEach(function(e){e.classList.remove('self');});
+  el.classList.add('self');
+  selectedFlow=v;
+}
+
+function pickDriver(el,v){
+  document.querySelectorAll('#driver-chips .ci-chip').forEach(function(c){c.classList.remove('sel');});
+  el.classList.add('sel');
+  ciDriver=v;
+  var k=(checkInDate||TODAY).toISOString().slice(0,10);
+  if(logs[k]){logs[k].driver=v;localStorage.setItem('ir4',JSON.stringify(logs));}
+}
+
+function addCustomMood(){
+  var inp=document.getElementById('mood-custom');
+  var v=inp?inp.value.trim():'';if(!v)return;
+  var emojis=['\ud83d\ude04','\ud83d\ude0c','\ud83e\udd70','\ud83e\udd29','\ud83d\ude14','\ud83d\ude2c','\ud83d\ude34','\ud83d\ude0f'];
+  var emoji=emojis[Math.floor(Math.random()*emojis.length)];
+  var extra=document.getElementById('mood-extra');
+  if(extra&&extra.style.display==='none')extra.style.display='block';
+  var wrap=extra?extra.querySelector('div'):null;if(!wrap)return;
+  var chip=document.createElement('div');
+  chip.className='mopt ci-extra-chip';
+  chip.innerHTML='<span style="font-size:18px;">'+emoji+'</span><span style="font-size:12px;font-weight:700;color:#5A7A8A;">'+escHtml(v)+'</span>';
+  chip.onclick=function(){pm(chip,v);};
+  wrap.appendChild(chip);
+  if(inp)inp.value='';
+  pm(chip,v);
+}
+
+function addCustomEnergy(){
+  var inp=document.getElementById('energy-custom');
+  var v=inp?inp.value.trim():'';if(!v)return;
+  var emojis=['\u26a1','\ud83d\udd0b','\ud83d\udca7','\ud83c\udf3f','\ud83c\udf0a','\u2600\ufe0f'];
+  var emoji=emojis[Math.floor(Math.random()*emojis.length)];
+  var g=document.getElementById('energy-row');if(!g)return;
+  var el=document.createElement('div');el.className='eopt sel';el.style.position='relative';
+  el.innerHTML='<span class="ei">'+emoji+'</span>'+escHtml(v);
+  el.onclick=function(){pe(el,v);};
+  g.appendChild(el);
+  if(energies.indexOf(v)===-1)energies.push(v);
+  if(inp)inp.value='';
+}
+
+function addCustomFeel(){
+  var inp=document.getElementById('feel-custom');
+  var v=inp?inp.value.trim():'';if(!v)return;
+  var emojis=['\ud83d\udcad','\ud83c\udf38','\ud83e\udd8b','\ud83c\udf3b','\ud83e\udef6','\ud83c\udf08'];
+  var emoji=emojis[Math.floor(Math.random()*emojis.length)];
+  var g=document.getElementById('feel-chips');if(!g)return;
+  var el=document.createElement('div');el.className='icon-tile';
+  el.innerHTML='<span style="font-size:20px;line-height:1.3;display:block;">'+emoji+'</span><div class="icon-tile-label">'+escHtml(v)+'</div>';
+  el.onclick=function(){tfi(el,v,'p');};
+  g.appendChild(el);
+  if(inp)inp.value='';
+}
+
+function addCustomSym(){
+  var inp=document.getElementById('sym-custom');
+  var v=inp?inp.value.trim():'';if(!v)return;
+  var emojis=['\ud83e\udd15','\ud83d\ude2e','\ud83d\ude34','\ud83c\udf21\ufe0f','\ud83d\udc8a','\ud83e\ude79'];
+  var emoji=emojis[Math.floor(Math.random()*emojis.length)];
+  var g=document.getElementById('sym-chips');if(!g)return;
+  var el=document.createElement('div');el.className='icon-tile';
+  el.innerHTML='<span style="font-size:20px;line-height:1.3;display:block;">'+emoji+'</span><div class="icon-tile-label">'+escHtml(v)+'</div>';
+  el.onclick=function(){tfi(el,v,'s');};
+  g.appendChild(el);
+  if(inp)inp.value='';
+}
+
+// ── CYCLE MODAL ───────────────────────────────────────────────────────
+function openM(){
+  var m=document.getElementById('modal');
+  if(!m)return;
+  var saved=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  var pdinp=document.getElementById('pdinp');
+  var pdend=document.getElementById('pdend');
+  var clsel=document.getElementById('cycle-len');
+  var pdsel=document.getElementById('period-dur');
+  if(pdinp&&saved.start)pdinp.value=saved.start;
+  if(pdend&&saved.end)pdend.value=saved.end;
+  if(clsel&&saved.cycleLen)clsel.value=saved.cycleLen;
+  if(pdsel&&saved.periodDur)pdsel.value=saved.periodDur;
+  m.style.display='flex';
+}
+
+function openDayPicker(){
+  var dp=document.getElementById('day-picker');
+  if(!dp)return;
+  var isOpen=dp.style.display==='block';
+  dp.style.display=isOpen?'none':'block';
+  if(!isOpen){
+    var opts=document.getElementById('day-picker-options');
+    if(opts){
+      opts.innerHTML='';
+      for(var i=1;i<=7;i++){
+        var d=new Date(TODAY);d.setDate(d.getDate()-i);
+        var lbl=i===1?'Yesterday':d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+        var btn=document.createElement('button');
+        btn.style.cssText='display:block;width:100%;text-align:left;background:rgba(255,255,255,.15);border:none;border-radius:8px;padding:8px 10px;color:white;font-family:Nunito,sans-serif;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:6px;';
+        btn.textContent=lbl;
+        (function(date){btn.onclick=function(){checkInDate=date;initCheckin();dp.style.display='none';};})(new Date(d));
+        opts.appendChild(btn);
+      }
+    }
+  }
+}
+
+// ── BUILD TOMORROW CARD ───────────────────────────────────────────────
+function buildTomorrowCard(){
+  var el=document.getElementById('tomorrow-card');
+  if(!el)return;
+  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  if(!setup.start){el.style.display='none';return;}
+  var day=cd(TODAY);
+  var tmDay=day+1;
+  var tmPhase=ph(tmDay);
+  var phaseNames={period:'Period',follicular:'Follicular',ovulation:'Ovulation',luteal:'Luteal'};
+  var phaseEmoji={period:'\ud83e\ude78',follicular:'\ud83c\udf31',ovulation:'\u2600\ufe0f',luteal:'\ud83c\udf19'};
+  if(ph(day)!==tmPhase){
+    el.style.display='block';
+    el.innerHTML='<div style="background:white;border-radius:16px;padding:13px 16px;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 8px rgba(0,0,0,.04);display:flex;align-items:center;gap:12px;"><div style="font-size:24px;">'+phaseEmoji[tmPhase]+'</div><div><div style="font-size:11px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Tomorrow</div><div style="font-size:13px;font-weight:700;color:#1A3A45;">'+phaseNames[tmPhase]+' phase begins</div></div></div>';
+  }else{el.style.display='none';}
+}
+
+// ── TREAT CARD ────────────────────────────────────────────────────────
+function checkTreatCard(){
+  var shown=JSON.parse(localStorage.getItem('ir_treats_shown')||'[]');
+  var todayKey=TODAY.toISOString().slice(0,10);
+  if(localStorage.getItem('ir_treat_today')===todayKey)return;
+  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  if(!setup.start)return;
+  var day=cd(TODAY),phase=ph(day),treatKey=null;
+  if(phase==='follicular'&&day===Math.round(userPeriodDur)+1&&shown.indexOf('period_end_'+TODAY.getMonth())===-1)treatKey='period_end';
+  if(phase==='luteal'&&(userCycleLen-day)<=2&&shown.indexOf('luteal_end_'+TODAY.getMonth())===-1)treatKey='luteal_end';
+  var streak=0;var d=new Date(TODAY);
+  while(true){var k=d.toISOString().slice(0,10);if(!logs[k])break;streak++;d.setDate(d.getDate()-1);}
+  if(streak===14&&shown.indexOf('streak14')===-1)treatKey='streak14';
+  else if(streak===7&&shown.indexOf('streak7')===-1)treatKey='streak7';
+  var cycles=Math.floor((TODAY-new Date(setup.start+'T12:00:00'))/(userCycleLen*86400000));
+  if(cycles>=1&&shown.indexOf('cycle1')===-1)treatKey='cycle1';
+  if(treatKey){
+    shown.push(treatKey.indexOf('period_end')>-1?'period_end_'+TODAY.getMonth():treatKey.indexOf('luteal_end')>-1?'luteal_end_'+TODAY.getMonth():treatKey);
+    localStorage.setItem('ir_treats_shown',JSON.stringify(shown));
+    localStorage.setItem('ir_treat_today',todayKey);
+    showTreatCard(treatKey);
+  }
+}
+
+function showTreatCard(key){
+  var TREATS_LOCAL={
+    period_end:{bg:'linear-gradient(135deg,#D4709A,#C05080)',icon:'\ud83e\ude78',label:'You made it through',title:'Your period is over. You deserve something today.',msg:'Your body just did a lot. That deserves recognition.',chips:['\ud83d\udec1 Long hot bath','\ud83c\udf55 Order your favourite food','\ud83d\udecc Early bedtime','\ud83d\udd6f\ufe0f Cancel one obligation']},
+    luteal_end:{bg:'linear-gradient(135deg,#7B5EA8,#9B7EC8)',icon:'\ud83c\udf19',label:'Hardest phase done',title:'You got through luteal. Treat yourself today.',msg:'The fog, the heavy feeling — you showed up through all of it.',chips:['\u2615 Get your favourite order','\ud83d\udec1 Take a bath tonight','\ud83c\udf6b Buy the snack','\ud83d\udcfa Guilt-free screen time']},
+    streak7:{bg:'linear-gradient(135deg,#B86000,#E8A000)',icon:'\ud83d\udd25',label:'7 days in a row',title:'You kept your promise to yourself. Celebrate that.',msg:'Seven consecutive days of showing up. Treat yourself like someone who follows through.',chips:['\ud83e\uddc1 Get a little treat','\ud83d\udc90 Buy yourself flowers','\u2728 Do something just for you','\ud83d\udc86 Book a massage']},
+    streak14:{bg:'linear-gradient(135deg,#B86000,#E8A000)',icon:'\ud83d\udd25',label:'14 days in a row',title:'Two weeks of showing up.',msg:'Fourteen days straight. You deserve something good today.',chips:['\ud83c\udf7d\ufe0f Nice dinner tonight','\ud83d\udec1 Long bath','\ud83d\uded2 Buy something small','\ud83c\udf74 Cook your favourite meal']},
+    cycle1:{bg:'linear-gradient(135deg,#2A6A3A,#4A9A6A)',icon:'\ud83c\udf00',label:'First full cycle',title:'One whole cycle. That took real commitment.',msg:'Period to period, you showed up. Do something today that feels like a proper celebration.',chips:['\ud83d\uded1 Buy something you want','\ud83c\udf7d\ufe0f Nice dinner out','\ud83e\uddd6 Book a facial or massage','\ud83c\udf89 Tell someone you did this']}
+  };
+  var t=TREATS_LOCAL[key];if(!t)return;
+  var card=document.getElementById('treat-card');if(!card)return;
+  card.style.background=t.bg;
+  var bgIcon=document.getElementById('treat-bg-icon');if(bgIcon)bgIcon.textContent=t.icon;
+  var lbl=document.getElementById('treat-label');if(lbl)lbl.textContent=t.label;
+  var ttl=document.getElementById('treat-title');if(ttl)ttl.textContent=t.title;
+  var msg=document.getElementById('treat-msg');if(msg)msg.textContent=t.msg;
+  var chips=document.getElementById('treat-chips');
+  if(chips){chips.innerHTML='';t.chips.forEach(function(c){var el=document.createElement('div');el.style.cssText='background:rgba(255,255,255,.18);border-radius:10px;padding:7px 12px;font-size:11px;font-weight:700;color:white;margin:3px;display:inline-block;';el.textContent=c;chips.appendChild(el);});}
+  card.style.display='block';
+}
+
+function dismissTreat(){var card=document.getElementById('treat-card');if(card)card.style.display='none';}
+
+// ── LEARN CYCLE FROM LOGS ─────────────────────────────────────────────
+function learnCycleFromLogs(){
+  // Auto-detect cycle length from period logs
+  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  if(setup._manualDate)return;
+}
+
+// ── EXPORT DATA ───────────────────────────────────────────────────────
+function exportData(){
+  var data={account:JSON.parse(localStorage.getItem('ir_account')||'{}'),logs:logs,cycle:JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}'),exported:new Date().toISOString()};
+  var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download='inner-rhythm-data.json';a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ── PROFILE EDIT ──────────────────────────────────────────────────────
+function openProfileEdit(){
+  var name=prompt('Your name:');
+  if(name&&name.trim()){
+    var acc=JSON.parse(localStorage.getItem('ir_account')||'{}');
+    acc.name=name.trim();
+    localStorage.setItem('ir_account',JSON.stringify(acc));
+    loadProfile();
+    toast('Updated \u2713');
+  }
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────
+function toast(msg){
+  var t=document.getElementById('toast');
+  if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#1A3A45;color:white;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;font-family:Nunito,sans-serif;';document.body.appendChild(t);}
+  t.textContent=msg;t.style.opacity='1';
+  setTimeout(function(){t.style.opacity='0';},2000);
+}
+
 </script>
 </body>
 </html>
