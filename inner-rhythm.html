@@ -1007,7 +1007,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
           <div style="font-family:Playfair Display,serif;font-size:22px;color:#2A1A4A;font-weight:700;line-height:1.2;" id="greet">Good morning</div>
         </div>
         <div style="display:flex;gap:10px;align-items:center;">
-          <div id="home-streak-pill" style="display:none;background:rgba(255,255,255,.7);border:1.5px solid #FFD060;border-radius:20px;padding:5px 10px;display:flex;align-items:center;gap:5px;cursor:pointer;-webkit-tap-highlight-color:transparent;" onclick="openBadgeSheet()">
+          <div id="home-streak-pill" style="background:rgba(255,255,255,.7);border:1.5px solid #FFD060;border-radius:20px;padding:5px 10px;display:none;align-items:center;gap:5px;cursor:pointer;-webkit-tap-highlight-color:transparent;" onclick="openBadgeSheet()">
             <span style="font-size:14px;">&#128293;</span>
             <span style="font-size:12px;font-weight:800;color:#B86000;" id="home-streak-num">0</span>
           </div>
@@ -1088,6 +1088,46 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
             <div style="font-size:12px;color:#7A3050;line-height:1.7;" id="period-alert-home-msg">Your body is winding down.</div>
           </div>
         </div>
+      </div>
+
+      <!-- Day one welcome — shows until first log -->
+      <div id="home-day-one" style="display:none;background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-radius:16px;padding:16px;border:1.5px solid #E4D8F4;margin-bottom:12px;">
+        <div style="font-size:12px;font-weight:800;color:#9B7EC8;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px;">Getting started</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;align-items:center;gap:12px;background:white;border-radius:12px;padding:11px 13px;cursor:pointer;" onclick="nav('checkin')">
+            <div style="font-size:22px;flex-shrink:0;">&#9997;&#65039;</div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#1A3A45;margin-bottom:2px;">Log your first check-in</div>
+              <div style="font-size:11px;color:#A8C0CC;">Takes 30 seconds. I will start learning you.</div>
+            </div>
+            <div style="margin-left:auto;font-size:16px;color:#C0CDD6;">&#8250;</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;background:white;border-radius:12px;padding:11px 13px;cursor:pointer;" onclick="openM()">
+            <div style="font-size:22px;flex-shrink:0;">&#128197;</div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#1A3A45;margin-bottom:2px;">Set up your cycle</div>
+              <div style="font-size:11px;color:#A8C0CC;">When did your last period start?</div>
+            </div>
+            <div style="margin-left:auto;font-size:16px;color:#C0CDD6;">&#8250;</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;background:white;border-radius:12px;padding:11px 13px;cursor:pointer;" onclick="nav('calendar')">
+            <div style="font-size:22px;flex-shrink:0;">&#128197;</div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#1A3A45;margin-bottom:2px;">See your cycle calendar</div>
+              <div style="font-size:11px;color:#A8C0CC;">Your phases mapped out ahead of time.</div>
+            </div>
+            <div style="margin-left:auto;font-size:16px;color:#C0CDD6;">&#8250;</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Patterns tease — shows after 3+ logs -->
+      <div id="home-patterns-tease" style="display:none;background:white;border-radius:16px;padding:14px 15px;border:0.5px solid #E8EEF2;margin-bottom:12px;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 8px rgba(0,0,0,.04);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <div style="font-size:11px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.5px;">Your patterns</div>
+          <div style="font-size:12px;font-weight:700;color:#9B7EC8;cursor:pointer;" onclick="nav('patterns')">See all &#8250;</div>
+        </div>
+        <div style="font-size:13px;color:#3A4A5A;line-height:1.7;" id="home-pattern-preview">Keep logging and I will start seeing your patterns.</div>
       </div>
 
       <!-- Tomorrow card -->
@@ -2856,6 +2896,24 @@ function initHome(){
     if(pill&&streak>=1){pill.style.display='flex';if(pillNum)pillNum.textContent=streak;}
     else if(pill){pill.style.display='none';}
   }catch(e){}
+
+  // Show day one card if no logs yet
+  var dayOneEl=document.getElementById('home-day-one');
+  var patternsTeaseEl=document.getElementById('home-patterns-tease');
+  var allLogKeys=Object.keys(logs);
+  if(dayOneEl){dayOneEl.style.display=allLogKeys.length===0?'block':'none';}
+  if(patternsTeaseEl){
+    if(allLogKeys.length>=3){
+      patternsTeaseEl.style.display='block';
+      var ppEl=document.getElementById('home-pattern-preview');
+      if(ppEl){
+        var moodFreq={};
+        allLogKeys.forEach(function(k){var l=logs[k];if(l.mood)moodFreq[l.mood]=(moodFreq[l.mood]||0)+1;});
+        var topMoodEntry=Object.entries(moodFreq).sort(function(a,b){return b[1]-a[1];})[0];
+        if(topMoodEntry)ppEl.textContent=allLogKeys.length+' days logged. You most often feel '+topMoodEntry[0].toLowerCase()+'. Tap to see what else I am noticing.';
+      }
+    }else{patternsTeaseEl.style.display='none';}
+  }
 
   // Today mood label
   var todayKey=TODAY.toISOString().slice(0,10);
