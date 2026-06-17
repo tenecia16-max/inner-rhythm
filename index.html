@@ -2,185 +2,319 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Inner Rhythm — Know your cycle. Know yourself.</title>
-<meta name="description" content="Inner Rhythm learns how your cycle shapes how you feel — before you even realise it.">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Inner Rhythm — Know your cycle</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;1,500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif;}
 body{
-  background:linear-gradient(180deg,#0A0F1E 0%,#151D35 100%);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:100vh;
+  background:#030508;
+  font-family:'Nunito',sans-serif;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px 16px;
 }
-.wrap{
-  width:100%;max-width:480px;
-  height:100vh;height:100dvh;
-  display:flex;flex-direction:column;
-  position:relative;overflow:hidden;
+
+.phone{
+  width:100%;
+  max-width:390px;
+  min-height:780px;
+  border-radius:40px;
+  position:relative;
+  overflow:hidden;
+  background:#060B18;
+  box-shadow:0 0 0 1px rgba(255,255,255,.07),0 40px 100px rgba(0,0,0,.9);
+  display:flex;
+  flex-direction:column;
 }
-.star{position:absolute;border-radius:50%;background:white;animation:tw var(--d,3s) ease-in-out infinite;pointer-events:none;}
-@keyframes tw{0%,100%{opacity:var(--o,.5)}50%{opacity:.1}}
 
-/* Header */
-.hdr{padding:52px 28px 0;text-align:center;flex-shrink:0;position:relative;z-index:2;}
-.wm{font-family:'Playfair Display',serif;font-size:28px;color:white;font-weight:700;letter-spacing:.3px;}
-.tl{font-size:13px;color:rgba(255,255,255,.45);margin-top:5px;font-weight:600;}
+/* Aurora bg */
+.aurora{
+  position:absolute;inset:0;
+  background:linear-gradient(160deg,#060B18 0%,#0D1535 20%,#1A0A3A 40%,#3D1060 60%,#8B2070 80%,#C04878 100%);
+  pointer-events:none;z-index:0;
+}
+.orb{position:absolute;border-radius:50%;pointer-events:none;z-index:0;}
+.star{position:absolute;border-radius:50%;background:white;pointer-events:none;z-index:0;}
 
-/* Stack area — fills all remaining space */
-.stack-area{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:2;padding:16px 24px 0;}
-.stack{position:relative;width:100%;max-width:420px;height:100%;max-height:420px;}
+/* Logo bar */
+.logo-bar{
+  position:relative;z-index:2;
+  text-align:center;
+  padding:48px 20px 0;
+  flex-shrink:0;
+}
+
+/* Dots */
+.dots{
+  display:flex;gap:5px;justify-content:center;
+  padding:14px 0 0;
+  position:relative;z-index:2;
+  flex-shrink:0;
+}
+.dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.2);transition:all .3s;}
+.dot.on{width:22px;border-radius:3px;background:white;}
+
+/* Card stage */
+.stage{
+  position:relative;
+  z-index:3;
+  flex:1;
+  margin:14px 14px 0;
+  min-height:500px;
+}
 
 /* Cards */
 .card{
-  position:absolute;inset:0;
-  border-radius:28px;
-  padding:32px 30px 28px;
-  display:flex;flex-direction:column;
+  position:absolute;
+  inset:0;
+  border-radius:26px;
+  border:1px solid rgba(255,255,255,.08);
+  background:linear-gradient(150deg,rgba(10,18,42,.97),rgba(22,8,50,.98));
+  display:flex;
+  flex-direction:column;
   overflow:hidden;
-  cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;
-  transition:transform .45s cubic-bezier(.4,0,.2,1),opacity .45s,box-shadow .45s;
-  will-change:transform;
+  transition:transform .4s cubic-bezier(.4,0,.2,1),opacity .4s;
 }
-.c4{background:linear-gradient(135deg,#E8A840,#C07820);transform:rotate(-8deg) translateY(22px) scale(.87);box-shadow:0 8px 40px rgba(232,168,64,.3);z-index:1;}
-.c3{background:linear-gradient(135deg,#D4709A,#9B4A7A);transform:rotate(-5deg) translateY(14px) scale(.91);box-shadow:0 8px 40px rgba(212,112,154,.3);z-index:2;}
-.c2{background:linear-gradient(135deg,#9B7EC8,#6B4A98);transform:rotate(-2.5deg) translateY(7px) scale(.95);box-shadow:0 8px 40px rgba(155,126,200,.3);z-index:3;}
-.c1{background:linear-gradient(135deg,#4AAAC4,#2A7A9C);transform:rotate(0) scale(1);box-shadow:0 20px 60px rgba(74,170,196,.45);z-index:4;}
-.card.gone{transform:rotate(-20deg) translateX(-140%) translateY(-5%) !important;opacity:0;pointer-events:none;}
+.card.p0{transform:none;opacity:1;pointer-events:auto;}
+.card.p1{transform:scale(.92) translateY(22px);opacity:.72;pointer-events:none;}
+.card.p2{transform:scale(.84) translateY(44px);opacity:.44;pointer-events:none;}
+.card.p3{transform:scale(.76) translateY(66px);opacity:.18;pointer-events:none;}
+.card.gone{transform:translateX(-120%) rotate(-8deg);opacity:0;pointer-events:none;transition:transform .38s cubic-bezier(.4,0,.2,1),opacity .25s;}
 
-.card-icon{font-size:48px;margin-bottom:16px;line-height:1;flex-shrink:0;}
-.card-title{font-family:'Playfair Display',serif;font-size:26px;color:white;font-weight:700;line-height:1.2;margin-bottom:12px;flex-shrink:0;}
-.card-body{font-size:16px;color:rgba(255,255,255,.88);line-height:1.65;flex:1;}
-.card-btn{
-  margin-top:20px;flex-shrink:0;
-  background:white;color:#1A3A45;
-  border:none;border-radius:16px;padding:17px;
-  font-family:'Nunito',sans-serif;font-size:17px;font-weight:800;
-  cursor:pointer;width:100%;
-  -webkit-tap-highlight-color:transparent;
-  transition:transform .15s;
+.pstrip{height:4px;flex-shrink:0;background:linear-gradient(90deg,#F9C8D8 13%,#B8E0F0 30%,#FFE08A 42%,#D8C8F0 100%);}
+.pstrip.all{background:linear-gradient(90deg,#9B7EC8,#C05080,#E8A840,#4AAAC4);}
+
+.cbody{flex:1;padding:24px 22px 18px;display:flex;flex-direction:column;overflow:hidden;}
+
+/* IR bubbles */
+.bubble{border-radius:14px;padding:12px 13px;margin-bottom:9px;display:flex;gap:9px;align-items:flex-start;}
+.irav{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:white;flex-shrink:0;margin-top:1px;}
+
+/* Bottom hint */
+.hint{
+  position:relative;z-index:2;
+  text-align:center;
+  padding:12px 16px 28px;
+  flex-shrink:0;
 }
-.card-btn:active{transform:scale(.97);}
-.card-btn-sub{font-size:12px;color:rgba(255,255,255,.45);text-align:center;margin-top:9px;font-weight:600;flex-shrink:0;}
-
-/* Bottom */
-.bottom{flex-shrink:0;padding:14px 0 max(28px,env(safe-area-inset-bottom));position:relative;z-index:2;}
-.hint{text-align:center;font-size:12px;color:rgba(255,255,255,.3);font-weight:700;letter-spacing:.4px;margin-bottom:12px;}
-.pips{display:flex;justify-content:center;gap:7px;}
-.pip{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.25);transition:all .3s;}
-.pip.on{background:white;width:24px;border-radius:4px;}
 </style>
 </head>
 <body>
-<div class="wrap" id="wrap">
+<div class="phone">
 
-  <div class="hdr">
-    <div class="wm">Inner Rhythm</div>
-    <div class="tl">Understand your cycle</div>
+  <!-- Aurora + orbs + stars -->
+  <div class="aurora"></div>
+  <div class="orb" style="top:5%;left:8%;width:220px;height:220px;background:radial-gradient(circle,rgba(155,70,200,.3),transparent 70%);"></div>
+  <div class="orb" style="top:18%;right:3%;width:150px;height:150px;background:radial-gradient(circle,rgba(74,170,196,.18),transparent 70%);"></div>
+  <div class="orb" style="top:2%;left:42%;width:200px;height:200px;background:radial-gradient(circle,rgba(192,80,128,.12),transparent 70%);"></div>
+  <div class="star" style="top:4%;left:18%;width:2px;height:2px;opacity:.9;"></div>
+  <div class="star" style="top:8%;left:74%;width:1px;height:1px;opacity:.6;"></div>
+  <div class="star" style="top:14%;left:44%;width:2px;height:2px;opacity:.5;background:rgba(210,170,255,.9);"></div>
+  <div class="star" style="top:3%;left:87%;width:1px;height:1px;opacity:.7;"></div>
+  <div class="star" style="top:20%;left:26%;width:1px;height:1px;opacity:.4;"></div>
+  <div class="star" style="top:11%;left:58%;width:2px;height:2px;opacity:.3;background:rgba(200,160,255,.7);"></div>
+  <div class="star" style="top:7%;left:35%;width:1px;height:1px;opacity:.5;"></div>
+  <div class="star" style="top:16%;left:65%;width:1px;height:1px;opacity:.35;"></div>
+
+  <!-- Logo -->
+  <div class="logo-bar">
+    <div style="font-size:10px;font-weight:800;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:2.5px;">Inner Rhythm</div>
   </div>
 
-  <div class="stack-area">
-    <div class="stack" id="stack">
-
-      <div class="card c4" id="card-4">
-        <div class="card-icon">&#127800;</div>
-        <div class="card-title">You deserve to understand yourself</div>
-        <div class="card-body">Not just track dates. Actually understand why some days feel impossible and others feel like yours.</div>
-        <button class="card-btn" onclick="goApp()">Try Inner Rhythm free &#8594;</button>
-        <div class="card-btn-sub">Free to try &#183; Takes 30 seconds to start</div>
-      </div>
-
-      <div class="card c3" id="card-3">
-        <div class="card-icon">&#128274;</div>
-        <div class="card-title">Your data never leaves your phone</div>
-        <div class="card-body">Your logs stay on your device. We will never sell your data.</div>
-      </div>
-
-      <div class="card c2" id="card-2">
-        <div class="card-icon">&#10024;</div>
-        <div class="card-title">Daily insights for exactly where you are</div>
-        <div class="card-body">Messages matched to your phase and your day &#8212; and over time, your patterns specifically.</div>
-      </div>
-
-      <div class="card c1" id="card-1">
-        <div class="card-icon">&#127754;</div>
-        <div class="card-title">Ever felt off for no reason?</div>
-        <div class="card-body">That heavy, foggy feeling that hits out of nowhere &#8212; that is your cycle. Inner Rhythm helps you see it coming.</div>
-      </div>
-
-    </div>
+  <!-- Dots -->
+  <div class="dots">
+    <div class="dot on" id="d0"></div>
+    <div class="dot" id="d1"></div>
+    <div class="dot" id="d2"></div>
+    <div class="dot" id="d3"></div>
   </div>
 
-  <div class="bottom">
-    <div class="hint" id="hint">Tap to explore &#8594;</div>
-    <div class="pips">
-      <div class="pip on" id="p1"></div>
-      <div class="pip" id="p2"></div>
-      <div class="pip" id="p3"></div>
-      <div class="pip" id="p4"></div>
+  <!-- Card stage -->
+  <div class="stage" id="stage">
+
+    <!-- CARD 0: The hook -->
+    <div class="card p0" id="c0">
+      <div class="pstrip"></div>
+      <div class="cbody">
+        <div style="font-family:'Playfair Display',serif;font-size:26px;color:white;font-weight:700;line-height:1.25;margin-bottom:12px;">
+          "That heavy<br>feeling has a name.<br><span style="color:#E8A0C0;font-style:italic;">It is day 21."</span>
+        </div>
+        <div style="font-size:13px;color:rgba(255,255,255,.58);line-height:1.72;margin-bottom:16px;">Inner Rhythm connects your daily feelings to your cycle — so you stop wondering why and start knowing.</div>
+
+        <!-- Phase bar -->
+        <div style="margin-bottom:16px;">
+          <div style="display:flex;gap:3px;margin-bottom:5px;">
+            <div style="flex:1;height:5px;border-radius:3px;background:#F9C8D8;"></div>
+            <div style="flex:1.5;height:5px;border-radius:3px;background:#B8E0F0;"></div>
+            <div style="flex:.6;height:5px;border-radius:3px;background:#FFE08A;"></div>
+            <div style="flex:2;height:5px;border-radius:3px;background:#D8C8F0;"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;">
+            <div style="font-size:9px;color:rgba(255,255,255,.3);font-weight:700;">Period</div>
+            <div style="font-size:9px;color:rgba(255,255,255,.3);font-weight:700;">Follicular</div>
+            <div style="font-size:9px;color:rgba(255,255,255,.3);font-weight:700;">Ovulation</div>
+            <div style="font-size:9px;color:#D8C8F0;font-weight:800;">Luteal ← you</div>
+          </div>
+        </div>
+
+        <!-- Stat chips -->
+        <div style="display:flex;gap:8px;margin-top:auto;">
+          <div style="flex:1;background:rgba(255,255,255,.07);border-radius:12px;padding:12px 4px;text-align:center;">
+            <div style="font-size:20px;margin-bottom:4px;">🔍</div>
+            <div style="font-size:10px;color:rgba(255,255,255,.5);font-weight:700;line-height:1.3;">Pattern<br>learning</div>
+          </div>
+          <div style="flex:1;background:rgba(255,255,255,.07);border-radius:12px;padding:12px 4px;text-align:center;">
+            <div style="font-size:20px;margin-bottom:4px;">🔒</div>
+            <div style="font-size:10px;color:rgba(255,255,255,.5);font-weight:700;line-height:1.3;">Fully<br>private</div>
+          </div>
+          <div style="flex:1;background:rgba(255,255,255,.07);border-radius:12px;padding:12px 4px;text-align:center;">
+            <div style="font-size:20px;margin-bottom:4px;">⚡</div>
+            <div style="font-size:10px;color:rgba(255,255,255,.5);font-weight:700;line-height:1.3;">30 sec<br>check-in</div>
+          </div>
+        </div>
+
+        <div style="text-align:center;padding-top:14px;font-size:12px;color:rgba(255,255,255,.28);font-weight:700;">Swipe to see more →</div>
+      </div>
     </div>
+
+    <!-- CARD 1: IR insights -->
+    <div class="card p1" id="c1">
+      <div class="pstrip"></div>
+      <div class="cbody">
+        <div style="font-size:10px;font-weight:800;color:rgba(155,126,200,.8);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;">What IR notices about you</div>
+        <div style="font-family:'Playfair Display',serif;font-size:22px;color:white;font-weight:700;line-height:1.3;margin-bottom:14px;">Your cycle tells the story.<br>IR reads it for you.</div>
+
+        <div class="bubble" style="background:rgba(155,126,200,.15);border-left:3px solid #9B7EC8;">
+          <div class="irav" style="background:linear-gradient(135deg,#9B7EC8,#7B5EA8);">IR</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.8);line-height:1.65;">"You logged anxious on day 19 three cycles in a row. That is not anxiety — that is your luteal pattern."</div>
+        </div>
+
+        <div class="bubble" style="background:rgba(74,170,196,.12);border-left:3px solid #4AAAC4;">
+          <div class="irav" style="background:linear-gradient(135deg,#4AAAC4,#2A8AAC);">IR</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.8);line-height:1.65;">"Your follicular phase is your window. You logged Amazing or Good 6 of 8 days there."</div>
+        </div>
+
+        <div class="bubble" style="background:rgba(232,168,64,.1);border-left:3px solid #E8A840;">
+          <div class="irav" style="background:linear-gradient(135deg,#E8A840,#C07820);">IR</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.8);line-height:1.65;">"Rest in late luteal improved how you felt the next day 3 out of 4 times."</div>
+        </div>
+
+        <div style="text-align:center;margin-top:auto;padding-top:12px;font-size:12px;color:rgba(255,255,255,.28);font-weight:700;">Swipe to continue →</div>
+      </div>
+    </div>
+
+    <!-- CARD 2: How it works -->
+    <div class="card p2" id="c2">
+      <div class="pstrip"></div>
+      <div class="cbody">
+        <div style="font-size:10px;font-weight:800;color:rgba(74,170,196,.8);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;">How it works</div>
+        <div style="font-family:'Playfair Display',serif;font-size:22px;color:white;font-weight:700;line-height:1.3;margin-bottom:16px;">Simple to use.<br>Nothing like<br>the others.</div>
+
+        <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:auto;">
+          <div style="display:flex;align-items:center;gap:13px;background:rgba(255,255,255,.06);border-radius:14px;padding:14px;">
+            <div style="font-size:22px;flex-shrink:0;">✏️</div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:white;margin-bottom:2px;">Log how you feel</div>
+              <div style="font-size:11px;color:rgba(255,255,255,.4);line-height:1.5;">Quick or deep mode. 30 seconds max.</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:13px;background:rgba(255,255,255,.06);border-radius:14px;padding:14px;">
+            <div style="font-size:22px;flex-shrink:0;">🌙</div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:white;margin-bottom:2px;">IR learns your patterns</div>
+              <div style="font-size:11px;color:rgba(255,255,255,.4);line-height:1.5;">Connects your feelings to your cycle phases.</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:13px;background:rgba(255,255,255,.06);border-radius:14px;padding:14px;">
+            <div style="font-size:22px;flex-shrink:0;">🔒</div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:white;margin-bottom:2px;">Everything stays on your phone</div>
+              <div style="font-size:11px;color:rgba(255,255,255,.4);line-height:1.5;">No cloud. No servers. Your data never leaves.</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align:center;padding-top:14px;font-size:12px;color:rgba(255,255,255,.28);font-weight:700;">One more →</div>
+      </div>
+    </div>
+
+    <!-- CARD 3: CTA — the last card, begin button lives here -->
+    <div class="card p3" id="c3">
+      <div class="pstrip all"></div>
+      <div class="cbody" style="justify-content:space-between;">
+
+        <div>
+          <div style="font-size:10px;font-weight:800;color:rgba(255,255,255,.28);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;">Ready?</div>
+          <div style="font-family:'Playfair Display',serif;font-size:30px;color:white;font-weight:700;line-height:1.2;margin-bottom:10px;">Begin your<br>rhythm.</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.5);line-height:1.72;margin-bottom:16px;">Free to try. Takes 30 seconds. Your data stays on your phone, always.</div>
+        </div>
+
+        <div style="background:rgba(255,255,255,.06);border-radius:14px;padding:14px;margin-bottom:14px;">
+          <div style="font-size:10px;font-weight:800;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px;">What to expect</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;gap:9px;font-size:12px;color:rgba(255,255,255,.72);"><span style="color:#4AAAC4;font-weight:800;font-size:13px;">✓</span>See your cycle mapped day by day</div>
+            <div style="display:flex;align-items:center;gap:9px;font-size:12px;color:rgba(255,255,255,.72);"><span style="color:#4AAAC4;font-weight:800;font-size:13px;">✓</span>IR spots your patterns after 5 days</div>
+            <div style="display:flex;align-items:center;gap:9px;font-size:12px;color:rgba(255,255,255,.72);"><span style="color:#4AAAC4;font-weight:800;font-size:13px;">✓</span>Understand your mood before it happens</div>
+          </div>
+        </div>
+
+        <div>
+          <button onclick="window.location.href='inner-rhythm.html'" style="width:100%;background:white;border:none;border-radius:16px;padding:17px;font-family:'Nunito',sans-serif;font-size:16px;font-weight:800;color:#0A0612;cursor:pointer;margin-bottom:8px;">Begin your rhythm →</button>
+          <div style="text-align:center;font-size:11px;color:rgba(255,255,255,.28);">Free · Private · No card needed</div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Hint -->
+  <div class="hint" id="hint">
+    <div style="font-size:12px;color:rgba(255,255,255,.28);font-weight:700;">Tap or swipe the card to explore →</div>
   </div>
 
 </div>
+
 <script>
-// Stars
-(function(){
-  var w=document.getElementById('wrap');
-  for(var i=0;i<70;i++){
-    var s=document.createElement('div');s.className='star';
-    var sz=Math.random()*3+1;
-    s.style.cssText='width:'+sz+'px;height:'+sz+'px;top:'+Math.random()*100+'%;left:'+Math.random()*100+'%;--o:'+(Math.random()*.7+.15)+';--d:'+(Math.random()*4+2)+'s;animation-delay:'+(Math.random()*4)+'s;position:absolute;z-index:1;';
-    w.insertBefore(s,w.firstChild);
-  }
-})();
+var cur=0, n=4, sx=0, sy=0;
+var pos=['p0','p1','p2','p3'];
 
-function goApp(){
-  window.location.href='/inner-rhythm.html';
+function update(){
+  for(var i=0;i<n;i++){
+    var el=document.getElementById('c'+i);
+    el.className='card';
+    var d=i-cur;
+    if(d<0)el.classList.add('gone');
+    else if(d<4)el.classList.add(pos[d]);
+    el.style.pointerEvents=d===0?'auto':'none';
+    document.getElementById('d'+i).className='dot'+(i===cur?' on':'');
+  }
+  document.getElementById('hint').style.visibility=cur===n-1?'hidden':'visible';
 }
 
-var cur=1,total=4;
-function dismiss(){
-  if(cur>=total)return;  // never dismiss the last card — it has the Try button
-  var card=document.getElementById('card-'+cur);
-  if(!card)return;
-  card.classList.add('gone');
-  document.getElementById('p'+cur).classList.remove('on');
-  cur++;
-  if(cur<=total){
-    document.getElementById('p'+cur).classList.add('on');
-    setTimeout(function(){
-      var rots=[0,-2.5,-5,-8];
-      var tys=[0,7,14,22];
-      var scs=[1,.95,.91,.87];
-      for(var i=0;i<(total-cur+1)&&i<4;i++){
-        var c=document.getElementById('card-'+(cur+i));
-        if(c)c.style.transform='rotate('+rots[i]+'deg) translateY('+tys[i]+'px) scale('+scs[i]+')';
-      }
-    },50);
-  }
-  if(cur>=total){
-    var h=document.getElementById('hint');
-    if(h)h.textContent='Tap the button below to begin \u2193';
-  }
-}
+function next(){if(cur<n-1){cur++;update();}}
 
-for(var i=1;i<=total;i++){
-  (function(idx){
-    var c=document.getElementById('card-'+idx);if(!c)return;
-    c.addEventListener('click',function(e){
-      if(e.target.classList.contains('card-btn'))return;
-      if(cur===idx&&cur<total)dismiss();
-    });
-    var sx=0;
-    c.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;},{passive:true});
-    c.addEventListener('touchend',function(e){
-      if(e.changedTouches[0].clientX-sx<-50&&cur===idx&&cur<total)dismiss();
-    },{passive:true});
-  })(i);
-}
+var stage=document.getElementById('stage');
+
+// Touch
+stage.addEventListener('touchstart',function(e){
+  sx=e.touches[0].clientX;sy=e.touches[0].clientY;
+},{passive:true});
+stage.addEventListener('touchend',function(e){
+  var dx=e.changedTouches[0].clientX-sx;
+  var dy=e.changedTouches[0].clientY-sy;
+  if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>40)next();
+},{passive:true});
+
+// Click/tap
+stage.addEventListener('click',function(e){
+  if(e.target.tagName!=='BUTTON')next();
+});
+
+update();
 </script>
 </body>
 </html>
