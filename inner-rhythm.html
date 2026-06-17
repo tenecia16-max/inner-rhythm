@@ -1261,44 +1261,73 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
   <!-- ======= CHECK-IN ======= -->
   <div class="screen" id="screen-checkin">
 
-    <!-- Phase-shifting header -->
-    <div id="ci-header" style="background:linear-gradient(160deg,#9B7EC8,#7B5EA8);padding:max(44px,env(safe-area-inset-top)) 18px 24px;flex-shrink:0;transition:background .4s;">
+    <!-- Phase-tinted header -->
+    <div id="ci-header" style="background:linear-gradient(160deg,#E8D8F8,#DEC8F0);padding:max(44px,env(safe-area-inset-top)) 18px 20px;flex-shrink:0;transition:background .4s;">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-        <button onclick="nav('home')" style="background:rgba(255,255,255,.2);border:none;border-radius:50%;width:32px;height:32px;color:white;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#8592;</button>
-        <div style="font-size:12px;color:rgba(255,255,255,.8);font-weight:700;" id="ci-date-label">Today</div>
-        <button id="log-diff-day-btn" onclick="openDayPicker()" style="margin-left:auto;background:rgba(255,255,255,.15);border:none;border-radius:9px;padding:5px 10px;font-family:Nunito,sans-serif;font-size:10px;font-weight:800;color:white;cursor:pointer;">Past day</button>
+        <button onclick="nav('home')" style="background:rgba(255,255,255,.3);border:none;border-radius:50%;width:30px;height:30px;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#8592;</button>
+        <div style="font-size:11px;font-weight:700;color:rgba(80,40,120,.6);" id="ci-date-label">Today</div>
+        <button id="log-diff-day-btn" onclick="openDayPicker()" style="margin-left:auto;background:rgba(255,255,255,.3);border:none;border-radius:8px;padding:4px 10px;font-family:Nunito,sans-serif;font-size:10px;font-weight:800;color:rgba(80,40,120,.7);cursor:pointer;">Past day</button>
       </div>
       <!-- Mode toggle -->
-      <div id="ci-mode-toggle" style="background:rgba(0,0,0,.2);border-radius:12px;padding:3px;display:flex;margin-bottom:14px;">
-        <div id="toggle-quick" onclick="setCiMode('quick')" style="flex:1;background:white;border-radius:9px;padding:8px;text-align:center;cursor:pointer;transition:all .2s;">
-          <div style="font-size:12px;font-weight:800;color:#9B7EC8;" id="toggle-quick-label">&#9889; Quick</div>
+      <div id="ci-mode-toggle" style="background:rgba(0,0,0,.08);border-radius:12px;padding:3px;display:flex;margin-bottom:14px;">
+        <div id="toggle-quick" onclick="setCiMode('quick')" style="flex:1;background:white;border-radius:9px;padding:7px;text-align:center;cursor:pointer;transition:all .2s;">
+          <div style="font-size:11px;font-weight:800;color:#9B7EC8;">&#9889; Quick</div>
           <div style="font-size:9px;color:#A8C0CC;margin-top:1px;">~30 seconds</div>
         </div>
-        <div id="toggle-deep" onclick="setCiMode('deep')" style="flex:1;border-radius:9px;padding:8px;text-align:center;cursor:pointer;transition:all .2s;">
-          <div style="font-size:12px;font-weight:800;color:rgba(255,255,255,.6);">&#127754; Deep</div>
-          <div style="font-size:9px;color:rgba(255,255,255,.4);margin-top:1px;">Take your time</div>
+        <div id="toggle-deep" onclick="setCiMode('deep')" style="flex:1;border-radius:9px;padding:7px;text-align:center;cursor:pointer;transition:all .2s;">
+          <div style="font-size:11px;font-weight:800;color:rgba(80,40,120,.45);">&#127754; Deep</div>
+          <div style="font-size:9px;color:rgba(80,40,120,.3);margin-top:1px;">Take your time</div>
         </div>
       </div>
-      <div style="font-family:Playfair Display,serif;font-size:20px;color:white;font-weight:700;line-height:1.3;" id="ci-title-label">Hey. Give me the honest version.</div>
+      <!-- IR question (quick) or title (deep) -->
+      <div id="ci-header-content">
+        <!-- Quick: IR personal question -->
+        <div id="ci-quick-header" style="display:flex;gap:9px;align-items:flex-start;">
+          <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;margin-top:2px;" id="ci-ir-av">IR</div>
+          <div>
+            <div style="font-size:11px;font-weight:800;color:rgba(80,40,120,.55);margin-bottom:4px;" id="ci-q-sublabel">How are you doing?</div>
+            <div style="font-family:Playfair Display,serif;font-size:17px;color:#2A1A4A;font-weight:700;line-height:1.35;" id="ci-ir-question">Loading your question...</div>
+          </div>
+        </div>
+        <!-- Deep: standard title -->
+        <div id="ci-deep-header" style="display:none;">
+          <div style="font-family:Playfair Display,serif;font-size:20px;color:#2A1A4A;font-weight:700;line-height:1.3;" id="ci-title-label">I want to really know how you are.</div>
+        </div>
+      </div>
       <!-- Day picker -->
-      <div id="day-picker" style="display:none;background:rgba(255,255,255,.15);border-radius:14px;padding:10px;margin-top:12px;">
-        <div style="font-size:11px;font-weight:800;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.6px;padding:4px 6px 8px;">Which day?</div>
+      <div id="day-picker" style="display:none;background:rgba(255,255,255,.2);border-radius:12px;padding:10px;margin-top:12px;">
+        <div style="font-size:10px;font-weight:800;color:rgba(80,40,120,.6);text-transform:uppercase;letter-spacing:.5px;padding:4px 6px 8px;">Which day?</div>
         <div id="day-picker-options"></div>
       </div>
     </div>
 
     <!-- Scroll content -->
-    <div class="scroll" id="ci-scroll" style="background:#F7F5FA;border-radius:26px 26px 0 0;margin-top:-18px;padding:18px 16px max(100px,calc(env(safe-area-inset-bottom) + 80px));display:flex;flex-direction:column;gap:11px;position:relative;z-index:1;">
+    <div class="scroll" id="ci-scroll" style="background:#F7F5FA;border-radius:26px 26px 0 0;margin-top:-16px;padding:16px 16px max(100px,calc(env(safe-area-inset-bottom) + 80px));display:flex;flex-direction:column;gap:10px;position:relative;z-index:1;">
 
-      <div id="ci-already-logged" style="display:none;background:#EEF8FC;border-radius:12px;padding:10px 14px;font-size:13px;color:#2A6A8A;font-weight:600;">&#9999;&#65039; Already logged &#8212; editing your saved entry.</div>
-      <div id="period-alert" style="display:none;background:linear-gradient(135deg,#FFF0F6,#FFE4F0);border-radius:16px;padding:15px 16px;border:1.5px solid #F4C0D1;position:relative;">
-        <button onclick="document.getElementById('period-alert').style.display='none'" style="position:absolute;top:10px;right:12px;background:none;border:none;font-size:14px;color:#C0A0B0;cursor:pointer;">&#x2715;</button>
-        <div style="display:flex;align-items:flex-start;gap:11px;"><div style="font-size:22px;flex-shrink:0;margin-top:2px;">&#129768;</div><div><div style="font-size:12px;font-weight:800;color:#C05080;margin-bottom:5px;" id="period-alert-title">Period approaching</div><div style="font-size:12px;color:#7A3050;line-height:1.7;" id="period-alert-msg">Your body is winding down.</div></div></div>
+      <div id="ci-already-logged" style="display:none;background:#EEF8FC;border-radius:12px;padding:10px 14px;font-size:13px;color:#2A6A8A;font-weight:600;">&#9999;&#65039; Already logged today &#8212; editing your entry.</div>
+
+      <!-- ═══ QUICK MODE: IR personal answer options ═══ -->
+      <div id="ci-quick-answers" class="card-ci">
+        <div style="display:flex;flex-direction:column;gap:0;" id="quick-answer-list">
+          <!-- populated by JS -->
+        </div>
       </div>
 
-      <!-- ═══ MOOD (both modes) ═══ -->
-      <div class="card-ci" id="ci-mood-block">
-        <div class="ci-sec" id="ci-mood-label">How are you?</div>
+      <!-- ═══ FLOW (both modes) ═══ -->
+      <div class="card-ci" id="ci-flow-block">
+        <div class="ci-sec">Period flow</div>
+        <div class="flow-row" id="flow-row-ci">
+          <div class="flow-opt" onclick="pickFlow(this,'None')"><span class="flbl">None</span></div>
+          <div class="flow-opt" onclick="pickFlow(this,'Spotting')"><span style="font-size:9px;color:#D4709A;display:block;line-height:1.2;">&#9679;</span><span class="flbl">Spotting</span></div>
+          <div class="flow-opt" onclick="pickFlow(this,'Light')"><span style="font-size:9px;color:#C05080;display:block;line-height:1.2;">&#9679;&#9679;</span><span class="flbl">Light</span></div>
+          <div class="flow-opt" onclick="pickFlow(this,'Medium')"><span style="font-size:9px;color:#A03060;display:block;line-height:1.2;">&#9679;&#9679;&#9679;</span><span class="flbl">Medium</span></div>
+          <div class="flow-opt" onclick="pickFlow(this,'Heavy')"><span style="font-size:9px;color:#80204A;display:block;line-height:1.2;">&#9679;&#9679;&#9679;&#9679;</span><span class="flbl">Heavy</span></div>
+        </div>
+      </div>
+
+      <!-- ═══ DEEP ONLY sections ═══ -->
+      <div class="card-ci ci-deep-only" id="ci-mood-block" style="display:none;">
+        <div class="ci-sec">Overall vibe</div>
         <div style="display:flex;justify-content:space-between;margin-bottom:8px;" id="mood-top-row">
           <div class="mopt ci-mood-btn" onclick="pm(this,'Amazing')"><span style="font-size:26px;display:block;">&#129321;</span><span style="font-size:9px;font-weight:700;color:#8AAAB4;display:block;margin-top:3px;">Amazing</span></div>
           <div class="mopt ci-mood-btn" onclick="pm(this,'Good')"><span style="font-size:26px;display:block;">&#128522;</span><span style="font-size:9px;font-weight:700;color:#8AAAB4;display:block;margin-top:3px;">Good</span></div>
@@ -1318,48 +1347,10 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
             <div class="mopt ci-extra-chip" onclick="pm(this,'Weepy')"><span style="font-size:18px;">&#128557;</span><span>Weepy</span></div>
           </div>
         </div>
-        <button onclick="var e=document.getElementById('mood-extra');var b=this;if(e.style.display==='none'){e.style.display='block';b.textContent='Less moods &#8593;';}else{e.style.display='none';b.textContent='More moods &#8595;';}" style="width:100%;background:#F8F9FB;border:none;border-radius:10px;padding:7px;font-family:Nunito,sans-serif;font-size:11px;font-weight:700;color:#A8C0CC;cursor:pointer;">More moods &#8595;</button>
-        <div class="add-custom" style="margin-top:8px;"><input class="custom-inp" id="mood-custom" placeholder="Add your own..." onkeydown="if(event.key===&#39;Enter&#39;){addCustomMood()}"><button class="add-btn" onclick="addCustomMood()">+ Add</button></div>
+        <button onclick="var e=document.getElementById('mood-extra');var b=this;if(e.style.display==='none'){e.style.display='block';b.textContent='Less moods ↑';}else{e.style.display='none';b.textContent='More moods ↓';}" style="width:100%;background:#F8F9FB;border:none;border-radius:10px;padding:7px;font-family:Nunito,sans-serif;font-size:11px;font-weight:700;color:#A8C0CC;cursor:pointer;">More moods &#8595;</button>
+        <div class="add-custom" style="margin-top:8px;"><input class="custom-inp" id="mood-custom" placeholder="Add your own..." onkeydown="if(event.key==='Enter'){addCustomMood()}"><button class="add-btn" onclick="addCustomMood()">+ Add</button></div>
       </div>
 
-      <!-- IR responds to mood -->
-      <div id="ci-ir-response" style="display:none;border-radius:14px;padding:13px 14px;border-left:3px solid #4AAAC4;background:linear-gradient(135deg,#EEF8FF,#E0F2FA);">
-        <div style="display:flex;gap:9px;align-items:flex-start;">
-          <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#4AAAC4,#2A8AAC);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;">IR</div>
-          <div style="font-size:12px;color:#1A4A6A;line-height:1.65;" id="ci-ir-text"></div>
-        </div>
-      </div>
-
-      <!-- ═══ QUICK: What is it mostly ═══ -->
-      <div class="card-ci ci-quick-only" id="ci-driver-block">
-        <div class="ci-sec">What is it most like?</div>
-        <div style="display:flex;flex-wrap:wrap;gap:0;margin:-3px;" id="driver-chips">
-          <div class="ci-chip" onclick="pickDriver(this,'Tired')">&#128558; Tired</div>
-          <div class="ci-chip" onclick="pickDriver(this,'Anxious')">&#128543; Anxious</div>
-          <div class="ci-chip" onclick="pickDriver(this,'Flat')">&#128566; Flat</div>
-          <div class="ci-chip" onclick="pickDriver(this,'Irritable')">&#128530; Irritable</div>
-          <div class="ci-chip" onclick="pickDriver(this,'Achy')">&#129314; Achy</div>
-          <div class="ci-chip" onclick="pickDriver(this,'Exhausted')">&#128164; Exhausted</div>
-          <div class="ci-chip" onclick="pickDriver(this,'Content')">&#128522; Content</div>
-          <div class="ci-chip" onclick="pickDriver(this,'Energized')">&#9889; Energized</div>
-        </div>
-      </div>
-
-      <!-- ═══ FLOW (both modes — always present) ═══ -->
-      <div class="card-ci" id="ci-flow-block">
-        <div class="ci-sec">Period flow</div>
-        <div class="flow-row" id="flow-row-ci">
-          <div class="flow-opt" onclick="pickFlow(this,'None')"><span class="flbl">None</span></div>
-          <div class="flow-opt" onclick="pickFlow(this,'Spotting')"><span style="font-size:10px;color:#D4709A;display:block;line-height:1.2;">&#9679;</span><span class="flbl">Spotting</span></div>
-          <div class="flow-opt" onclick="pickFlow(this,'Light')"><span style="font-size:10px;color:#C05080;display:block;line-height:1.2;">&#9679;&#9679;</span><span class="flbl">Light</span></div>
-          <div class="flow-opt" onclick="pickFlow(this,'Medium')"><span style="font-size:10px;color:#A03060;display:block;line-height:1.2;">&#9679;&#9679;&#9679;</span><span class="flbl">Medium</span></div>
-          <div class="flow-opt" onclick="pickFlow(this,'Heavy')"><span style="font-size:10px;color:#80204A;display:block;line-height:1.2;">&#9679;&#9679;&#9679;&#9679;</span><span class="flbl">Heavy</span></div>
-        </div>
-      </div>
-
-      <!-- ═══ DEEP ONLY sections ═══ -->
-
-      <!-- Energy -->
       <div class="card-ci ci-deep-only" id="ci-energy-block" style="display:none;">
         <div class="ci-sec">Energy today</div>
         <div class="erow" id="energy-row">
@@ -1370,13 +1361,11 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
           <div class="eopt" onclick="pe(this,'Cozy low')"><span class="ei">&#128524;</span>Cozy low</div>
           <div class="eopt" onclick="pe(this,'Just okay')"><span class="ei">&#128262;</span>Just okay</div>
         </div>
-        <div class="add-custom" style="margin-top:8px;"><input class="custom-inp" id="energy-custom" placeholder="Add your own..." onkeydown="if(event.key===&#39;Enter&#39;){addCustomEnergy()}"><button class="add-btn" onclick="addCustomEnergy()">+ Add</button></div>
+        <div class="add-custom" style="margin-top:8px;"><input class="custom-inp" id="energy-custom" placeholder="Add your own..." onkeydown="if(event.key==='Enter'){addCustomEnergy()}"><button class="add-btn" onclick="addCustomEnergy()">+ Add</button></div>
       </div>
 
-      <!-- Feelings -->
       <div class="card-ci ci-deep-only" id="ci-feels-block" style="display:none;">
         <div class="ci-sec">Feelings showing up</div>
-        <div style="font-size:11px;color:#C0CDD6;margin-bottom:10px;">Pick anything that feels true</div>
         <div id="feel-chips" style="display:flex;flex-wrap:wrap;gap:0;margin:-3px;">
           <div class="ci-chip" onclick="tfi(this,'Overwhelmed','p')">&#127754; Overwhelmed</div>
           <div class="ci-chip" onclick="tfi(this,'Anxious','p')">&#128543; Anxious</div>
@@ -1391,13 +1380,11 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
           <div class="ci-chip" onclick="tfi(this,'Disconnected','p')">&#128566; Disconnected</div>
           <div class="ci-chip" onclick="tfi(this,'Hopeful','p')">&#127807; Hopeful</div>
         </div>
-        <div class="add-custom" style="margin-top:8px;"><input class="custom-inp" id="feel-custom" placeholder="Add something more specific..." onkeydown="if(event.key===&#39;Enter&#39;){addCustomFeel()}"><button class="add-btn" onclick="addCustomFeel()">+ Add</button></div>
+        <div class="add-custom" style="margin-top:8px;"><input class="custom-inp" id="feel-custom" placeholder="Add something more specific..." onkeydown="if(event.key==='Enter'){addCustomFeel()}"><button class="add-btn" onclick="addCustomFeel()">+ Add</button></div>
       </div>
 
-      <!-- Body -->
       <div class="card-ci ci-deep-only" id="ci-body-block" style="display:none;">
         <div class="ci-sec">Body check</div>
-        <div style="font-size:11px;color:#C0CDD6;margin-bottom:10px;">Optional</div>
         <div id="sym-chips" style="display:flex;flex-wrap:wrap;gap:0;margin:-3px;">
           <div class="ci-chip" onclick="tfi(this,'Cramps','s')">&#129768; Cramps</div>
           <div class="ci-chip" onclick="tfi(this,'Headache','s')">&#129314; Headache</div>
@@ -1412,10 +1399,9 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
           <div class="ci-chip" onclick="tfi(this,'Insomnia','s')">&#128336; Insomnia</div>
           <div class="ci-chip" onclick="tfi(this,'Hot flashes','s')">&#127798; Hot flashes</div>
         </div>
-        <div class="add-custom" style="margin-top:8px;"><input class="custom-inp" id="sym-custom" placeholder="Add your own symptom..." onkeydown="if(event.key===&#39;Enter&#39;){addCustomSym()}"><button class="add-btn" onclick="addCustomSym()">+ Add</button></div>
+        <div class="add-custom" style="margin-top:8px;"><input class="custom-inp" id="sym-custom" placeholder="Add your own symptom..." onkeydown="if(event.key==='Enter'){addCustomSym()}"><button class="add-btn" onclick="addCustomSym()">+ Add</button></div>
       </div>
 
-      <!-- IR phase deep question -->
       <div class="ci-deep-only" id="ci-deep-q-block" style="display:none;background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-radius:16px;padding:15px 16px;border:1.5px solid #E4D8F4;">
         <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px;">
           <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;">IR</div>
@@ -1425,7 +1411,6 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
         <div style="display:flex;flex-wrap:wrap;gap:0;margin:-3px;" id="deep-q-chips"></div>
       </div>
 
-      <!-- IR one more thing (both modes — always last) -->
       <div id="ci-body-intuition" style="background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-radius:16px;padding:15px 16px;border:1.5px solid #E4D8F4;">
         <div style="display:flex;align-items:center;gap:9px;margin-bottom:11px;">
           <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;">IR</div>
@@ -1443,7 +1428,6 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
         </div>
       </div>
 
-      <!-- Unsent letter (deep only) -->
       <div class="card-ci ci-deep-only" id="ci-note-block" style="display:none;">
         <div class="ci-sec">Unsent letter</div>
         <div style="font-size:12px;color:#A8C0CC;font-style:italic;margin-bottom:10px;">Say what you cannot say out loud. Just us.</div>
@@ -1451,7 +1435,6 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
       </div>
 
       <button class="savebtn" onclick="saveCI()" id="ci-save-btn">Save &#8594;</button>
-
     </div>
   </div>
 
@@ -2685,6 +2668,8 @@ function saveCI(){
   if(logData.note&&logData.note.trim())existing.note=logData.note;
   if(logData.bodyIntuition)existing.bodyIntuition=logData.bodyIntuition;
   if(logData.driver)existing.driver=logData.driver;
+  if(window._quickQ&&ciMode==='quick'){existing.quickQ=window._quickQ;window._quickQ=null;}
+  if(quickAnswer&&ciMode==='quick'){existing.quickAnswer=quickAnswer;quickAnswer='';}
   existing.ts=Date.now();
   logs[k]=existing;
   localStorage.setItem('ir4',JSON.stringify(logs));
@@ -3057,34 +3042,65 @@ function setCiMode(mode){
   ciMode=mode;
   var tq=document.getElementById('toggle-quick');
   var td=document.getElementById('toggle-deep');
-  var title=document.getElementById('ci-title-label');
+  var qh=document.getElementById('ci-quick-header');
+  var dh=document.getElementById('ci-deep-header');
+  var qa=document.getElementById('ci-quick-answers');
+
+  // Toggle styling
+  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  var phase=setup.start?ph(cd(TODAY)):'luteal';
+  var phColors={period:'#C05080',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#9B7EC8'};
+  var col=phColors[phase]||'#9B7EC8';
+
   if(tq&&td){
     if(mode==='quick'){
-      tq.style.background='white';if(tq.querySelector('div'))tq.querySelector('div').style.color='#9B7EC8';
-      td.style.background='transparent';if(td.querySelector('div'))td.querySelector('div').style.color='rgba(255,255,255,.6)';
-      if(title)title.textContent='Hey. Give me the honest version.';
+      tq.style.background='white';
+      if(tq.querySelector('div'))tq.querySelector('div').style.color=col;
+      td.style.background='transparent';
+      if(td.querySelector('div'))td.querySelector('div').style.color='rgba(80,40,120,.4)';
     }else{
-      td.style.background='white';if(td.querySelector('div'))td.querySelector('div').style.color='#9B7EC8';
-      tq.style.background='transparent';if(tq.querySelector('div'))tq.querySelector('div').style.color='rgba(255,255,255,.6)';
-      if(title)title.textContent='I want to really know how you are.';
+      td.style.background='white';
+      if(td.querySelector('div'))td.querySelector('div').style.color=col;
+      tq.style.background='transparent';
+      if(tq.querySelector('div'))tq.querySelector('div').style.color='rgba(80,40,120,.4)';
     }
   }
-  document.querySelectorAll('.ci-quick-only').forEach(function(el){el.style.display=mode==='quick'?'':'none';});
-  document.querySelectorAll('.ci-deep-only').forEach(function(el){el.style.display=mode==='deep'?'':'none';});
+
+  // Show/hide header content
+  if(qh)qh.style.display=mode==='quick'?'flex':'none';
+  if(dh)dh.style.display=mode==='deep'?'block':'none';
+  if(qa)qa.style.display=mode==='quick'?'block':'none';
+
+  // Show/hide sections
+  document.querySelectorAll('.ci-deep-only').forEach(function(el){
+    el.style.display=mode==='deep'?'':'none';
+  });
+
+  // Always show flow and body intuition
   var flow=document.getElementById('ci-flow-block');if(flow)flow.style.display='';
   var bi=document.getElementById('ci-body-intuition');if(bi)bi.style.display='';
+
+  // Deep: set phase question
   if(mode==='deep'){
-    var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
-    if(setup.start){
-      var phase=ph(cd(TODAY));
-      var qs={period:{label:'What does your body need permission for today?',chips:['To do nothing','To feel bad','To cancel plans','To eat what I want','To sleep all day','To cry if needed']},follicular:{label:'What are you most looking forward to this week?',chips:['Something creative','Being social','Getting things done','Trying something new','Feeling like myself','Honestly nothing yet']},ovulation:{label:'What do you feel like doing with all this energy?',chips:['Being around people','Creating something','Taking on a challenge','Saying yes to things','Physical movement','Quiet time actually']},luteal:{label:'What is the loudest feeling you are carrying today?',chips:['Dread about nothing','Tired but wired','Irritated at small things','Sad without reason','Just done','Actually okay']}};
-      var q=qs[phase]||qs.luteal;
-      var ql=document.getElementById('deep-q-label');
-      var qt=document.getElementById('deep-q-text');
-      var qc=document.getElementById('deep-q-chips');
-      if(ql)ql.textContent='Something I always wonder';
-      if(qt)qt.textContent=q.label;
-      if(qc){qc.innerHTML='';q.chips.forEach(function(c){var el=document.createElement('div');el.className='ci-chip';el.textContent=c;el.onclick=function(){qc.querySelectorAll('.ci-chip').forEach(function(x){x.classList.remove('sel');});el.classList.add('sel');};qc.appendChild(el);});}
+    var qs={
+      period:{label:'What does your body need permission for today?',chips:['To do nothing','To feel bad','To cancel plans','To eat what I want','To sleep all day','To cry if needed']},
+      follicular:{label:'What are you most looking forward to this week?',chips:['Something creative','Being social','Getting things done','Trying something new','Feeling like myself','Honestly nothing yet']},
+      ovulation:{label:'What do you feel like doing with all this energy?',chips:['Being around people','Creating something','Taking on a challenge','Saying yes to things','Physical movement','Quiet time actually']},
+      luteal:{label:'What is the loudest feeling you are carrying today?',chips:['Dread about nothing','Tired but wired','Irritated at small things','Sad without reason','Just done','Actually okay']}
+    };
+    var q=qs[phase]||qs.luteal;
+    var ql=document.getElementById('deep-q-label');
+    var qt=document.getElementById('deep-q-text');
+    var qc=document.getElementById('deep-q-chips');
+    if(ql)ql.textContent='Something I always wonder';
+    if(qt)qt.textContent=q.label;
+    if(qc){
+      qc.innerHTML='';
+      q.chips.forEach(function(c){
+        var el=document.createElement('div');el.className='ci-chip';el.textContent=c;
+        el.onclick=function(){qc.querySelectorAll('.ci-chip').forEach(function(x){x.classList.remove('sel');});el.classList.add('sel');};
+        qc.appendChild(el);
+      });
     }
   }
 }
@@ -3349,6 +3365,8 @@ function initCheckin(){
   }catch(e){}
   setCiMode('quick');
   loadCustomItems();
+  try{buildIRQuestion();}catch(e){setDefaultQuestion();}
+  buildQuickQuestion();
 }
 
 function loadProfile(){
@@ -3699,6 +3717,348 @@ function loadCustomItems(){
   items.sym.forEach(function(i){
     if(!document.querySelector('#sym-chips [data-val="'+i.v+'"]'))addSymChip(i.v,i.e,false);
   });
+}
+
+
+var quickAnswer = '';
+
+function buildQuickQuestion(){
+  var setup = JSON.parse(localStorage.getItem('ir_cycle_setup') || '{}');
+  if(!setup.start){ setGenericQuestion(); return; }
+
+  var day = cd(TODAY);
+  var phase = ph(day);
+  var allKeys = Object.keys(logs).sort();
+  var totalLogs = allKeys.length;
+
+  // Phase colours for header + avatar
+  var phaseGrads = {
+    period:'linear-gradient(160deg,#F8D8E8,#F0C8DC)',
+    follicular:'linear-gradient(160deg,#D8EEF8,#C8E4F4)',
+    ovulation:'linear-gradient(160deg,#FDF5D8,#F8ECC8)',
+    luteal:'linear-gradient(160deg,#E8D8F8,#DEC8F0)'
+  };
+  var phaseAvBg = {
+    period:'linear-gradient(135deg,#C05080,#A03060)',
+    follicular:'linear-gradient(135deg,#4AAAC4,#2A8AAC)',
+    ovulation:'linear-gradient(135deg,#E8A840,#C07820)',
+    luteal:'linear-gradient(135deg,#9B7EC8,#7B5EA8)'
+  };
+  var phaseTextColor = {
+    period:'rgba(140,40,80,.6)',
+    follicular:'rgba(40,80,120,.6)',
+    ovulation:'rgba(120,80,20,.6)',
+    luteal:'rgba(80,40,120,.6)'
+  };
+  var header = document.getElementById('ci-header');
+  var irAv = document.getElementById('ci-ir-av');
+  var qLabel = document.getElementById('ci-q-label');
+  var qText = document.getElementById('ci-q-text');
+  var wrap = document.getElementById('ci-answers-wrap');
+  var dateLabel = document.getElementById('ci-date-label');
+
+  if(header) header.style.background = phaseGrads[phase] || phaseGrads.luteal;
+  if(irAv) irAv.style.background = phaseAvBg[phase] || phaseAvBg.luteal;
+  if(dateLabel){
+    var phaseNames = {period:'Period',follicular:'Follicular',ovulation:'Ovulation',luteal:'Luteal'};
+    dateLabel.textContent = 'Day ' + day + ' \u00b7 ' + (phaseNames[phase] || phase);
+    dateLabel.style.color = phaseTextColor[phase] || phaseTextColor.luteal;
+  }
+
+  if(totalLogs < 5){
+    // Generic warm phase questions — not enough data yet
+    var generic = {
+      period:{label:'Day ' + day + ' of your period',q:'How are you doing today? Be honest.',answers:['Struggling more than I let on','Getting through it okay','Lighter than expected','Just really tired']},
+      follicular:{label:'Follicular phase',q:'How is your energy landing today?',answers:['Building and it feels good','Quietly okay','Still finding my footing','Lower than I expected']},
+      ovulation:{label:'Ovulation window',q:'How are you showing up today?',answers:['Sharp and social','Present but quieter','Going through the motions','Surprisingly low energy']},
+      luteal:{label:'Luteal phase \u00b7 Day ' + day,q:'What is sitting heaviest with you today?',answers:['Everything feels a bit much','The usual tiredness','Nothing specific, just off','Actually holding up well']}
+    };
+    var g = generic[phase] || generic.luteal;
+    if(qLabel) qLabel.textContent = g.label;
+    if(qText) qText.textContent = g.q;
+    renderAnswers(wrap, g.answers, phase);
+    return;
+  }
+
+  // Personalised — build from actual patterns
+  // Find most common symptom in this phase
+  var phaseLogs = allKeys.filter(function(k){ var d = new Date(k); return ph(cd(d)) === phase; });
+  var symFreq = {}; var feelFreq = {}; var energyFreq = {};
+  phaseLogs.forEach(function(k){
+    var l = logs[k];
+    if(l.syms) l.syms.forEach(function(s){ symFreq[s] = (symFreq[s]||0)+1; });
+    if(l.feels) l.feels.forEach(function(f){ feelFreq[f] = (feelFreq[f]||0)+1; });
+    if(l.energies) l.energies.forEach(function(e){ energyFreq[e] = (energyFreq[e]||0)+1; });
+    if(l.driver) feelFreq[l.driver] = (feelFreq[l.driver]||0)+1;
+  });
+
+  var topSym = Object.entries(symFreq).sort(function(a,b){return b[1]-a[1];})[0];
+  var topFeel = Object.entries(feelFreq).sort(function(a,b){return b[1]-a[1];})[0];
+  var topEnergy = Object.entries(energyFreq).sort(function(a,b){return b[1]-a[1];})[0];
+
+  var question = null;
+
+  // Pick question based on strongest pattern
+  if(topSym && topSym[1] >= 2){
+    var sym = topSym[0];
+    var symQs = {
+      'Cramps':{label:'Day ' + day + ' \u2014 I see you',q:'Cramps tend to show up for you around now. How are you holding up?',answers:['Pretty rough honestly','There but I am managing','Lighter than usual today','Barely noticeable this cycle']},
+      'Headache':{label:'Something I notice',q:'You often get headaches in this phase. Is one showing up today?',answers:['Yes and it is lingering','A little tension building','Not today, feeling clear','Had one but it passed']},
+      'Bloating':{label:'Your body pattern',q:'Bloating tends to show up for you here. How is your body feeling?',answers:['Uncomfortable and puffy','A little but manageable','Not too bad today','Feeling pretty okay']},
+      'Tired':{label:'Your energy pattern',q:'This phase tends to drain your energy. Where are you landing today?',answers:['Running on empty honestly','Tired but pushing through','Managing okay','Actually have some energy']},
+      'Anxious':{label:'I noticed something',q:'Anxiety tends to come up for you around day ' + day + '. Is it showing up?',answers:['Yes, it is there underneath everything','A little but I am managing it','Not today, feeling okay','Something else is going on']},
+      'Insomnia':{label:'Your sleep pattern',q:'Sleep is often disrupted for you here. How did you sleep?',answers:['Really poorly, exhausted','Woke up a lot','Okay but not deeply','Actually slept well']},
+      'Cravings':{label:'Your body signals',q:'You tend to crave more in this phase. Is that showing up?',answers:['Yes, eating everything in sight','A little, managing it','Not much actually','No more than usual']}
+    };
+    question = symQs[sym];
+  }
+
+  if(!question && topFeel && topFeel[1] >= 2){
+    var feel = topFeel[0];
+    var feelQs = {
+      'Anxious':{label:'I noticed something',q:'You tend to feel anxious right around now. Is that showing up today?',answers:['Yes, it is there underneath everything','A little but I am managing','Not today, feeling okay','Something else entirely']},
+      'Irritable':{label:'Your pattern',q:'Irritability tends to creep in for you at this point. How is your patience today?',answers:['Pretty thin, everything is grating','A little on edge','Okay, holding it together','Actually feeling calm']},
+      'Disconnected':{label:'Something I see',q:'You often feel a bit disconnected in this phase. Where are you at today?',answers:['Very much in my head','A little removed from things','Present but quieter','Feeling connected actually']},
+      'Overwhelmed':{label:'Your pattern',q:'Things tend to feel like a lot for you around now. Is that happening today?',answers:['Everything feels like too much','A bit, but I am managing','Okay, taking it one thing at a time','Feeling on top of it']},
+      'Tired':{label:'Your energy pattern',q:'You tend to run lower on energy here. How are you holding up?',answers:['Really drained honestly','Tired but pushing through','Okay, managing','Better than usual actually']},
+      'Wanting space':{label:'What I notice',q:'You often need more solitude around this time. How are you feeling socially today?',answers:['Need to be alone, fully','A little withdrawn','Okay with people in small doses','Actually craving connection']},
+      'Sad':{label:'Checking in on you',q:'Sadness tends to surface for you in this phase. Is it there today?',answers:['Yes, quietly there','A little heaviness','Not really, okay today','Feeling lighter than expected']}
+    };
+    question = feelQs[feel];
+  }
+
+  if(!question && topEnergy && topEnergy[1] >= 2){
+    var eng = topEnergy[0];
+    var engQs = {
+      'Foggy':{label:'Your energy pattern',q:'Your mind tends to feel foggy in this phase. How clear are you today?',answers:['Really foggy, hard to focus','A bit scattered','Okay, managing to focus','Surprisingly clear today']},
+      'Running on empty':{label:'Your pattern',q:'This phase tends to drain you. Where are your energy levels today?',answers:['Completely running on fumes','Low but getting through','Okay, pacing myself','More than I expected']},
+      'Wired but tired':{label:'Something I notice',q:'You often feel wired but exhausted here. Is that the vibe today?',answers:['Exactly that, wired but wrecked','A little of both','Just tired mostly','Actually feeling balanced']}
+    };
+    question = engQs[eng];
+  }
+
+  // Fallback if no strong pattern yet
+  if(!question){
+    var fallbacks = {
+      period:{label:'Day ' + day,q:'How is your body treating you today?',answers:['Harder than I am letting on','Getting through it okay','Lighter than I expected','Just really ready for it to pass']},
+      follicular:{label:'Follicular · Day ' + day,q:'Has your energy started coming back yet?',answers:['Yes and it feels good','Getting there, still quiet','Not quite yet','Actually lower than expected']},
+      ovulation:{label:'Ovulation window',q:'How are you showing up in the world today?',answers:['Sharp and present','Quietly okay','Going through the motions','Lower energy than expected']},
+      luteal:{label:'Luteal · Day ' + day,q:'What is sitting heaviest with you right now?',answers:['A lot, everything feels amplified','The usual tiredness','Nothing specific, just off','Holding up better than expected']}
+    };
+    question = fallbacks[phase] || fallbacks.luteal;
+  }
+
+  if(qLabel) qLabel.textContent = question.label;
+  if(qText) qText.textContent = question.q;
+  renderAnswers(wrap, question.answers, phase);
+}
+
+function renderAnswers(wrap, answers, phase){
+  if(!wrap) return;
+  var phaseSelBg = {period:'#FFF0F6',follicular:'#EEF8FF',ovulation:'#FFFAF0',luteal:'#F0EAF8'};
+  var phaseSelBorder = {period:'#C05080',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#9B7EC8'};
+  var phaseSelText = {period:'#6A1030',follicular:'#1A4A6A',ovulation:'#6A4800',luteal:'#3A2A5A'};
+  wrap.innerHTML = '';
+  quickAnswer = '';
+  answers.forEach(function(ans){
+    var btn = document.createElement('button');
+    btn.style.cssText = 'width:100%;background:white;border:1.5px solid #E8EEF2;border-radius:14px;padding:13px 16px;text-align:left;font-family:Nunito,sans-serif;font-size:13px;font-weight:700;color:#1A3A45;cursor:pointer;margin-bottom:8px;display:flex;align-items:center;gap:10px;-webkit-tap-highlight-color:transparent;transition:all .15s;';
+    var dot = document.createElement('div');
+    dot.style.cssText = 'width:8px;height:8px;border-radius:50%;background:#E0E8F0;flex-shrink:0;transition:background .15s;';
+    btn.appendChild(dot);
+    btn.appendChild(document.createTextNode(ans));
+    btn.onclick = function(){
+      wrap.querySelectorAll('button').forEach(function(b){
+        b.style.background = 'white';
+        b.style.borderColor = '#E8EEF2';
+        b.style.color = '#1A3A45';
+        b.querySelector('div').style.background = '#E0E8F0';
+      });
+      btn.style.background = phaseSelBg[phase] || '#F0EAF8';
+      btn.style.borderColor = phaseSelBorder[phase] || '#9B7EC8';
+      btn.style.color = phaseSelText[phase] || '#3A2A5A';
+      dot.style.background = phaseSelBorder[phase] || '#9B7EC8';
+      quickAnswer = ans;
+      // Save to mood for pattern learning
+      mood = ans;
+      moods = [ans];
+    };
+    wrap.appendChild(btn);
+  });
+}
+
+
+// ── IR PERSONAL QUESTION ENGINE ───────────────────────────────────────
+var quickAnswer = '';
+
+function buildIRQuestion(){
+  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  if(!setup.start){
+    setDefaultQuestion();
+    return;
+  }
+  var day=cd(TODAY);
+  var phase=ph(day);
+  var allKeys=Object.keys(logs).sort();
+
+  // Analyse past logs for patterns
+  var phaseLogs=allKeys.filter(function(k){
+    return ph(cd(new Date(k)))===phase;
+  });
+
+  // Find most common mood in this phase
+  var moodFreq={};
+  phaseLogs.forEach(function(k){
+    var l=logs[k];
+    var m=l.mood||(l.moods&&l.moods[0])||'';
+    if(m)moodFreq[m]=(moodFreq[m]||0)+1;
+  });
+  var topMood=Object.entries(moodFreq).sort(function(a,b){return b[1]-a[1];})[0];
+
+  // Find most common symptom
+  var symFreq={};
+  phaseLogs.forEach(function(k){
+    var l=logs[k];
+    if(l.syms)l.syms.forEach(function(s){symFreq[s]=(symFreq[s]||0)+1;});
+  });
+  var topSym=Object.entries(symFreq).sort(function(a,b){return b[1]-a[1];})[0];
+
+  // Find most common body intuition
+  var biFreq={};
+  phaseLogs.forEach(function(k){
+    var l=logs[k];
+    if(l.bodyIntuition)biFreq[l.bodyIntuition]=(biFreq[l.bodyIntuition]||0)+1;
+  });
+  var topBI=Object.entries(biFreq).sort(function(a,b){return b[1]-a[1];})[0];
+
+  // Check yesterday's log
+  var yd=new Date(TODAY);yd.setDate(yd.getDate()-1);
+  var ydKey=yd.toISOString().slice(0,10);
+  var ydLog=logs[ydKey];
+
+  var q=null;
+
+  // Pattern-based questions (need enough data)
+  if(phaseLogs.length>=4&&topMood&&topMood[1]>=3){
+    var moodName=topMood[0].toLowerCase();
+    var moodQs={
+      anxious:{sub:'I noticed something',q:'You tend to feel anxious around this time. Is that showing up today?',answers:['Yes, it is there underneath everything','A little but I am managing it','Not today actually \u2014 feeling okay','Something else is going on']},
+      rough:{sub:'Checking in on you',q:'This phase tends to hit you harder than others. How are you holding up today?',answers:['Pretty rough honestly','Getting through it','Surprisingly okay today','Actually better than usual']},
+      off:{sub:'Your pattern',q:'You often feel a bit off at this point in your cycle. Is today one of those days?',answers:['Yes, just feel off','Kind of, but not as bad','Not really today','Something specific is going on']},
+      tired:{sub:'Energy check',q:'Tiredness tends to show up for you here. How is your energy landing today?',answers:['Completely drained','Running low but managing','Actually okay today','More energy than expected']},
+      irritated:{sub:'I see a pattern',q:'You tend to feel more irritable at this point. Is that coming through today?',answers:['Yes, everything is getting to me','A little more on edge than usual','Not really today','Something specific set me off']},
+      sad:{sub:'Checking in',q:'You sometimes feel heavier emotionally around this time. How are you today?',answers:['Yes, feeling heavy','A little low but okay','Actually feeling okay','Something specific is weighing on me']},
+      good:{sub:'Your strong phase',q:'You tend to feel good around this time. Is that holding today?',answers:['Yes, feeling solid','Pretty good actually','Mixed today','Lower than usual for this phase']},
+      amazing:{sub:'Your power phase',q:'This is usually one of your better stretches. How are you feeling today?',answers:['Amazing, really in it','Good but not my best','Average today','Lower than this phase usually feels']}
+    };
+    var qData=moodQs[moodName.split(' ')[0]]||moodQs[moodName];
+    if(qData){q={sub:qData.sub,question:qData.q,answers:qData.answers,key:'quick_mood',value:moodName};}
+  }
+
+  // Symptom-based question
+  if(!q&&topSym&&topSym[1]>=3){
+    var symName=topSym[0].toLowerCase();
+    var symQs={
+      cramps:{sub:'Day '+day+' \u2014 I see you',q:'Cramps tend to show up for you around now. How is your body feeling today?',answers:['Pretty rough, they are there','There but manageable','Lighter than usual today','Barely noticeable this cycle']},
+      headache:{sub:'Checking your body',q:'You often get headaches at this point in your cycle. Is that showing up today?',answers:['Yes, head is not happy','A bit of pressure but okay','Not today','Had one but it passed']},
+      bloating:{sub:'Body pattern',q:'Bloating tends to show up for you around now. How is your body today?',answers:['Yes, uncomfortable today','A little but manageable','Not bad today','Feeling fine actually']},
+      insomnia:{sub:'Sleep check',q:'Sleep tends to get harder for you around this time. How did you sleep?',answers:['Badly, was awake a lot','Restless but got some sleep','Okay actually','Slept really well']},
+      cravings:{sub:'Body signal',q:'Cravings tend to hit for you around now. How is that going today?',answers:['Strong, hard to ignore','There but I am managing','Mild today','Not really feeling it']}
+    };
+    var sqData=symQs[symName.split(' ')[0]];
+    if(sqData){q={sub:sqData.sub,question:sqData.q,answers:sqData.answers,key:'quick_sym',value:symName};}
+  }
+
+  // Body intuition question
+  if(!q&&topBI&&topBI[1]>=3){
+    var biName=topBI[0].toLowerCase();
+    q={
+      sub:'What your body asks for',
+      question:'Your body tends to need '+biName+' around this phase. Is that what you are feeling today?',
+      answers:['Yes, craving exactly that','A little, but not strongly','Not really today','Something different today'],
+      key:'quick_bi',value:biName
+    };
+  }
+
+  // Yesterday followup
+  if(!q&&ydLog&&ydLog.mood){
+    var ydMood=ydLog.mood.toLowerCase();
+    q={
+      sub:'Following up from yesterday',
+      question:'Yesterday you logged '+ydMood+'. How are you feeling compared to that today?',
+      answers:['Still feeling '+ydMood,'A little better than yesterday','Quite a bit better','Different \u2014 something shifted'],
+      key:'quick_followup',value:ydMood
+    };
+  }
+
+  // Phase-based fallback (no data yet)
+  if(!q){
+    var fallbacks={
+      period:{sub:'Period phase',question:'How is your body doing today?',answers:['Heavy and hard','Getting through it','Okay, managing','Lighter than expected']},
+      follicular:{sub:'Follicular phase',question:'How is your energy landing today?',answers:['Back and building','Quietly okay','Still finding my footing','Lower than expected']},
+      ovulation:{sub:'Ovulation phase',question:'How are you showing up today?',answers:['Sharp and present','Good, feeling myself','Going through the motions','Quieter than this phase usually feels']},
+      luteal:{sub:'Luteal phase',question:'Are you carrying anything heavy today?',answers:['Yes, feels relentless','A little, holding it together','Managing okay','Actually feeling lighter today']}
+    };
+    q=fallbacks[phase]||fallbacks.luteal;
+    q.key='quick_phase';
+  }
+
+  // Render the question
+  var sublabel=document.getElementById('ci-q-sublabel');
+  var questionEl=document.getElementById('ci-ir-question');
+  var answerList=document.getElementById('quick-answer-list');
+  if(sublabel)sublabel.textContent=q.sub||'How are you doing?';
+  if(questionEl)questionEl.textContent=q.question||'How are you today?';
+  if(answerList){
+    answerList.innerHTML='';
+    q.answers.forEach(function(ans,i){
+      var btn=document.createElement('button');
+      btn.className='quick-ans-btn';
+      btn.style.cssText='width:100%;background:white;border:1.5px solid #E8EEF2;border-radius:14px;padding:13px 16px;text-align:left;font-family:Nunito,sans-serif;font-size:13px;font-weight:700;color:#1A3A45;cursor:pointer;margin-bottom:8px;display:flex;align-items:center;gap:10px;-webkit-tap-highlight-color:transparent;transition:all .15s;';
+      var dot=document.createElement('div');
+      dot.style.cssText='width:8px;height:8px;border-radius:50%;background:#E0E8F0;flex-shrink:0;transition:background .15s;';
+      var txt=document.createElement('span');
+      txt.textContent=ans;
+      btn.appendChild(dot);btn.appendChild(txt);
+      btn.onclick=function(){
+        document.querySelectorAll('.quick-ans-btn').forEach(function(b){
+          b.style.background='white';b.style.borderColor='#E8EEF2';b.style.color='#1A3A45';
+          b.querySelector('div').style.background='#E0E8F0';
+        });
+        btn.style.background='#F0EAF8';btn.style.borderColor='#9B7EC8';btn.style.color='#3A2A5A';
+        dot.style.background='#9B7EC8';
+        quickAnswer=ans;
+        // Save key insight to log data
+        window._quickQ={key:q.key,question:q.question,answer:ans,value:q.value};
+      };
+      answerList.appendChild(btn);
+    });
+  }
+}
+
+function setDefaultQuestion(){
+  var sublabel=document.getElementById('ci-q-sublabel');
+  var questionEl=document.getElementById('ci-ir-question');
+  if(sublabel)sublabel.textContent='How are you doing?';
+  if(questionEl)questionEl.textContent='How are you feeling today?';
+  var answerList=document.getElementById('quick-answer-list');
+  if(answerList){
+    answerList.innerHTML='';
+    ['Really good actually','Getting through it','A bit off today','Rough one'].forEach(function(ans){
+      var btn=document.createElement('button');
+      btn.className='quick-ans-btn';
+      btn.style.cssText='width:100%;background:white;border:1.5px solid #E8EEF2;border-radius:14px;padding:13px 16px;text-align:left;font-family:Nunito,sans-serif;font-size:13px;font-weight:700;color:#1A3A45;cursor:pointer;margin-bottom:8px;display:flex;align-items:center;gap:10px;-webkit-tap-highlight-color:transparent;';
+      var dot=document.createElement('div');dot.style.cssText='width:8px;height:8px;border-radius:50%;background:#E0E8F0;flex-shrink:0;';
+      var txt=document.createElement('span');txt.textContent=ans;
+      btn.appendChild(dot);btn.appendChild(txt);
+      btn.onclick=function(){
+        document.querySelectorAll('.quick-ans-btn').forEach(function(b){b.style.background='white';b.style.borderColor='#E8EEF2';b.querySelector('div').style.background='#E0E8F0';});
+        btn.style.background='#F0EAF8';btn.style.borderColor='#9B7EC8';dot.style.background='#9B7EC8';
+        quickAnswer=ans;
+      };
+      answerList.appendChild(btn);
+    });
+  }
 }
 
 </script>
