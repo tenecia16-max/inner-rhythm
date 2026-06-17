@@ -64,6 +64,8 @@ body{
   flex:1;
   margin:14px 14px 0;
   min-height:500px;
+  overflow:hidden;
+  border-radius:26px;
 }
 
 /* Cards */
@@ -72,17 +74,21 @@ body{
   inset:0;
   border-radius:26px;
   border:1px solid rgba(255,255,255,.08);
-  background:linear-gradient(150deg,rgba(10,18,42,.97),rgba(22,8,50,.98));
+  background:linear-gradient(150deg,rgb(10,18,42),rgb(22,8,50));
   display:flex;
   flex-direction:column;
   overflow:hidden;
   transition:transform .4s cubic-bezier(.4,0,.2,1),opacity .4s;
+  will-change:transform,opacity;
 }
 .card.p0{transform:none;opacity:1;pointer-events:auto;}
-.card.p1{transform:scale(.92) translateY(22px);opacity:.72;pointer-events:none;}
-.card.p2{transform:scale(.84) translateY(44px);opacity:.44;pointer-events:none;}
-.card.p3{transform:scale(.76) translateY(66px);opacity:.18;pointer-events:none;}
+.card.p1{transform:scale(.92) translateY(22px);opacity:.6;pointer-events:none;}
+.card.p2{transform:scale(.84) translateY(44px);opacity:.25;pointer-events:none;}
+.card.p3{transform:scale(.76) translateY(66px);opacity:.08;pointer-events:none;}
 .card.gone{transform:translateX(-120%) rotate(-8deg);opacity:0;pointer-events:none;transition:transform .38s cubic-bezier(.4,0,.2,1),opacity .25s;}
+.card.p1::after,.card.p2::after,.card.p3::after{content:'';position:absolute;inset:0;background:rgba(6,11,24,.65);border-radius:26px;pointer-events:none;z-index:10;}
+.card.p2::after{background:rgba(6,11,24,.82);}
+.card.p3::after{background:rgba(6,11,24,.92);}
 
 .pstrip{height:4px;flex-shrink:0;background:linear-gradient(90deg,#F9C8D8 13%,#B8E0F0 30%,#FFE08A 42%,#D8C8F0 100%);}
 .pstrip.all{background:linear-gradient(90deg,#9B7EC8,#C05080,#E8A840,#4AAAC4);}
@@ -287,8 +293,10 @@ function update(){
     var el=document.getElementById('c'+i);
     el.className='card';
     var d=i-cur;
-    if(d<0)el.classList.add('gone');
-    else if(d<4)el.classList.add(pos[d]);
+    if(d<0){el.classList.add('gone');}
+    else if(d<4){el.classList.add(pos[d]);}
+    // z-index: front card highest, others behind
+    el.style.zIndex=d<0?0:(10-d);
     el.style.pointerEvents=d===0?'auto':'none';
     document.getElementById('d'+i).className='dot'+(i===cur?' on':'');
   }
