@@ -1311,6 +1311,11 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
         <div style="display:flex;flex-direction:column;gap:0;" id="quick-answer-list">
           <!-- populated by JS -->
         </div>
+
+        <!-- Open text — escape hatch -->
+        <div style="margin-top:4px;">
+          <textarea id="quick-open-text" placeholder="Or say it in your own words..." style="width:100%;background:#F8F9FB;border:1.5px solid #E8EEF2;border-radius:14px;padding:12px 14px;font-family:Nunito,sans-serif;font-size:13px;color:#1A3A45;resize:none;height:72px;outline:none;line-height:1.6;transition:border .2s;" onfocus="this.style.borderColor='#9B7EC8'" onblur="this.style.borderColor='#E8EEF2'"></textarea>
+        </div>
       </div>
 
       <!-- ═══ FLOW (both modes) ═══ -->
@@ -2670,6 +2675,8 @@ function saveCI(){
   if(logData.driver)existing.driver=logData.driver;
   if(window._quickQ&&ciMode==='quick'){existing.quickQ=window._quickQ;window._quickQ=null;}
   if(quickAnswer&&ciMode==='quick'){existing.quickAnswer=quickAnswer;quickAnswer='';}
+  var qotEl=document.getElementById('quick-open-text');
+  if(qotEl&&qotEl.value.trim()&&ciMode==='quick'){existing.quickNote=qotEl.value.trim();}
   existing.ts=Date.now();
   logs[k]=existing;
   localStorage.setItem('ir4',JSON.stringify(logs));
@@ -2713,6 +2720,7 @@ function buildCycleCircle(){
 function resetCI(){
   mood='';energies=[];feels=[];syms=[];bodyIntuition='';
   var n=document.getElementById('ci-note');if(n)n.value='';
+  var qot=document.getElementById('quick-open-text');if(qot)qot.value='';
   document.querySelectorAll('.mopt').forEach(function(e){e.classList.remove('sel');});
   document.querySelectorAll('.eopt').forEach(function(e){e.classList.remove('sel');});
   document.querySelectorAll('.flow-opt').forEach(function(e){e.classList.remove('self');});
@@ -3327,6 +3335,7 @@ function initCheckin(){
   document.querySelectorAll('.bi-chip').forEach(function(e){e.classList.remove('sel');});
   document.querySelectorAll('.ci-chip').forEach(function(e){e.classList.remove('sel');});
   var n=document.getElementById('ci-note');if(n)n.value='';
+  var qot=document.getElementById('quick-open-text');if(qot)qot.value='';
   var ir=document.getElementById('ci-ir-response');if(ir)ir.style.display='none';
   var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
   var header=document.getElementById('ci-header');
