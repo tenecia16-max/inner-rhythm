@@ -859,7 +859,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
   <div class="status" id="statusbar"><span id="clock">9:41</span><span style="letter-spacing:2px">●●●</span></div>
 
   <!-- ======= SIGN IN / SIGN UP ======= -->
-  <div class="screen active" id="screen-auth" style="overflow:hidden;background:linear-gradient(160deg,#060B18 0%,#0D1535 25%,#1A0A3A 50%,#3D1060 75%,#8B2070 100%);">
+  <div class="screen" id="screen-auth" style="overflow:hidden;background:linear-gradient(160deg,#060B18 0%,#0D1535 25%,#1A0A3A 50%,#3D1060 75%,#8B2070 100%);">
 
   <!-- Orbs + stars -->
   <div style="position:absolute;top:5%;left:10%;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(155,70,200,.28),transparent 70%);pointer-events:none;"></div>
@@ -2818,9 +2818,19 @@ function saveCI(){
 
 function enterApp(){
   try{
+    // Hide all screens
+    document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');s.style.display='none';});
     var authEl=document.getElementById('screen-auth');
     if(authEl){authEl.classList.remove('active');authEl.style.display='none';}
-    goHome();
+    // If already onboarded go straight home
+    if(localStorage.getItem('ir_onboarded')==='1'){
+      goHome();
+    }else{
+      // Show welcome/onboarding
+      var welEl=document.getElementById('screen-welcome');
+      if(welEl){welEl.style.display='flex';welEl.classList.add('active');}
+      else{goHome();}
+    }
   }catch(e){goHome();}
 }
 
@@ -3570,6 +3580,8 @@ function checkRewards(){
 
 // ── PAGE LOAD ─────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function(){
+  // Hide all screens first
+  document.querySelectorAll('.screen').forEach(function(s){s.style.display='none';s.classList.remove('active');});
   if(!checkAutoLogin()){
     var authEl=document.getElementById('screen-auth');
     if(authEl){authEl.style.display='flex';authEl.classList.add('active');}
@@ -4216,15 +4228,58 @@ var deepHeaders=[
 
 function initDeepSteps(){
   deepStep=0;
-  // Build step HTML dynamically inside ci-scroll for deep mode
-  var scroll=document.getElementById('ci-scroll');
-  if(!scroll)return;
-
-  // Set header for step 0
   updateDeepHeader();
-
-  // Show step 0 content
   showDeepStep(0);
+  // Populate step 0 answers using IR question engine
+  var answerContainer=document.getElementById('deep-s0-answers');
+  if(answerContainer){
+    answerContainer.innerHTML='';
+    // Get the current IR question data
+    var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+    var phase=setup.start?ph(cd(TODAY)):'luteal';
+    var day=setup.start?cd(TODAY):1;
+    var allKeys=Object.keys(logs).sort();
+
+    // Check yesterday for followup
+    var yd=new Date(TODAY);yd.setDate(yd.getDate()-1);
+    var ydLog=logs[yd.toISOString().slice(0,10)];
+
+    // Phase fallback answers
+    var phaseAnswers={
+      period:['Heavy and hard today','Getting through it','Okay, managing','Lighter than expected'],
+      follicular:['Energy is back and building','Quietly okay','Still finding my footing','Lower than expected for this phase'],
+      ovulation:['Sharp and really present','Good, feeling like myself','Going through the motions','Quieter than this phase usually feels'],
+      luteal:['Carrying a lot right now','A little heavy but holding','Managing okay','Actually feeling lighter today']
+    };
+
+    var answers=phaseAnswers[phase]||phaseAnswers.luteal;
+
+    // If yesterday had a log use followup
+    if(ydLog&&ydLog.mood){
+      var ydMood=(ydLog.mood||'').toLowerCase();
+      answers=['Still feeling '+ydMood,'A little better than yesterday','Quite a bit better','Something different today'];
+    }
+
+    answers.forEach(function(ans){
+      var btn=document.createElement('button');
+      btn.style.cssText='width:100%;background:white;border:1.5px solid #E8EEF2;border-radius:14px;padding:13px 16px;text-align:left;font-family:Nunito,sans-serif;font-size:13px;font-weight:700;color:#1A3A45;cursor:pointer;margin-bottom:8px;display:flex;align-items:center;gap:10px;-webkit-tap-highlight-color:transparent;';
+      var dot=document.createElement('div');
+      dot.style.cssText='width:8px;height:8px;border-radius:50%;background:#E0E8F0;flex-shrink:0;transition:background .15s;';
+      var txt=document.createElement('span');txt.textContent=ans;
+      btn.appendChild(dot);btn.appendChild(txt);
+      btn.onclick=function(){
+        answerContainer.querySelectorAll('button').forEach(function(b){
+          b.style.background='white';b.style.borderColor='#E8EEF2';b.style.color='#1A3A45';
+          var d=b.querySelector('div');if(d)d.style.background='#E0E8F0';
+        });
+        btn.style.background='#F0EAF8';btn.style.borderColor='#9B7EC8';btn.style.color='#3A2A5A';
+        dot.style.background='#9B7EC8';
+        quickAnswer=ans;
+        window._quickQ={key:'deep_q',question:document.getElementById('ci-ir-question')?document.getElementById('ci-ir-question').textContent:'',answer:ans};
+      };
+      answerContainer.appendChild(btn);
+    });
+  }
 }
 
 function updateDeepHeader(){
