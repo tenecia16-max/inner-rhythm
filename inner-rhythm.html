@@ -3434,12 +3434,16 @@ function buildPatterns(){
       logCount:phaseMoods.period.length,
       facts:{
         label:'About the period phase',
-        text:'Estrogen and progesterone both drop to their lowest during your period. This is why energy, mood and pain tolerance all tend to dip. It is the most hormonally demanding phase physically even though it looks like nothing is happening.',
-        chips:[]
+        bullets:[
+          'Estrogen and progesterone both hit their lowest point. This is the direct cause of cramps, fatigue and mood dips — not weakness.',
+          'Prostaglandins cause the uterus to contract, which is what creates cramping. Higher levels mean more pain.',
+          'Iron levels drop as you bleed. Low iron directly causes fatigue, brain fog and feeling flat.',
+          'Despite how it feels, your body is doing something significant. The hormonal reset here is what makes the next phase possible.'
+        ]
       },
       personal:{
         label:'What I notice in your period phase',
-        text:phaseMoods.period.length?'Your period phase data is building. Keep logging and I will get specific about how your body handles this phase.':'Not enough data yet.',
+        text:phaseMoods.period.length>=3?'Your period phase data is building. I am starting to see how this phase affects you specifically.':'Keep logging during your period and I will replace these facts with insights that are actually yours.',
         chips:[]
       }
     },
@@ -3448,12 +3452,16 @@ function buildPatterns(){
       logCount:phaseMoods.follicular.length,
       facts:{
         label:'About the follicular phase',
-        text:'Estrogen rises steadily through follicular. This tends to lift mood, sharpen focus and increase energy. Most people feel more like themselves here than in any other phase. It is a genuine hormonal window.',
-        chips:[]
+        bullets:[
+          'Estrogen rises steadily from day one after your period ends. This directly lifts serotonin and dopamine — your brain chemistry improves measurably.',
+          'Cognitive sharpness, verbal fluency and working memory all improve during this phase. Not imagined — researched.',
+          'Your body temperature is slightly lower here, which means physical performance tends to be better.',
+          'This is when your skin often looks its best. Rising estrogen boosts collagen production.'
+        ]
       },
       personal:{
         label:'What I notice in your follicular phase',
-        text:phaseMoods.follicular.length?'Your follicular data is building. Keep logging during this phase.':'Not enough data yet.',
+        text:phaseMoods.follicular.length>=3?'Your follicular data is building. I can start to see your pattern here.':'Keep logging during follicular and I will replace these facts with insights about you specifically.',
         chips:[]
       }
     },
@@ -3462,12 +3470,16 @@ function buildPatterns(){
       logCount:phaseMoods.ovulation.length,
       facts:{
         label:'About ovulation',
-        text:'A surge in estrogen and a small testosterone spike create a brief window of heightened confidence, social energy and mental sharpness. It only lasts a few days and is easy to miss, but most people feel a noticeable shift.',
-        chips:[]
+        bullets:[
+          'A sharp estrogen surge triggers a testosterone spike. Together they create a brief window of heightened confidence, social energy and assertiveness.',
+          'This phase only lasts 3 to 5 days. It is the shortest phase but often the most energetically distinct.',
+          'Research shows communication skills, attraction responses and risk tolerance all shift during ovulation.',
+          'Libido tends to peak here — this is biological, driven by the hormonal combination, not circumstance.'
+        ]
       },
       personal:{
         label:'What I notice in your ovulation phase',
-        text:phaseMoods.ovulation.length?'Your ovulation data is building. Keep logging during this phase.':'Not enough data yet.',
+        text:phaseMoods.ovulation.length>=3?'Your ovulation data is building. I am starting to see how this window shows up for you.':'Keep logging during ovulation and I will replace these facts with insights that are yours.',
         chips:[]
       }
     },
@@ -3476,12 +3488,16 @@ function buildPatterns(){
       logCount:phaseMoods.luteal.length,
       facts:{
         label:'About the luteal phase',
-        text:'Progesterone rises then falls sharply in late luteal. As it drops it affects GABA receptors which regulate calm, serotonin which affects mood, and your overall stress threshold. The anxiety, irritability and heaviness people feel here is a real physiological shift.',
-        chips:[]
+        bullets:[
+          'Progesterone rises after ovulation then falls sharply in late luteal. As it drops, GABA receptors — which regulate calm and anxiety — are directly affected.',
+          'Serotonin also dips in late luteal. This is why sadness, irritability and low mood are so common here. It is neurochemical, not personal.',
+          'Your stress threshold genuinely lowers. Things that normally would not bother you can feel overwhelming. That is your nervous system, not your character.',
+          'Body temperature rises slightly in luteal. You may sleep worse, feel warmer and need more calories — all normal responses to progesterone.'
+        ]
       },
       personal:{
         label:'What I notice in your luteal phase',
-        text:phaseMoods.luteal.length>=3?'Your luteal data is building. I am starting to see your pattern here.':'Not enough data yet.',
+        text:phaseMoods.luteal.length>=3?'Your luteal data is building. I can already see some of your patterns here.':'Keep logging during luteal and I will replace these facts with what I notice about you specifically.',
         chips:[]
       }
     }
