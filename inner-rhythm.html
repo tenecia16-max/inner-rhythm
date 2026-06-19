@@ -1577,23 +1577,28 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
   <!-- ======= PATTERNS ======= -->
   <div class="screen" id="screen-patterns">
 
-    <!-- Phase hero — colour shifts on tab tap -->
-    <div id="pat-hero" style="background:linear-gradient(160deg,#9B7EC8,#7B5EA8);padding:max(28px,env(safe-area-inset-top)) 20px 26px;flex-shrink:0;transition:background .4s;">
-      <div style="font-size:12px;color:rgba(255,255,255,.7);font-weight:700;margin-bottom:6px;" id="pat-hero-sub">Loading...</div>
-      <div style="font-family:Playfair Display,serif;font-size:22px;color:white;font-weight:700;margin-bottom:14px;">Your patterns</div>
-      <div style="background:rgba(255,255,255,.2);border-radius:4px;height:5px;overflow:hidden;">
-        <div id="pat-hero-bar" style="height:100%;background:white;border-radius:4px;transition:width .5s;width:50%;"></div>
+    <!-- Watercolour phase hero — matches home/checkin -->
+    <div id="pat-hero" style="background:linear-gradient(160deg,#F8F0FF 0%,#F2E8FC 50%,#EDE0F8 100%);padding:max(44px,env(safe-area-inset-top)) 20px 26px;flex-shrink:0;position:relative;overflow:hidden;transition:background .5s;">
+      <div style="position:absolute;top:-20px;right:-20px;width:140px;height:140px;border-radius:50%;background:rgba(155,126,200,.08);pointer-events:none;"></div>
+      <div style="position:absolute;bottom:-15px;left:-15px;width:100px;height:100px;border-radius:50%;background:rgba(192,80,128,.06);pointer-events:none;"></div>
+
+      <div style="font-size:12px;font-weight:700;color:rgba(100,60,160,.55);margin-bottom:5px;" id="pat-hero-sub">Loading...</div>
+      <div style="font-family:Playfair Display,serif;font-size:24px;color:#2A1A4A;font-weight:700;margin-bottom:16px;">Your patterns</div>
+
+      <!-- Cycle progress bar -->
+      <div style="background:rgba(155,126,200,.15);border-radius:4px;height:5px;overflow:hidden;margin-bottom:6px;">
+        <div id="pat-hero-bar" style="height:100%;background:rgba(100,60,160,.4);border-radius:4px;transition:width .5s;width:50%;"></div>
       </div>
-      <div style="display:flex;justify-content:space-between;margin-top:5px;">
-        <div style="font-size:9px;color:rgba(255,255,255,.5);font-weight:700;">DAY 1</div>
-        <div style="font-size:9px;color:white;font-weight:800;" id="pat-today-lbl">TODAY</div>
-        <div style="font-size:9px;color:rgba(255,255,255,.5);font-weight:700;" id="pat-cycle-end">DAY 28</div>
+      <div style="display:flex;justify-content:space-between;">
+        <div style="font-size:9px;color:rgba(100,60,160,.4);font-weight:700;">DAY 1</div>
+        <div style="font-size:9px;color:rgba(100,60,160,.7);font-weight:800;" id="pat-today-lbl">TODAY</div>
+        <div style="font-size:9px;color:rgba(100,60,160,.4);font-weight:700;" id="pat-cycle-end">DAY 28</div>
       </div>
     </div>
 
     <div class="scroll" style="background:#F7F5FA;border-radius:26px 26px 0 0;margin-top:-18px;padding:16px 16px 28px;position:relative;z-index:1;">
 
-      <!-- IR short note -->
+      <!-- IR note -->
       <div style="background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-radius:16px;padding:14px 16px;border:1.5px solid #E4D8F4;margin-bottom:16px;">
         <div style="display:flex;gap:9px;align-items:flex-start;">
           <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;margin-top:1px;">IR</div>
@@ -1602,43 +1607,43 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
       </div>
 
       <!-- Phase tabs -->
-      <div style="display:flex;gap:6px;margin-bottom:14px;" id="pat-tabs">
-        <div id="ptab-period" class="ptab" onclick="patTab('period')" style="flex:1;padding:8px 2px;text-align:center;border-radius:12px;cursor:pointer;border:1.5px solid transparent;-webkit-tap-highlight-color:transparent;">
+      <div style="display:flex;gap:6px;margin-bottom:14px;">
+        <div id="ptab-period" onclick="patTab('period')" style="flex:1;padding:8px 2px;text-align:center;border-radius:12px;cursor:pointer;border:1.5px solid transparent;-webkit-tap-highlight-color:transparent;transition:all .2s;">
           <span style="font-size:15px;display:block;margin-bottom:2px;">&#129768;</span>
           <span style="font-size:9px;font-weight:800;display:block;color:#C05080;">Period</span>
           <span style="font-size:8px;font-weight:700;display:block;margin-top:1px;color:#C05080;" id="pscore-period">--</span>
         </div>
-        <div id="ptab-follicular" class="ptab" onclick="patTab('follicular')" style="flex:1;padding:8px 2px;text-align:center;border-radius:12px;cursor:pointer;border:1.5px solid transparent;-webkit-tap-highlight-color:transparent;">
+        <div id="ptab-follicular" onclick="patTab('follicular')" style="flex:1;padding:8px 2px;text-align:center;border-radius:12px;cursor:pointer;border:1.5px solid transparent;-webkit-tap-highlight-color:transparent;transition:all .2s;">
           <span style="font-size:15px;display:block;margin-bottom:2px;">&#127807;</span>
           <span style="font-size:9px;font-weight:800;display:block;color:#4AAAC4;">Follicular</span>
           <span style="font-size:8px;font-weight:700;display:block;margin-top:1px;color:#4AAAC4;" id="pscore-follicular">--</span>
         </div>
-        <div id="ptab-ovulation" class="ptab" onclick="patTab('ovulation')" style="flex:1;padding:8px 2px;text-align:center;border-radius:12px;cursor:pointer;border:1.5px solid transparent;-webkit-tap-highlight-color:transparent;">
+        <div id="ptab-ovulation" onclick="patTab('ovulation')" style="flex:1;padding:8px 2px;text-align:center;border-radius:12px;cursor:pointer;border:1.5px solid transparent;-webkit-tap-highlight-color:transparent;transition:all .2s;">
           <span style="font-size:15px;display:block;margin-bottom:2px;">&#9728;&#65039;</span>
           <span style="font-size:9px;font-weight:800;display:block;color:#E8A840;">Ovulation</span>
           <span style="font-size:8px;font-weight:700;display:block;margin-top:1px;color:#E8A840;" id="pscore-ovulation">--</span>
         </div>
-        <div id="ptab-luteal" class="ptab" onclick="patTab('luteal')" style="flex:1;padding:8px 2px;text-align:center;border-radius:12px;cursor:pointer;border:1.5px solid transparent;-webkit-tap-highlight-color:transparent;">
+        <div id="ptab-luteal" onclick="patTab('luteal')" style="flex:1;padding:8px 2px;text-align:center;border-radius:12px;cursor:pointer;border:1.5px solid transparent;-webkit-tap-highlight-color:transparent;transition:all .2s;">
           <span style="font-size:15px;display:block;margin-bottom:2px;">&#127769;</span>
           <span style="font-size:9px;font-weight:800;display:block;color:#9B7EC8;">Luteal</span>
           <span style="font-size:8px;font-weight:700;display:block;margin-top:1px;color:#9B7EC8;" id="pscore-luteal">--</span>
         </div>
       </div>
 
-      <!-- Phase detail card -->
-      <div id="pat-phase-card" style="background:white;border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 12px rgba(0,0,0,.06);min-height:130px;transition:opacity .2s;">
-        <div id="pat-phase-content" style="font-size:13px;color:#3A4A5A;line-height:1.75;">Tap a phase above to see what I have noticed about you.</div>
+      <!-- Phase card -->
+      <div id="pat-phase-card" style="background:white;border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 12px rgba(0,0,0,.06);min-height:120px;transition:opacity .2s;">
+        <div id="pat-phase-content" style="font-size:13px;color:#3A4A5A;line-height:1.75;">Tap a phase above to see what I know.</div>
       </div>
 
-      <!-- Insights section -->
-      <div style="font-size:10px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;" id="pat-insights-hdr" style="display:none;">Patterns spotted &#183; tap to read</div>
+      <!-- Insights -->
+      <div style="font-size:10px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;display:none;" id="pat-insights-hdr">Patterns spotted &#183; tap to read</div>
       <div id="pat-insights"></div>
 
-      <!-- Empty state -->
-      <div id="pat-empty" style="text-align:center;padding:24px 16px;">
-        <div style="font-size:36px;margin-bottom:12px;">&#127807;</div>
+      <!-- Empty state — more purposeful -->
+      <div id="pat-empty" style="display:none;background:white;border-radius:18px;padding:22px 20px;text-align:center;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 8px rgba(0,0,0,.04);">
+        <div style="font-size:32px;margin-bottom:10px;">&#127807;</div>
         <div style="font-size:15px;font-weight:700;color:#1A3A45;margin-bottom:8px;">Still learning your rhythm</div>
-        <div style="font-size:13px;color:#8AAAB4;line-height:1.65;">Check in for a few more days and I will start seeing patterns that are actually yours.</div>
+        <div style="font-size:13px;color:#8AAAB4;line-height:1.7;">Check in for a few more days and I will start seeing patterns that are actually yours &#8212; not just general cycle facts.</div>
       </div>
 
     </div>
@@ -3255,7 +3260,7 @@ function setCiMode(mode){
 }
 
 function patTab(phase){
-  var phaseGrads={period:'linear-gradient(160deg,#C05080,#D4709A)',follicular:'linear-gradient(160deg,#4AAAC4,#7DC8E0)',ovulation:'linear-gradient(160deg,#C07820,#E8A840)',luteal:'linear-gradient(160deg,#9B7EC8,#7B5EA8)'};
+  var phaseGrads={period:'linear-gradient(160deg,#FFF0F5 0%,#FFE8F0 50%,#FFD8E8 100%)',follicular:'linear-gradient(160deg,#F0F8FF 0%,#E8F2FC 50%,#D8EAF8 100%)',ovulation:'linear-gradient(160deg,#FFFBF0 0%,#FFF5E0 50%,#F8ECD0 100%)',luteal:'linear-gradient(160deg,#F8F0FF 0%,#F2E8FC 50%,#EDE0F8 100%)'};
   var phaseBgs={period:'#FFF0F6',follicular:'#EEF8FF',ovulation:'#FFFAF0',luteal:'#F8F4FF'};
   var phaseCols={period:'#C05080',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#9B7EC8'};
   var hero=document.getElementById('pat-hero');
@@ -3274,7 +3279,9 @@ function patTab(phase){
     var d=window.patPhaseData&&window.patPhaseData[phase];
     if(d){
       var col=d.color;
-      var html='<div style="font-size:11px;font-weight:800;color:'+col+';text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;">What I notice in your '+phase+' phase</div>';
+      var isPersonal=d.chips&&d.chips.length>0;
+      var headerLabel=isPersonal?'What I notice in your '+phase+' phase':'About the '+phase+' phase · still learning yours';
+      var html='<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;"><div style="font-size:11px;font-weight:800;color:'+col+';text-transform:uppercase;letter-spacing:.4px;">'+headerLabel+'</div>'+(isPersonal?'':'<div style="background:'+col+'22;border-radius:6px;padding:2px 7px;font-size:9px;font-weight:800;color:'+col+';">GENERAL</div>')+'</div>';
       html+='<div style="font-size:13px;color:#3A2A5A;line-height:1.75;margin-bottom:10px;">'+d.note+'</div>';
       if(d.chips&&d.chips.length){html+='<div style="display:flex;flex-wrap:wrap;gap:6px;">';d.chips.forEach(function(c){html+='<div style="background:'+c.bg+';border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;color:'+c.color+';">'+c.label+'</div>';});html+='</div>';}
       contentEl.innerHTML=html;
@@ -3395,8 +3402,8 @@ function buildPatterns(){
     if(setup.start){
       var day=cd(TODAY),phase=ph(day);
       var phNames={period:'Period',follicular:'Follicular',ovulation:'Ovulation',luteal:'Luteal'};
-      heroSub.textContent=(phNames[phase]||phase)+' \u00b7 Day '+day+' of '+userCycleLen;
-      if(heroBar)heroBar.style.width=Math.round(day/userCycleLen*100)+'%';
+      heroSub.textContent=(phNames[phase]||phase)+' \u00b7 Day '+day+' of '+userCycleLen;var phTextColors={period:'rgba(160,60,100,.6)',follicular:'rgba(40,120,160,.6)',ovulation:'rgba(160,120,40,.6)',luteal:'rgba(100,60,160,.6)'};heroSub.style.color=phTextColors[phase]||'rgba(100,60,160,.55)';
+      if(heroBar){heroBar.style.width=Math.round(day/userCycleLen*100)+'%';var phBarColors={period:'rgba(192,80,128,.4)',follicular:'rgba(74,170,196,.4)',ovulation:'rgba(232,168,64,.4)',luteal:'rgba(155,126,200,.4)'};heroBar.style.background=phBarColors[phase]||'rgba(155,126,200,.4)';}
       if(todayLbl)todayLbl.textContent='TODAY \u00b7 DAY '+day;
       if(cycleEnd)cycleEnd.textContent='DAY '+userCycleLen;
       var phaseGrads={period:'linear-gradient(160deg,#C05080,#D4709A)',follicular:'linear-gradient(160deg,#4AAAC4,#7DC8E0)',ovulation:'linear-gradient(160deg,#C07820,#E8A840)',luteal:'linear-gradient(160deg,#9B7EC8,#7B5EA8)'};
@@ -3422,10 +3429,62 @@ function buildPatterns(){
   phases.forEach(function(p){var s=scorePhase(phaseMoods[p]);var el=document.getElementById('pscore-'+p);if(el)el.textContent=s?s+'/10':'--';});
   function topItem(arr){if(!arr||!arr.length)return null;var freq={};arr.forEach(function(m){freq[m]=(freq[m]||0)+1;});return Object.entries(freq).sort(function(a,b){return b[1]-a[1];})[0][0];}
   window.patPhaseData={
-    period:{color:'#C05080',bg:'#FFF0F6',note:phaseMoods.period.length?'Your period phase tends to be tougher. Both estrogen and progesterone drop to their lowest here. You always come through it.':'Log during your period so I can learn how it affects you.',chips:[]},
-    follicular:{color:'#4AAAC4',bg:'#EEF8FF',note:phaseMoods.follicular.length?'Follicular tends to be where you feel most like yourself. Rising estrogen lifts your mood and energy.':'Log during follicular phase so I can see how your energy shifts.',chips:[]},
-    ovulation:{color:'#E8A840',bg:'#FFFAF0',note:phaseMoods.ovulation.length?'Ovulation is brief but powerful. A surge in estrogen tends to make you feel more social and confident.':'Log during ovulation so I can see how those high-hormone days feel for you.',chips:[]},
-    luteal:{color:'#9B7EC8',bg:'#F8F4FF',note:phaseMoods.luteal.length?'Luteal tends to be your most complex phase. As progesterone drops, your nervous system becomes more reactive.':'Log during your luteal phase so I can track how the hormone shift affects you.',chips:[]}
+    period:{
+      color:'#C05080',bg:'#FFF0F6',
+      logCount:phaseMoods.period.length,
+      facts:{
+        label:'About the period phase',
+        text:'Estrogen and progesterone both drop to their lowest during your period. This is why energy, mood and pain tolerance all tend to dip. It is the most hormonally demanding phase physically even though it looks like nothing is happening.',
+        chips:[]
+      },
+      personal:{
+        label:'What I notice in your period phase',
+        text:phaseMoods.period.length?'Your period phase data is building. Keep logging and I will get specific about how your body handles this phase.':'Not enough data yet.',
+        chips:[]
+      }
+    },
+    follicular:{
+      color:'#4AAAC4',bg:'#EEF8FF',
+      logCount:phaseMoods.follicular.length,
+      facts:{
+        label:'About the follicular phase',
+        text:'Estrogen rises steadily through follicular. This tends to lift mood, sharpen focus and increase energy. Most people feel more like themselves here than in any other phase. It is a genuine hormonal window.',
+        chips:[]
+      },
+      personal:{
+        label:'What I notice in your follicular phase',
+        text:phaseMoods.follicular.length?'Your follicular data is building. Keep logging during this phase.':'Not enough data yet.',
+        chips:[]
+      }
+    },
+    ovulation:{
+      color:'#E8A840',bg:'#FFFAF0',
+      logCount:phaseMoods.ovulation.length,
+      facts:{
+        label:'About ovulation',
+        text:'A surge in estrogen and a small testosterone spike create a brief window of heightened confidence, social energy and mental sharpness. It only lasts a few days and is easy to miss, but most people feel a noticeable shift.',
+        chips:[]
+      },
+      personal:{
+        label:'What I notice in your ovulation phase',
+        text:phaseMoods.ovulation.length?'Your ovulation data is building. Keep logging during this phase.':'Not enough data yet.',
+        chips:[]
+      }
+    },
+    luteal:{
+      color:'#9B7EC8',bg:'#F8F4FF',
+      logCount:phaseMoods.luteal.length,
+      facts:{
+        label:'About the luteal phase',
+        text:'Progesterone rises then falls sharply in late luteal. As it drops it affects GABA receptors which regulate calm, serotonin which affects mood, and your overall stress threshold. The anxiety, irritability and heaviness people feel here is a real physiological shift.',
+        chips:[]
+      },
+      personal:{
+        label:'What I notice in your luteal phase',
+        text:phaseMoods.luteal.length>=3?'Your luteal data is building. I am starting to see your pattern here.':'Not enough data yet.',
+        chips:[]
+      }
+    }
   };
   var insights=[];
   if(total>=5){
