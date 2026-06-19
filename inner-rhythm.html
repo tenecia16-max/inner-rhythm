@@ -2739,7 +2739,7 @@ function nav(sc){
   if(sc==='patterns'){learnCycleFromLogs();buildPatterns();applyPlusGating();}
   if(sc==='sharing'){updatePartnerPreview();const lnkEl=document.getElementById('companion-link-display');if(lnkEl){const pr=JSON.parse(localStorage.getItem('ir_profile')||'{}');lnkEl.textContent=pr.name?'innerrhythm.app/companion/'+pr.name.toLowerCase().replace(/\s+/g,'-'):'Set your name in Profile first';}}
   if(sc==='ttc')updateTTCScreen();
-  if(sc==='checkin'){checkInDate=null;initCheckin();}
+  if(sc==='checkin'){initCheckin();}
 }
 
 
@@ -3531,7 +3531,14 @@ function initCheckin(){
     if(biQ)biQ.textContent=biQuestions[phase]||biQuestions.follicular;
   }
   var dl=document.getElementById('ci-date-label');
-  if(dl){var isToday=!checkInDate||checkInDate.toDateString()===TODAY.toDateString();if(isToday){checkInDate=null;dl.textContent='Today';}else{dl.textContent=checkInDate.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});}}
+  if(dl){
+    var isToday=!checkInDate||checkInDate.toDateString()===TODAY.toDateString();
+    if(isToday){
+      if(!checkInDate)    dl.textContent='Today';
+    }else{
+      dl.textContent=checkInDate.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+    }
+  }
   var k=(checkInDate||TODAY).toISOString().slice(0,10);
   var alEl=document.getElementById('ci-already-logged');
   if(logs[k]&&logs[k].mood){
@@ -3780,7 +3787,7 @@ function openDayPicker(){
     var opts=document.getElementById('day-picker-options');
     if(opts){
       opts.innerHTML='';
-      for(var i=1;i<=7;i++){
+      for(var i=1;i<=14;i++){
         var d=new Date(TODAY);d.setDate(d.getDate()-i);
         var lbl=i===1?'Yesterday':d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
         var btn=document.createElement('button');
