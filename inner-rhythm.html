@@ -2536,6 +2536,9 @@ var userPeriodDur=savedSetup.periodDur||5;
 let calY=TODAY.getFullYear(),calM=TODAY.getMonth(),mood='',moods=[],energies=[],feels=[],syms=[];
 let logs=JSON.parse(localStorage.getItem('ir4')||'{}');
 let usePw=false,authMethod='email',authTab='up';
+// ── Missing globals fixed ─────────────────────────────────────────────
+var checkInDate=null,selectedFlow='',bodyIntuition='',ciMode='quick',ciDriver='';
+var curPatPhase='luteal',calYear=TODAY.getFullYear(),calMonth=TODAY.getMonth();
 let shareToggles={mood:true,phase:true,day:true,needs:true,syms:false,notes:false};
 let shareLevel=2;
 
@@ -2916,6 +2919,9 @@ function saveCI(){
   localStorage.setItem('ir4',JSON.stringify(logs));
   toast('Saved ✓');
   setTimeout(function(){checkRewards();},500);
+  // Reload logs from storage to stay in sync
+  logs=JSON.parse(localStorage.getItem('ir4')||'{}');
+  checkInDate=null;
   nav('home');
 }
 
