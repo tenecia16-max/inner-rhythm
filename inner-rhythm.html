@@ -5,6 +5,12 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 <title>Inner Rhythm</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#9B7EC8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Inner Rhythm">
+<link rel="apple-touch-icon" href="icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -1349,7 +1355,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
         </div>
         <div class="card-ci">
           <div class="ci-sec">Period flow</div>
-          <div class="flow-row">
+          <div class="flow-row" id="flow-row-deep">
             <div class="flow-opt" onclick="pickFlow(this,'None')"><span class="flbl">None</span></div>
             <div class="flow-opt" onclick="pickFlow(this,'Spotting')"><span style="font-size:9px;color:#D4709A;display:block;line-height:1.2;">&#9679;</span><span class="flbl">Spotting</span></div>
             <div class="flow-opt" onclick="pickFlow(this,'Light')"><span style="font-size:9px;color:#C05080;display:block;line-height:1.2;">&#9679;&#9679;</span><span class="flbl">Light</span></div>
@@ -3192,72 +3198,7 @@ function closeReward(){
   if(ov)ov.style.display='none';
 }
 
-function setCiMode(mode){
-  ciMode=mode;
-  var tq=document.getElementById('toggle-quick');
-  var td=document.getElementById('toggle-deep');
-  var qh=document.getElementById('ci-quick-header');
-  var dh=document.getElementById('ci-deep-header');
-  var qa=document.getElementById('ci-quick-answers');
 
-  // Toggle styling
-  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
-  var phase=setup.start?ph(cd(TODAY)):'luteal';
-  var phColors={period:'#C05080',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#9B7EC8'};
-  var col=phColors[phase]||'#9B7EC8';
-
-  if(tq&&td){
-    if(mode==='quick'){
-      tq.style.background='white';
-      if(tq.querySelector('div'))tq.querySelector('div').style.color=col;
-      td.style.background='transparent';
-      if(td.querySelector('div'))td.querySelector('div').style.color='rgba(80,40,120,.4)';
-    }else{
-      td.style.background='white';
-      if(td.querySelector('div'))td.querySelector('div').style.color=col;
-      tq.style.background='transparent';
-      if(tq.querySelector('div'))tq.querySelector('div').style.color='rgba(80,40,120,.4)';
-    }
-  }
-
-  // Show/hide header content
-  if(qh)qh.style.display=mode==='quick'?'flex':'none';
-  if(dh)dh.style.display=mode==='deep'?'block':'none';
-  if(qa)qa.style.display=mode==='quick'?'block':'none';
-
-  // Show/hide sections
-  document.querySelectorAll('.ci-deep-only').forEach(function(el){
-    el.style.display=mode==='deep'?'':'none';
-  });
-
-  // Always show flow and body intuition
-  var flow=document.getElementById('ci-flow-block');if(flow)flow.style.display='';
-  var bi=document.getElementById('ci-body-intuition');if(bi)bi.style.display='';
-
-  // Deep: set phase question
-  if(mode==='deep'){
-    var qs={
-      period:{label:'What does your body need permission for today?',chips:['To do nothing','To feel bad','To cancel plans','To eat what I want','To sleep all day','To cry if needed']},
-      follicular:{label:'What are you most looking forward to this week?',chips:['Something creative','Being social','Getting things done','Trying something new','Feeling like myself','Honestly nothing yet']},
-      ovulation:{label:'What do you feel like doing with all this energy?',chips:['Being around people','Creating something','Taking on a challenge','Saying yes to things','Physical movement','Quiet time actually']},
-      luteal:{label:'What is the loudest feeling you are carrying today?',chips:['Dread about nothing','Tired but wired','Irritated at small things','Sad without reason','Just done','Actually okay']}
-    };
-    var q=qs[phase]||qs.luteal;
-    var ql=document.getElementById('deep-q-label');
-    var qt=document.getElementById('deep-q-text');
-    var qc=document.getElementById('deep-q-chips');
-    if(ql)ql.textContent='Something I always wonder';
-    if(qt)qt.textContent=q.label;
-    if(qc){
-      qc.innerHTML='';
-      q.chips.forEach(function(c){
-        var el=document.createElement('div');el.className='ci-chip';el.textContent=c;
-        el.onclick=function(){qc.querySelectorAll('.ci-chip').forEach(function(x){x.classList.remove('sel');});el.classList.add('sel');};
-        qc.appendChild(el);
-      });
-    }
-  }
-}
 
 function patTab(phase){
   var phaseGrads={period:'linear-gradient(160deg,#FFF0F5 0%,#FFE8F0 50%,#FFD8E8 100%)',follicular:'linear-gradient(160deg,#F0F8FF 0%,#E8F2FC 50%,#D8EAF8 100%)',ovulation:'linear-gradient(160deg,#FFFBF0 0%,#FFF5E0 50%,#F8ECD0 100%)',luteal:'linear-gradient(160deg,#F8F0FF 0%,#F2E8FC 50%,#EDE0F8 100%)'};
@@ -3279,11 +3220,36 @@ function patTab(phase){
     var d=window.patPhaseData&&window.patPhaseData[phase];
     if(d){
       var col=d.color;
-      var isPersonal=d.chips&&d.chips.length>0;
-      var headerLabel=isPersonal?'What I notice in your '+phase+' phase':'About the '+phase+' phase · still learning yours';
-      var html='<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;"><div style="font-size:11px;font-weight:800;color:'+col+';text-transform:uppercase;letter-spacing:.4px;">'+headerLabel+'</div>'+(isPersonal?'':'<div style="background:'+col+'22;border-radius:6px;padding:2px 7px;font-size:9px;font-weight:800;color:'+col+';">GENERAL</div>')+'</div>';
-      html+='<div style="font-size:13px;color:#3A2A5A;line-height:1.75;margin-bottom:10px;">'+d.note+'</div>';
-      if(d.chips&&d.chips.length){html+='<div style="display:flex;flex-wrap:wrap;gap:6px;">';d.chips.forEach(function(c){html+='<div style="background:'+c.bg+';border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;color:'+c.color+';">'+c.label+'</div>';});html+='</div>';}
+      var bg=d.bg;
+      var hasPersonal=d.logCount>=3;
+      var html='';
+      if(!hasPersonal){
+        // Science facts mode
+        html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;">';
+        html+='<div style="font-size:11px;font-weight:800;color:'+col+';text-transform:uppercase;letter-spacing:.4px;">'+(d.facts.label||'About this phase')+'</div>';
+        html+='<div style="background:'+bg+';border:1px solid '+col+'44;border-radius:8px;padding:3px 8px;font-size:9px;font-weight:800;color:'+col+';white-space:nowrap;">Science \u00b7 not personal yet</div>';
+        html+='</div>';
+        if(d.facts.bullets&&d.facts.bullets.length){
+          d.facts.bullets.forEach(function(b){
+            html+='<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;">';
+            html+='<div style="width:5px;height:5px;border-radius:50%;background:'+col+';flex-shrink:0;margin-top:7px;"></div>';
+            html+='<div style="font-size:13px;color:#3A2A5A;line-height:1.75;">'+b+'</div>';
+            html+='</div>';
+          });
+        }
+        html+='<div style="background:'+bg+';border-radius:12px;padding:11px 13px;margin-top:6px;border:1px solid '+col+'22;">';
+        html+='<div style="font-size:12px;color:'+col+';line-height:1.65;font-style:italic;">Log during your '+phase+' phase and I will start replacing these general facts with insights that are actually about you.</div>';
+        html+='</div>';
+      }else{
+        // Personal data mode
+        html+='<div style="font-size:11px;font-weight:800;color:'+col+';text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px;">'+(d.personal.label||'What I notice')+'</div>';
+        html+='<div style="font-size:13px;color:#3A2A5A;line-height:1.8;margin-bottom:10px;">'+(d.personal.text||'')+'</div>';
+        if(d.personal.chips&&d.personal.chips.length){
+          html+='<div style="display:flex;flex-wrap:wrap;gap:6px;">';
+          d.personal.chips.forEach(function(c){html+='<div style="background:'+c.bg+';border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;color:'+c.color+';">'+c.label+'</div>';});
+          html+='</div>';
+        }
+      }
       contentEl.innerHTML=html;
     }else{
       contentEl.innerHTML='<div style="font-size:13px;color:#8AAAB4;">Log during this phase so I can learn how it affects you.</div>';
@@ -3291,6 +3257,7 @@ function patTab(phase){
     card.style.opacity='1';
   },150);
 }
+
 
 function openBadgeSheet(){
   var sheet=document.getElementById('badge-sheet');
@@ -4485,6 +4452,30 @@ function setCiMode(mode){
   }
 }
 
+</script>
+
+  <!-- REWARD OVERLAY -->
+  <div id="reward-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);align-items:center;justify-content:center;flex-direction:column;padding:32px;">
+    <div id="reward-card" style="width:100%;max-width:320px;text-align:center;padding:40px 28px;border-radius:28px;position:relative;">
+      <div id="reward-sparkles" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;border-radius:28px;"></div>
+      <div id="reward-badge-icon" style="font-size:64px;margin-bottom:16px;position:relative;z-index:1;"></div>
+      <div id="reward-badge-label" style="font-size:11px;font-weight:800;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;"></div>
+      <div id="reward-title" style="font-family:Playfair Display,serif;font-size:24px;color:white;font-weight:700;margin-bottom:14px;line-height:1.3;"></div>
+      <div id="reward-msg" style="font-size:13px;color:rgba(255,255,255,.8);line-height:1.75;margin-bottom:24px;"></div>
+      <div id="reward-badge-earned" style="border-radius:12px;padding:8px 16px;display:inline-block;margin-bottom:24px;font-size:11px;font-weight:800;"></div>
+      <button id="reward-btn" onclick="closeReward()" style="width:100%;border:none;border-radius:14px;padding:15px;font-family:Nunito,sans-serif;font-size:14px;font-weight:800;color:white;cursor:pointer;"></button>
+    </div>
+  </div>
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('/sw.js').then(function(reg){
+      console.log('SW registered');
+    }).catch(function(err){
+      console.log('SW failed:', err);
+    });
+  });
+}
 </script>
 </body>
 </html>
