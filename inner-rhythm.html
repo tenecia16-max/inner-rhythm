@@ -1330,7 +1330,138 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
         </div>
       </div>
 
-      <!-- ═══ DEEP ONLY sections ═══ -->
+      <!-- ═══ DEEP PROGRESS BAR ═══ -->
+      <div id="deep-progress-bar" style="display:none;gap:5px;margin-bottom:4px;">
+        <div id="deep-pd0" style="height:3px;border-radius:2px;background:#9B7EC8;flex:1;transition:all .3s;"></div>
+        <div id="deep-pd1" style="height:3px;border-radius:2px;background:rgba(155,126,200,.3);flex:1;transition:all .3s;"></div>
+        <div id="deep-pd2" style="height:3px;border-radius:2px;background:rgba(155,126,200,.3);flex:1;transition:all .3s;"></div>
+        <div id="deep-pd3" style="height:3px;border-radius:2px;background:rgba(155,126,200,.3);flex:1;transition:all .3s;"></div>
+        <div id="deep-pd4" style="height:3px;border-radius:2px;background:rgba(155,126,200,.3);flex:1;transition:all .3s;"></div>
+      </div>
+
+      <!-- ═══ DEEP STEP 0: IR question + open text + flow ═══ -->
+      <div id="deep-step-0" class="ci-deep-step" style="display:none;">
+        <div class="card-ci">
+          <div style="display:flex;flex-direction:column;gap:0;" id="deep-s0-answers">
+            <!-- populated by buildIRQuestion in deep context -->
+          </div>
+          <textarea id="deep-open-text" placeholder="Or say it in your own words..." style="width:100%;background:#F8F9FB;border:1.5px solid #E8EEF2;border-radius:12px;padding:12px 14px;font-family:Nunito,sans-serif;font-size:13px;color:#1A3A45;resize:none;height:72px;outline:none;line-height:1.6;margin-top:4px;transition:border .2s;" onfocus="this.style.borderColor='#9B7EC8'" onblur="this.style.borderColor='#E8EEF2'"></textarea>
+        </div>
+        <div class="card-ci">
+          <div class="ci-sec">Period flow</div>
+          <div class="flow-row">
+            <div class="flow-opt" onclick="pickFlow(this,'None')"><span class="flbl">None</span></div>
+            <div class="flow-opt" onclick="pickFlow(this,'Spotting')"><span style="font-size:9px;color:#D4709A;display:block;line-height:1.2;">&#9679;</span><span class="flbl">Spotting</span></div>
+            <div class="flow-opt" onclick="pickFlow(this,'Light')"><span style="font-size:9px;color:#C05080;display:block;line-height:1.2;">&#9679;&#9679;</span><span class="flbl">Light</span></div>
+            <div class="flow-opt" onclick="pickFlow(this,'Medium')"><span style="font-size:9px;color:#A03060;display:block;line-height:1.2;">&#9679;&#9679;&#9679;</span><span class="flbl">Medium</span></div>
+            <div class="flow-opt" onclick="pickFlow(this,'Heavy')"><span style="font-size:9px;color:#80204A;display:block;line-height:1.2;">&#9679;&#9679;&#9679;&#9679;</span><span class="flbl">Heavy</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ DEEP STEP 1: Mood ═══ -->
+      <div id="deep-step-1" class="ci-deep-step" style="display:none;">
+        <div class="card-ci">
+          <div class="ci-sec">Overall vibe &#8212; pick everything that fits</div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:10px;" id="mood-top-row">
+            <div class="mopt ci-mood-btn" onclick="pm(this,'Amazing')"><span style="font-size:28px;display:block;">&#129321;</span><span style="font-size:9px;font-weight:700;color:#8AAAB4;display:block;margin-top:3px;">Amazing</span></div>
+            <div class="mopt ci-mood-btn" onclick="pm(this,'Good')"><span style="font-size:28px;display:block;">&#128522;</span><span style="font-size:9px;font-weight:700;color:#8AAAB4;display:block;margin-top:3px;">Good</span></div>
+            <div class="mopt ci-mood-btn" onclick="pm(this,'Meh')"><span style="font-size:28px;display:block;">&#128529;</span><span style="font-size:9px;font-weight:700;color:#8AAAB4;display:block;margin-top:3px;">Meh</span></div>
+            <div class="mopt ci-mood-btn" onclick="pm(this,'Off')"><span style="font-size:28px;display:block;">&#128532;</span><span style="font-size:9px;font-weight:700;color:#8AAAB4;display:block;margin-top:3px;">Off</span></div>
+            <div class="mopt ci-mood-btn" onclick="pm(this,'Rough')"><span style="font-size:28px;display:block;">&#128542;</span><span style="font-size:9px;font-weight:700;color:#8AAAB4;display:block;margin-top:3px;">Rough</span></div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:0;margin:-3px;margin-bottom:10px;">
+            <div class="mopt ci-extra-chip" onclick="pm(this,'Happy')"><span style="font-size:18px;">&#128522;</span><span>Happy</span></div>
+            <div class="mopt ci-extra-chip" onclick="pm(this,'Sensitive')"><span style="font-size:18px;">&#129394;</span><span>Sensitive</span></div>
+            <div class="mopt ci-extra-chip" onclick="pm(this,'Irritated')"><span style="font-size:18px;">&#128530;</span><span>Irritated</span></div>
+            <div class="mopt ci-extra-chip" onclick="pm(this,'Anxious')"><span style="font-size:18px;">&#128543;</span><span>Anxious</span></div>
+            <div class="mopt ci-extra-chip" onclick="pm(this,'Sad')"><span style="font-size:18px;">&#128542;</span><span>Sad</span></div>
+            <div class="mopt ci-extra-chip" onclick="pm(this,'Angry')"><span style="font-size:18px;">&#128545;</span><span>Angry</span></div>
+            <div class="mopt ci-extra-chip" onclick="pm(this,'Numb')"><span style="font-size:18px;">&#128566;</span><span>Numb</span></div>
+            <div class="mopt ci-extra-chip" onclick="pm(this,'Weepy')"><span style="font-size:18px;">&#128557;</span><span>Weepy</span></div>
+          </div>
+          <div class="add-custom"><input class="custom-inp" id="mood-custom" placeholder="Add your own..." onkeydown="if(event.key==='Enter'){addCustomMood()}"><button class="add-btn" onclick="addCustomMood()">+ Add</button></div>
+        </div>
+      </div>
+
+      <!-- ═══ DEEP STEP 2: Energy + Body ═══ -->
+      <div id="deep-step-2" class="ci-deep-step" style="display:none;">
+        <div class="card-ci">
+          <div class="ci-sec">Energy today</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:4px;" id="energy-row">
+            <div class="eopt" onclick="pe(this,'Full energy')" style="display:flex;align-items:center;gap:8px;border-radius:12px;padding:10px 12px;"><span class="ei">&#128267;</span>Full energy</div>
+            <div class="eopt" onclick="pe(this,'Foggy')" style="display:flex;align-items:center;gap:8px;border-radius:12px;padding:10px 12px;"><span class="ei">&#128164;</span>Foggy</div>
+            <div class="eopt" onclick="pe(this,'Wired but tired')" style="display:flex;align-items:center;gap:8px;border-radius:12px;padding:10px 12px;"><span class="ei">&#129760;</span>Wired but tired</div>
+            <div class="eopt" onclick="pe(this,'Running on empty')" style="display:flex;align-items:center;gap:8px;border-radius:12px;padding:10px 12px;"><span class="ei">&#128251;</span>Running on empty</div>
+            <div class="eopt" onclick="pe(this,'Cozy low')" style="display:flex;align-items:center;gap:8px;border-radius:12px;padding:10px 12px;"><span class="ei">&#128524;</span>Cozy low</div>
+            <div class="eopt" onclick="pe(this,'Just okay')" style="display:flex;align-items:center;gap:8px;border-radius:12px;padding:10px 12px;"><span class="ei">&#128262;</span>Just okay</div>
+          </div>
+          <div class="add-custom" style="margin-top:8px;"><input class="custom-inp" id="energy-custom" placeholder="Add your own..." onkeydown="if(event.key==='Enter'){addCustomEnergy()}"><button class="add-btn" onclick="addCustomEnergy()">+ Add</button></div>
+        </div>
+        <div class="card-ci">
+          <div class="ci-sec">Body &#8212; anything showing up?</div>
+          <div id="sym-chips" style="display:flex;flex-wrap:wrap;gap:0;margin:-3px;">
+            <div class="ci-chip" onclick="tfi(this,'Cramps','s')">&#129768; Cramps</div>
+            <div class="ci-chip" onclick="tfi(this,'Headache','s')">&#129314; Headache</div>
+            <div class="ci-chip" onclick="tfi(this,'Bloating','s')">&#128534; Bloating</div>
+            <div class="ci-chip" onclick="tfi(this,'Tired','s')">&#128164; Tired</div>
+            <div class="ci-chip" onclick="tfi(this,'Acne','s')">&#128142; Acne</div>
+            <div class="ci-chip" onclick="tfi(this,'Tense','s')">&#128245; Tense</div>
+            <div class="ci-chip" onclick="tfi(this,'Backache','s')">&#129463; Backache</div>
+            <div class="ci-chip" onclick="tfi(this,'Nausea','s')">&#129314; Nausea</div>
+            <div class="ci-chip" onclick="tfi(this,'Tender chest','s')">&#129293; Tender chest</div>
+            <div class="ci-chip" onclick="tfi(this,'Cravings','s')">&#127860; Cravings</div>
+            <div class="ci-chip" onclick="tfi(this,'Insomnia','s')">&#128336; Insomnia</div>
+            <div class="ci-chip" onclick="tfi(this,'Hot flashes','s')">&#127798; Hot flashes</div>
+          </div>
+          <div class="add-custom" style="margin-top:8px;"><input class="custom-inp" id="sym-custom" placeholder="Add your own..." onkeydown="if(event.key==='Enter'){addCustomSym()}"><button class="add-btn" onclick="addCustomSym()">+ Add</button></div>
+        </div>
+      </div>
+
+      <!-- ═══ DEEP STEP 3: IR combined moment ═══ -->
+      <div id="deep-step-3" class="ci-deep-step" style="display:none;">
+        <div style="background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-radius:16px;padding:15px 16px;border:1.5px solid #E4D8F4;margin-bottom:10px;">
+          <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px;">
+            <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;">IR</div>
+            <div style="font-size:11px;font-weight:800;color:#7B5EA8;" id="deep-q-label">Something I always wonder</div>
+          </div>
+          <div style="font-size:13px;color:#3A2A5A;line-height:1.75;margin-bottom:11px;font-style:italic;" id="deep-q-text">What is the loudest feeling you are carrying today?</div>
+          <div style="display:flex;flex-wrap:wrap;gap:0;margin:-3px;" id="deep-q-chips"></div>
+        </div>
+        <div style="background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-radius:16px;padding:15px 16px;border:1.5px solid #E4D8F4;">
+          <div style="display:flex;align-items:center;gap:9px;margin-bottom:11px;">
+            <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;">IR</div>
+            <div style="font-size:11px;font-weight:800;color:#7B5EA8;" id="body-intuition-q">What would actually help you right now?</div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:7px;" id="body-intuition-chips">
+            <div class="bi-chip" onclick="pickBI(this,'Rest')">&#128564; Rest</div>
+            <div class="bi-chip" onclick="pickBI(this,'Movement')">&#127939; Movement</div>
+            <div class="bi-chip" onclick="pickBI(this,'Connection')">&#129309; Connection</div>
+            <div class="bi-chip" onclick="pickBI(this,'Solitude')">&#127807; Solitude</div>
+            <div class="bi-chip" onclick="pickBI(this,'Nourishment')">&#127861; Nourishment</div>
+            <div class="bi-chip" onclick="pickBI(this,'Release')">&#127754; Release</div>
+            <div class="bi-chip" onclick="pickBI(this,'Creativity')">&#127912; Creativity</div>
+            <div class="bi-chip" onclick="pickBI(this,'Nothing clear')">&#129335; Nothing clear</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ DEEP STEP 4: Unsent letter ═══ -->
+      <div id="deep-step-4" class="ci-deep-step" style="display:none;">
+        <div class="card-ci">
+          <div style="font-size:14px;font-weight:700;color:#1A3A45;margin-bottom:5px;">Unsent letter</div>
+          <div style="font-size:12px;color:#A8C0CC;font-style:italic;margin-bottom:12px;">Say what you cannot say out loud. Just us.</div>
+          <textarea class="notebox" id="ci-note" placeholder="Write freely..." style="min-height:140px;"></textarea>
+        </div>
+      </div>
+
+      <!-- ═══ DEEP NAV BUTTONS ═══ -->
+      <div style="display:flex;gap:10px;margin-top:4px;">
+        <button id="deep-skip-btn" style="display:none;flex:1;background:#F0F4F8;border:none;border-radius:12px;padding:13px;font-family:Nunito,sans-serif;font-size:13px;font-weight:700;color:#8AAAB4;cursor:pointer;" onclick="deepNextStep()">Skip</button>
+        <button id="deep-next-btn" style="display:none;flex:2;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);border:none;border-radius:12px;padding:13px;font-family:Nunito,sans-serif;font-size:14px;font-weight:800;color:white;cursor:pointer;" onclick="deepNextStep()">Next &#8594;</button>
+      </div>
+
+      <!-- ═══ DEEP ONLY sections (legacy — hidden) ═══ -->
       <div class="card-ci ci-deep-only" id="ci-mood-block" style="display:none;">
         <div class="ci-sec">Overall vibe</div>
         <div style="display:flex;justify-content:space-between;margin-bottom:8px;" id="mood-top-row">
@@ -3372,6 +3503,7 @@ function initCheckin(){
       }else if(alertEl){alertEl.style.display='none';}
     }
   }catch(e){}
+  deepStep=0;
   setCiMode('quick');
   loadCustomItems();
   try{buildIRQuestion();}catch(e){setDefaultQuestion();}
@@ -4067,6 +4199,159 @@ function setDefaultQuestion(){
       };
       answerList.appendChild(btn);
     });
+  }
+}
+
+
+// ── DEEP MODE STEP SYSTEM ─────────────────────────────────────────────
+var deepStep=0;
+var deepTotal=5;
+var deepHeaders=[
+  {sub:'I noticed something',q:'You tend to feel more at this point in your cycle. Tell me what is actually going on.'},
+  {sub:'Vibe check',q:'How are you actually feeling today? Pick everything that fits.'},
+  {sub:'Your body',q:'How is your energy landing — and is your body saying anything?'},
+  {sub:'Going a little deeper',q:'Two things I want to ask you about today.'},
+  {sub:'Just between us',q:'Anything you need to say that you have not been able to.'}
+];
+
+function initDeepSteps(){
+  deepStep=0;
+  // Build step HTML dynamically inside ci-scroll for deep mode
+  var scroll=document.getElementById('ci-scroll');
+  if(!scroll)return;
+
+  // Set header for step 0
+  updateDeepHeader();
+
+  // Show step 0 content
+  showDeepStep(0);
+}
+
+function updateDeepHeader(){
+  var h=deepHeaders[deepStep]||deepHeaders[0];
+  var sublabel=document.getElementById('ci-q-sublabel');
+  var questionEl=document.getElementById('ci-ir-question');
+  var qh=document.getElementById('ci-quick-header');
+  var dh=document.getElementById('ci-deep-header');
+  if(qh)qh.style.display='flex';
+  if(dh)dh.style.display='none';
+  if(sublabel)sublabel.textContent=h.sub;
+  if(questionEl)questionEl.textContent=h.q;
+
+  // Update progress dots
+  for(var i=0;i<deepTotal;i++){
+    var d=document.getElementById('deep-pd'+i);
+    if(d){
+      d.style.background=i<deepStep?'rgba(255,255,255,.9)':i===deepStep?'white':'rgba(255,255,255,.3)';
+    }
+  }
+
+  // Show/hide next vs save on last step
+  var nextBtn=document.getElementById('deep-next-btn');
+  var skipBtn=document.getElementById('deep-skip-btn');
+  var saveBtn=document.getElementById('ci-save-btn');
+  if(nextBtn)nextBtn.style.display=deepStep<deepTotal-1?'block':'none';
+  if(skipBtn)skipBtn.style.display=deepStep<deepTotal-1?'block':'none';
+  if(saveBtn){
+    if(deepStep===deepTotal-1){saveBtn.textContent='Save everything \u2192';saveBtn.style.display='block';}
+    else{saveBtn.style.display='none';}
+  }
+}
+
+function deepNextStep(){
+  if(deepStep<deepTotal-1){
+    deepStep++;
+    showDeepStep(deepStep);
+    updateDeepHeader();
+    var scroll=document.getElementById('ci-scroll');
+    if(scroll)scroll.scrollTop=0;
+  }
+}
+
+function showDeepStep(step){
+  // Hide all deep step sections
+  for(var i=0;i<deepTotal;i++){
+    var el=document.getElementById('deep-step-'+i);
+    if(el)el.style.display='none';
+  }
+  var active=document.getElementById('deep-step-'+step);
+  if(active)active.style.display='block';
+}
+
+function setCiMode(mode){
+  ciMode=mode;
+  var tq=document.getElementById('toggle-quick');
+  var td=document.getElementById('toggle-deep');
+  var qh=document.getElementById('ci-quick-header');
+  var dh=document.getElementById('ci-deep-header');
+  var qa=document.getElementById('ci-quick-answers');
+  var progBar=document.getElementById('deep-progress-bar');
+
+  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  var phase=setup.start?ph(cd(TODAY)):'luteal';
+  var phColors={period:'#C05080',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#9B7EC8'};
+  var col=phColors[phase]||'#9B7EC8';
+
+  if(tq&&td){
+    if(mode==='quick'){
+      tq.style.background='white';
+      if(tq.querySelector('div'))tq.querySelector('div').style.color=col;
+      td.style.background='transparent';
+      if(td.querySelector('div'))td.querySelector('div').style.color='rgba(80,40,120,.4)';
+    }else{
+      td.style.background='white';
+      if(td.querySelector('div'))td.querySelector('div').style.color=col;
+      tq.style.background='transparent';
+      if(tq.querySelector('div'))tq.querySelector('div').style.color='rgba(80,40,120,.4)';
+    }
+  }
+
+  if(mode==='quick'){
+    if(qh)qh.style.display='flex';
+    if(dh)dh.style.display='none';
+    if(qa)qa.style.display='block';
+    if(progBar)progBar.style.display='none';
+    // Show/hide sections
+    document.querySelectorAll('.ci-deep-only').forEach(function(el){el.style.display='none';});
+    document.querySelectorAll('.ci-deep-step').forEach(function(el){el.style.display='none';});
+    var flow=document.getElementById('ci-flow-block');if(flow)flow.style.display='';
+    var bi=document.getElementById('ci-body-intuition');if(bi)bi.style.display='';
+    var saveBtn=document.getElementById('ci-save-btn');if(saveBtn){saveBtn.textContent='Save \u2192';saveBtn.style.display='block';}
+    var nextBtn=document.getElementById('deep-next-btn');if(nextBtn)nextBtn.style.display='none';
+    var skipBtn=document.getElementById('deep-skip-btn');if(skipBtn)skipBtn.style.display='none';
+  }else{
+    // Deep mode
+    if(qh)qh.style.display='flex';
+    if(dh)dh.style.display='none';
+    if(qa)qa.style.display='none';
+    if(progBar)progBar.style.display='flex';
+    document.querySelectorAll('.ci-deep-only').forEach(function(el){el.style.display='none';});
+    var flow=document.getElementById('ci-flow-block');if(flow)flow.style.display='none';
+    var bi=document.getElementById('ci-body-intuition');if(bi)bi.style.display='none';
+    var saveBtn=document.getElementById('ci-save-btn');if(saveBtn)saveBtn.style.display='none';
+    initDeepSteps();
+
+    // Set phase question for deep step 3
+    var qs={
+      period:{label:'What does your body need permission for today?',chips:['To do nothing','To feel bad','To cancel plans','To eat what I want','To sleep all day','To cry if needed']},
+      follicular:{label:'What are you most looking forward to this week?',chips:['Something creative','Being social','Getting things done','Trying something new','Feeling like myself','Honestly nothing yet']},
+      ovulation:{label:'What do you feel like doing with all this energy?',chips:['Being around people','Creating something','Taking on a challenge','Saying yes to things','Physical movement','Quiet time actually']},
+      luteal:{label:'What is the loudest feeling you are carrying today?',chips:['Dread about nothing','Tired but wired','Irritated at small things','Sad without reason','Just done','Actually okay']}
+    };
+    var q=qs[phase]||qs.luteal;
+    var ql=document.getElementById('deep-q-label');
+    var qt=document.getElementById('deep-q-text');
+    var qc=document.getElementById('deep-q-chips');
+    if(ql)ql.textContent='Something I always wonder';
+    if(qt)qt.textContent=q.label;
+    if(qc){
+      qc.innerHTML='';
+      q.chips.forEach(function(c){
+        var el=document.createElement('div');el.className='ci-chip';el.textContent=c;
+        el.onclick=function(){el.classList.toggle('sel');};
+        qc.appendChild(el);
+      });
+    }
   }
 }
 
