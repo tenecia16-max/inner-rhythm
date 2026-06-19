@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+// If already logged in skip the landing page entirely
+if(localStorage.getItem('ir_session')==='1'&&localStorage.getItem('ir_onboarded')==='1'){
+  window.location.replace('inner-rhythm.html');
+}
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 <title>Inner Rhythm — Know your cycle</title>
