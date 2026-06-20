@@ -2214,7 +2214,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
           <div style="display:flex;align-items:center;gap:13px;padding:14px 16px;border-bottom:0.5px solid #F0F4F8;">
             <div style="font-size:20px;flex-shrink:0;">🌱</div>
             <div style="flex:1;">
-              <div style="font-size:13px;font-weight:700;color:#1A3A45;">TC mode</div>
+              <div style="font-size:13px;font-weight:700;color:#1A3A45;">Trying to conceive</div>
               <div style="font-size:11px;color:#A8C0CC;margin-top:2px;">Tracks ovulation window and fertile days</div>
             </div>
             <div onclick="toggleTC()" id="tc-toggle" style="width:44px;height:26px;border-radius:13px;background:#E0E8F0;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;">
@@ -2225,7 +2225,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
           <div id="tc-info" style="display:none;padding:14px 16px;background:#F8FFF8;border-bottom:0.5px solid #F0F4F8;">
             <div style="display:flex;gap:10px;align-items:flex-start;">
               <div style="font-size:20px;">🌸</div>
-              <div style="font-size:12px;color:#3A5A4A;line-height:1.7;" id="tc-ir-msg">TC mode is on. I will highlight your fertile window and flag your best days.</div>
+              <div style="font-size:12px;color:#3A5A4A;line-height:1.7;" id="tc-ir-msg">Trying to conceive mode is on. I will highlight your fertile window and flag your best days.</div>
             </div>
           </div>
           <!-- Fertile window row — shows when TC on -->
@@ -2911,7 +2911,12 @@ function saveCI(){
   if(logData.bodyIntuition)existing.bodyIntuition=logData.bodyIntuition;
   if(logData.driver)existing.driver=logData.driver;
   if(window._quickQ&&ciMode==='quick'){existing.quickQ=window._quickQ;window._quickQ=null;}
-  if(quickAnswer&&ciMode==='quick'){existing.quickAnswer=quickAnswer;quickAnswer='';}
+  if(quickAnswer&&ciMode==='quick'){
+    existing.quickAnswer=quickAnswer;
+    // If no mood was selected, use quickAnswer as the mood signal
+    if(!existing.mood&&quickAnswer)existing.quickMood=quickAnswer;
+    quickAnswer='';
+  }
   var qotEl=document.getElementById('quick-open-text');
   if(qotEl&&qotEl.value.trim()&&ciMode==='quick'){existing.quickNote=qotEl.value.trim();}
   existing.ts=Date.now();
