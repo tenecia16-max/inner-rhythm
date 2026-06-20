@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Inner Rhythm — Partner View</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  body{font-family:'Nunito',sans-serif;background:#FFF8F5;min-height:100vh;color:#2A1218;}
+
+  .hero{
+    background:linear-gradient(160deg,#FFF5F0 0%,#FFE8DC 60%,#FFD8C8 100%);
+    padding:max(52px,env(safe-area-inset-top)) 24px 32px;
+    position:relative;overflow:hidden;
+  }
+  .hero::before{
+    content:'';position:absolute;top:-40px;right:-40px;
+    width:200px;height:200px;border-radius:50%;
+    background:rgba(210,100,80,.06);pointer-events:none;
+  }
+  .hero::after{
+    content:'';position:absolute;bottom:-20px;left:-20px;
+    width:140px;height:140px;border-radius:50%;
+    background:rgba(192,80,100,.05);pointer-events:none;
+  }
+
+  .ir-wordmark{
+    display:flex;align-items:center;gap:8px;margin-bottom:20px;
+  }
+  .ir-dot{
+    width:28px;height:28px;border-radius:50%;
+    background:linear-gradient(135deg,#C05070,#A03050);
+    display:flex;align-items:center;justify-content:center;
+    font-size:9px;font-weight:800;color:white;letter-spacing:-.2px;
+  }
+  .ir-name{
+    font-family:'Playfair Display',serif;font-size:14px;
+    color:#C05070;font-style:italic;letter-spacing:.3px;
+  }
+
+  .hero-label{font-size:11px;font-weight:800;color:rgba(192,80,100,.6);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;}
+  .hero-title{font-family:'Playfair Display',serif;font-size:26px;color:#2A1218;font-weight:700;line-height:1.3;margin-bottom:4px;}
+  .hero-sub{font-size:13px;color:rgba(100,40,50,.55);margin-top:4px;}
+
+  .body{padding:0 20px max(80px,env(safe-area-inset-bottom)) 20px;display:flex;flex-direction:column;gap:14px;margin-top:0;}
+
+  .card{background:white;border-radius:20px;overflow:hidden;box-shadow:0 2px 16px rgba(180,80,80,.06);}
+  .card-header{padding:14px 16px;border-bottom:0.5px solid #F5EAE8;}
+  .card-label{font-size:10px;font-weight:800;color:#C08090;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+  .card-body{padding:14px 16px;}
+
+  .phase-emoji{font-size:38px;margin-bottom:10px;}
+  .phase-name{font-family:'Playfair Display',serif;font-size:20px;color:#2A1218;font-weight:700;margin-bottom:3px;}
+  .phase-day{font-size:12px;color:#B08090;font-weight:600;margin-bottom:10px;}
+  .phase-context{font-size:13px;color:#5A3040;line-height:1.8;}
+
+  .mood-row{display:flex;align-items:center;gap:12px;}
+  .mood-emoji{font-size:32px;}
+  .mood-label{font-size:16px;font-weight:700;color:#2A1218;}
+
+  .needs-pill{
+    display:inline-block;padding:6px 14px;border-radius:20px;
+    background:#FFF0EC;color:#C05070;
+    font-size:13px;font-weight:700;margin-top:4px;
+    border:1.5px solid rgba(192,80,100,.15);
+  }
+
+  .help-card{
+    background:linear-gradient(135deg,#FFF8F5,#FFF0EC);
+    border-radius:16px;padding:16px;
+    border:1.5px solid rgba(192,80,100,.1);
+  }
+  .help-title{font-size:11px;font-weight:800;color:#C08090;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
+  .help-text{font-size:13px;color:#5A3040;line-height:1.8;}
+
+  .avoid-block{
+    margin-top:10px;padding:11px 14px;
+    background:rgba(192,80,100,.06);border-radius:12px;
+    border-left:3px solid rgba(192,80,100,.25);
+  }
+  .avoid-text{font-size:12px;color:#9A4050;line-height:1.7;}
+
+  .sym-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+  .sym-pill{
+    background:#FFF0EC;color:#C05070;
+    font-size:12px;font-weight:700;
+    padding:5px 12px;border-radius:16px;
+    border:1px solid rgba(192,80,100,.12);
+  }
+
+  .note-block{
+    background:#FFF8F5;border-radius:12px;padding:12px 14px;
+    font-size:13px;color:#5A3040;line-height:1.8;
+    font-style:italic;border-left:3px solid rgba(192,80,100,.2);
+  }
+
+  .footer{
+    text-align:center;padding:20px 24px max(32px,env(safe-area-inset-bottom));
+    font-size:11px;color:rgba(120,60,70,.45);line-height:1.7;
+  }
+  .footer a{color:#C05070;text-decoration:none;font-weight:700;}
+
+  .period-badge{
+    display:inline-flex;align-items:center;gap:5px;
+    background:#FFF0EC;border:1.5px solid rgba(192,80,100,.2);
+    border-radius:20px;padding:5px 12px;
+    font-size:12px;font-weight:700;color:#C05070;
+    margin-top:8px;
+  }
+
+  .no-data{
+    text-align:center;padding:60px 24px;
+  }
+  .no-data-emoji{font-size:48px;margin-bottom:16px;}
+  .no-data-title{font-family:'Playfair Display',serif;font-size:22px;color:#2A1218;margin-bottom:8px;}
+  .no-data-text{font-size:13px;color:#B08090;line-height:1.8;}
+
+  .syms-card{display:none;}
+  .note-card{display:none;}
+  .mood-card{display:none;}
+  .needs-card{display:none;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="ir-wordmark">
+    <div class="ir-dot">IR</div>
+    <div class="ir-name">Inner Rhythm</div>
+  </div>
+  <div class="hero-label" id="hero-label">Shared with you</div>
+  <div class="hero-title" id="hero-title">Checking in on her</div>
+  <div class="hero-sub" id="hero-sub">Here is where she is today</div>
+</div>
+
+<div class="body" id="main-body">
+  <div style="text-align:center;padding:40px 0;color:#C08090;font-size:13px;">Loading...</div>
+</div>
+
+<div class="footer">
+  Shared privately via <a href="https://inner-rhythm-rho.vercel.app">Inner Rhythm</a><br>
+  Only what she chose to share is shown here.
+</div>
+
+<script>
+(function(){
+  var params=new URLSearchParams(window.location.search);
+  var phase=params.get('phase')||'luteal';
+  var day=parseInt(params.get('day')||'14');
+  var total=parseInt(params.get('total')||'28');
+  var daysLeft=parseInt(params.get('left')||'14');
+  var mood=params.get('mood')||'';
+  var needs=params.get('needs')||'';
+  var syms=params.get('syms')||'';
+  var note=params.get('note')||'';
+  var name=params.get('name')||'';
+
+  if(!params.get('phase')){
+    document.getElementById('main-body').innerHTML='<div class="no-data"><div class="no-data-emoji">&#129309;</div><div class="no-data-title">Nothing shared yet</div><div class="no-data-text">Ask her to share her Inner Rhythm link with you.</div></div>';
+    return;
+  }
+
+  // Hero
+  var heroTitle=document.getElementById('hero-title');
+  var heroSub=document.getElementById('hero-sub');
+  var heroLabel=document.getElementById('hero-label');
+  if(name){heroTitle.textContent='Checking in on '+name;heroLabel.textContent='Shared by '+name;}
+  heroSub.textContent='Day '+day+' of '+total+(daysLeft<=5?' \u00b7 Period in about '+daysLeft+' '+(daysLeft===1?'day':'days'):'');
+
+  var phaseData={
+    period:{
+      name:'Period phase',emoji:'&#129768;',
+      dayLabel:'Her period has started',
+      context:'Her body is doing a lot of work right now. Both estrogen and progesterone are at their lowest point in the cycle. Fatigue, tenderness and emotional closeness are all completely normal here. She is not failing — her body is working hard.',
+      help:'Warmth and rest matter most right now. Ask what she needs rather than assuming. Small acts of care land more than you might think.',
+      avoid:'Avoid high-energy plans or anything that demands a lot from her physically or emotionally. Gentleness is everything in this phase.',
+      phaseColor:'#C05080'
+    },
+    follicular:{
+      name:'Follicular phase',emoji:'&#127807;',
+      dayLabel:'Energy is returning',
+      context:'This is usually one of her better stretches. Estrogen is rising which lifts mood, energy and mental clarity. She may feel more like herself again — lighter, sharper, more present.',
+      help:'A great window for plans, conversations and quality time. Her capacity to engage is higher this week than most others.',
+      avoid:'Nothing specific to navigate — she is likely feeling more resilient and open right now. Enjoy it.',
+      phaseColor:'#4AAAC4'
+    },
+    ovulation:{
+      name:'Ovulation phase',emoji:'&#9728;&#65039;',
+      dayLabel:'Her most energised window',
+      context:'A brief peak of estrogen and testosterone. She may feel more social, confident and connected than usual. This window only lasts a few days and tends to be her most vibrant stretch of the cycle.',
+      help:'She is likely at her most communicative and present right now. A wonderful time for meaningful conversations or doing something together.',
+      avoid:'Nothing to worry about this week — lean into the connection.',
+      phaseColor:'#E8A840'
+    },
+    luteal:{
+      name:'Luteal phase',emoji:'&#127769;',
+      dayLabel:'The week before her period',
+      context:'Her emotional sensitivity is heightened right now. Small things can genuinely feel bigger than they look from the outside. Her stress threshold lowers in this phase because of real hormonal changes — this is not a mood, it is physiology.',
+      help:'Quiet presence matters more than solutions. Check in gently without expecting much back. Being there without pressure is the most helpful thing you can do.',
+      avoid:'Not picking a fight today lands bigger than you would expect. If she seems more withdrawn or sensitive than usual, this is the reason — and it will pass.',
+      phaseColor:'#9B7EC8'
+    }
+  };
+
+  var pd=phaseData[phase]||phaseData.luteal;
+
+  var moodEmojis={
+    'Amazing':'&#129321;','Good':'&#128522;','Meh':'&#128529;','Off':'&#128532;','Rough':'&#128542;',
+    'Everything feels heavier':'&#129897;','Emotionally thin-skinned':'&#129394;',
+    'Small things are getting to me':'&#128530;','Low tolerance for people today':'&#128545;',
+    'Trying to hold it together':'&#128543;','Emotionally loud':'&#128557;',
+    'I feel off in a hard-to-explain way':'&#128566;','Wired but restless':'&#129760;',
+    'Numb to everything':'&#128564;','Surprisingly okay':'&#128522;'
+  };
+
+  var body=document.getElementById('main-body');
+  var html='';
+
+  // Phase card — always shown
+  html+='<div class="card">';
+  html+='<div class="card-header"><div class="card-label">Where she is in her cycle</div></div>';
+  html+='<div class="card-body">';
+  html+='<div class="phase-emoji">'+pd.emoji+'</div>';
+  html+='<div class="phase-name">'+pd.name+'</div>';
+  html+='<div class="phase-day">'+pd.dayLabel+' &mdash; Day '+day+' of '+total+'</div>';
+  if(daysLeft<=5&&daysLeft>=0){
+    html+='<div class="period-badge">&#129768; Period in about '+daysLeft+' '+(daysLeft===1?'day':'days')+'</div>';
+    html+='<br><br>';
+  }
+  html+='<div class="phase-context">'+pd.context+'</div>';
+  html+='</div></div>';
+
+  // Mood card
+  if(mood){
+    html+='<div class="card mood-card" style="display:block;">';
+    html+='<div class="card-header"><div class="card-label">How she is feeling today</div></div>';
+    html+='<div class="card-body">';
+    html+='<div class="mood-row">';
+    html+='<div class="mood-emoji">'+(moodEmojis[mood]||'&#128522;')+'</div>';
+    html+='<div class="mood-label">'+mood+'</div>';
+    html+='</div></div></div>';
+  }
+
+  // Needs card
+  if(needs){
+    html+='<div class="card needs-card" style="display:block;">';
+    html+='<div class="card-header"><div class="card-label">What she needs right now</div></div>';
+    html+='<div class="card-body">';
+    html+='<div style="font-size:15px;font-weight:700;color:#2A1218;">'+needs+'</div>';
+    html+='</div></div>';
+  }
+
+  // Symptoms card
+  if(syms){
+    var symList=syms.split(',').filter(Boolean);
+    html+='<div class="card syms-card" style="display:block;">';
+    html+='<div class="card-header"><div class="card-label">Physical today</div></div>';
+    html+='<div class="card-body">';
+    html+='<div class="sym-list">';
+    symList.forEach(function(s){html+='<div class="sym-pill">'+s+'</div>';});
+    html+='</div></div></div>';
+  }
+
+  // Note card
+  if(note){
+    html+='<div class="card note-card" style="display:block;">';
+    html+='<div class="card-header"><div class="card-label">She wanted you to know</div></div>';
+    html+='<div class="card-body"><div class="note-block">'+note+'</div></div></div>';
+  }
+
+  // How to help — always shown, never feels lacking
+  html+='<div class="help-card">';
+  html+='<div class="help-title">How you can help today</div>';
+  html+='<div class="help-text">'+pd.help+'</div>';
+  html+='<div class="avoid-block"><div class="avoid-text">'+pd.avoid+'</div></div>';
+  html+='</div>';
+
+  body.innerHTML=html;
+})();
+</script>
+</body>
+</html>

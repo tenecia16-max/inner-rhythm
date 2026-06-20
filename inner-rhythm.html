@@ -4978,122 +4978,7 @@ function doSignOut(){
 }
 
 
-function toggleShare(key){
-  var saved=JSON.parse(localStorage.getItem('ir_share_toggles')||'null');
-  if(!saved)saved={phase:true,mood:true,needs:true,syms:false,notes:false};
-  saved[key]=!saved[key];
-  localStorage.setItem('ir_share_toggles',JSON.stringify(saved));
-  var tog=document.getElementById('stog-'+key);
-  if(tog){
-    var knob=tog.querySelector('div');
-    if(saved[key]){tog.style.background='#4AAAC4';if(knob)knob.style.left='21px';}
-    else{tog.style.background='#D0D8E0';if(knob)knob.style.left='3px';}
-  }
-  loadPartnerScreen();
-}
 
-function loadPartnerScreen(){
-  var saved=JSON.parse(localStorage.getItem('ir_share_toggles')||'null');
-  var shareToggles=saved||{phase:true,mood:true,needs:true,syms:false,notes:false};
-
-  // Sync toggle UI
-  ['phase','mood','needs','syms','notes'].forEach(function(k){
-    var tog=document.getElementById('stog-'+k);
-    if(tog){
-      var knob=tog.querySelector('div');
-      if(shareToggles[k]){tog.style.background='#4AAAC4';if(knob)knob.style.left='21px';}
-      else{tog.style.background='#D0D8E0';if(knob)knob.style.left='3px';}
-    }
-  });
-
-  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
-  var el=document.getElementById('partner-content');
-  var tipEl=document.getElementById('partner-ir-tip');
-  if(!el)return;
-
-  if(!setup.start){
-    el.innerHTML='<div style="text-align:center;padding:28px 20px;background:white;border-radius:16px;"><div style="font-size:28px;margin-bottom:10px;">&#129309;</div><div style="font-size:13px;color:#8AAAB4;">Add your last period date in Profile so your partner can see your cycle.</div></div>';
-    return;
-  }
-
-  var day=cd(TODAY);
-  var phase=ph(day);
-  var pNames={period:'Period',follicular:'Follicular',ovulation:'Ovulation',luteal:'Luteal'};
-  var pEmoji={period:'&#129768;',follicular:'&#127807;',ovulation:'&#9728;&#65039;',luteal:'&#127769;'};
-  var pCol={period:'#C05080',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#9B7EC8'};
-  var pBg={period:'#FFF0F6',follicular:'#EEF8FF',ovulation:'#FFFAF0',luteal:'#F8F4FF'};
-  var col=pCol[phase]||'#9B7EC8';
-  var bg=pBg[phase]||'#F8F4FF';
-
-  var partnerMsgs={
-    period:{
-      general:'She is in her period phase — day '+day+'. Her body is working hard. Extra gentleness goes a long way right now.',
-      tip:'Not picking a fight today lands bigger than you would expect. Rest and warmth matter most in this phase.'
-    },
-    follicular:{
-      general:'She is in her follicular phase — day '+day+'. Energy and mood tend to lift here. A good stretch for plans and conversations.',
-      tip:'She is likely feeling more like herself this week. Good time for quality time together.'
-    },
-    ovulation:{
-      general:'She is in her ovulation phase — day '+day+'. High energy, social and present. Probably at her most connected right now.',
-      tip:'This is her most communicative window. She may feel more affectionate and engaged than usual.'
-    },
-    luteal:{
-      general:'She is in her luteal phase — day '+day+'. Her stress threshold genuinely lowers here. Small things can feel bigger to her right now.',
-      tip:'If she seems more sensitive or withdrawn, this is why. It is not personal. Checking in quietly matters more than big gestures.'
-    }
-  };
-
-  var todayKey=TODAY.getFullYear()+'-'+String(TODAY.getMonth()+1).padStart(2,'0')+'-'+String(TODAY.getDate()).padStart(2,'0');
-  var todayLog=logs[todayKey]||{};
-  var daysLeft=userCycleLen-day;
-  var html='';
-
-  if(shareToggles.phase){
-    html+='<div style="background:'+bg+';border-radius:16px;padding:15px 16px;border-left:4px solid '+col+';">';
-    html+='<div style="display:flex;align-items:center;gap:12px;">';
-    html+='<div style="font-size:28px;">'+pEmoji[phase]+'</div>';
-    html+='<div><div style="font-size:11px;font-weight:800;color:'+col+';text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px;">'+pNames[phase]+'</div>';
-    html+='<div style="font-size:16px;font-weight:700;color:#1A3A45;">Day '+day+' of '+userCycleLen+'</div>';
-    if(daysLeft<=4&&daysLeft>=0)html+='<div style="font-size:11px;color:#C05080;font-weight:700;margin-top:3px;">&#129768; Period in about '+daysLeft+' '+(daysLeft===1?'day':'days')+'</div>';
-    html+='</div></div>';
-    html+='<div style="font-size:13px;color:#3A4A5A;line-height:1.75;margin-top:11px;">'+partnerMsgs[phase].general+'</div>';
-    html+='</div>';
-  }
-
-  if(shareToggles.mood&&todayLog.mood){
-    var moodEmoji={Amazing:'&#129321;',Good:'&#128522;',Meh:'&#128529;',Off:'&#128532;',Rough:'&#128542;'};
-    var moodColors={Amazing:'#E8A840',Good:'#4AAAC4',Meh:'#A8C0CC',Off:'#9B7EC8',Rough:'#C05080'};
-    var mc=moodColors[todayLog.mood]||'#A8C0CC';
-    html+='<div style="background:white;border-radius:16px;padding:14px 16px;box-shadow:0 2px 8px rgba(0,0,0,.05);">';
-    html+='<div style="font-size:10px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">She logged today</div>';
-    html+='<div style="display:flex;align-items:center;gap:10px;">';
-    html+='<div style="font-size:26px;">'+(moodEmoji[todayLog.mood]||'&#128522;')+'</div>';
-    html+='<div style="font-size:14px;font-weight:700;color:#1A3A45;">Feeling '+todayLog.mood+'</div>';
-    html+='</div></div>';
-  }
-
-  if(shareToggles.needs&&todayLog.bodyIntuition){
-    html+='<div style="background:white;border-radius:16px;padding:14px 16px;box-shadow:0 2px 8px rgba(0,0,0,.05);">';
-    html+='<div style="font-size:10px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">What she needs</div>';
-    html+='<div style="font-size:14px;font-weight:700;color:#1A3A45;">'+todayLog.bodyIntuition+'</div>';
-    html+='</div>';
-  }
-
-  if(shareToggles.syms&&todayLog.syms&&todayLog.syms.length){
-    html+='<div style="background:white;border-radius:16px;padding:14px 16px;box-shadow:0 2px 8px rgba(0,0,0,.05);">';
-    html+='<div style="font-size:10px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Physical today</div>';
-    html+='<div style="font-size:13px;color:#5A7A8A;">'+todayLog.syms.join(', ')+'</div>';
-    html+='</div>';
-  }
-
-  if(!shareToggles.phase&&!shareToggles.mood&&!shareToggles.needs&&!shareToggles.syms&&!shareToggles.notes){
-    html='<div style="text-align:center;padding:24px 20px;background:white;border-radius:16px;"><div style="font-size:13px;color:#8AAAB4;">Turn on at least one option above to show your partner something.</div></div>';
-  }
-
-  el.innerHTML=html;
-  if(tipEl)tipEl.textContent=partnerMsgs[phase].tip;
-}
 function getUnsentLetterInsight(){
   var allKeys=Object.keys(logs).sort();
   var notes=allKeys.map(function(k){return (logs[k].note||'')+(logs[k].quickNote||'');}).filter(function(n){return n.length>10;});
@@ -5188,6 +5073,160 @@ function saveNotifPref(key,val){
   prefs[key]=val;
   localStorage.setItem('ir_notif_prefs',JSON.stringify(prefs));
 }
+
+function updatePartnerPreview(){
+  var saved=JSON.parse(localStorage.getItem('ir_share_toggles')||'null');
+  var st=saved||{phase:true,mood:true,needs:true,syms:false,notes:false};
+  localStorage.setItem('ir_share_toggles',JSON.stringify(st));
+
+  // Sync toggle knobs
+  ['phase','mood','needs','syms','notes'].forEach(function(k){
+    var tog=document.getElementById('stog-'+k);
+    if(!tog)return;
+    var knob=tog.querySelector('div');
+    if(st[k]){tog.style.background='#C05070';if(knob)knob.style.left='19px';}
+    else{tog.style.background='#D0C0C4';if(knob)knob.style.left='3px';}
+  });
+
+  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  if(!setup.start)return;
+
+  var day=cd(TODAY),phase=ph(day);
+  var daysLeft=userCycleLen-day;
+
+  var phaseData={
+    period:{
+      name:'Period phase',emoji:'&#129768;',
+      desc:'Her period has started',
+      context:'Her body is doing a lot of work right now. Hormones are at their lowest point in the cycle. Fatigue, tenderness and emotional closeness are all normal here.',
+      help:'Warmth and rest matter most. Ask what she needs rather than assuming. Small acts of care go a long way.',
+      avoid:'Avoid high-energy plans or anything that demands a lot from her. Physical and emotional gentleness is everything right now.'
+    },
+    follicular:{
+      name:'Follicular phase',emoji:'&#127807;',
+      desc:'Energy starting to return',
+      context:'This is usually one of her better stretches. Estrogen is rising which lifts mood, energy and mental clarity. She may feel more like herself again.',
+      help:'This is a good window for plans, conversations and quality time together. Her capacity to engage is higher this week.',
+      avoid:'Nothing specific to avoid — she is likely feeling more resilient and open right now.'
+    },
+    ovulation:{
+      name:'Ovulation phase',emoji:'&#9728;&#65039;',
+      desc:'Her most energised window',
+      context:'A brief peak of estrogen and testosterone. She may feel more social, confident and connected than usual. This window only lasts a few days.',
+      help:'She is likely at her most communicative and present. This is a great time for meaningful conversations or plans.',
+      avoid:'Nothing to worry about this week — enjoy the connection.'
+    },
+    luteal:{
+      name:'Luteal phase',emoji:'&#127769;',
+      desc:'The week before her period',
+      context:'Her emotional sensitivity is heightened right now. Small things can feel bigger than they look from the outside. Her stress threshold genuinely lowers in this phase — this is hormonal, not personal.',
+      help:'Quiet presence matters more than solutions right now. Check in gently without expecting much back.',
+      avoid:'Not picking a fight today lands bigger than you would expect. If she seems withdrawn or more sensitive than usual, this is why.'
+    }
+  };
+
+  var pd=phaseData[phase]||phaseData.luteal;
+
+  var titleEl=document.getElementById('prev-title');
+  var dayEl=document.getElementById('prev-day');
+  var emojiEl=document.getElementById('prev-emoji');
+  var nameEl=document.getElementById('prev-phase-name');
+  var descEl=document.getElementById('prev-phase-desc');
+  var ctxEl=document.getElementById('prev-phase-context');
+  var helpEl=document.getElementById('prev-help-text');
+  var avoidEl=document.getElementById('prev-avoid-text');
+
+  if(titleEl)titleEl.textContent='Checking in on her';
+  if(dayEl)dayEl.textContent='Day '+day+' of '+userCycleLen+(daysLeft<=5?' \u00b7 Period in about '+daysLeft+' days':'');
+  if(emojiEl)emojiEl.innerHTML=pd.emoji;
+  if(nameEl)nameEl.textContent=pd.name;
+  if(descEl)descEl.textContent=pd.desc;
+  if(ctxEl)ctxEl.textContent=pd.context;
+  if(helpEl)helpEl.textContent=pd.help;
+  if(avoidEl)avoidEl.textContent=pd.avoid;
+
+  var todayKey=TODAY.getFullYear()+'-'+String(TODAY.getMonth()+1).padStart(2,'0')+'-'+String(TODAY.getDate()).padStart(2,'0');
+  var todayLog=logs[todayKey]||{};
+
+  // Show/hide mood
+  var moodSec=document.getElementById('prev-mood-section');
+  if(moodSec){
+    if(st.mood&&todayLog.mood){
+      moodSec.style.display='block';
+      var moodEmojis={Amazing:'&#129321;',Good:'&#128522;',Meh:'&#128529;',Off:'&#128532;',Rough:'&#128542;',
+        'Everything feels heavier':'&#129897;','Emotionally thin-skinned':'&#129394;','Wired but restless':'&#129760;',
+        'Trying to hold it together':'&#128543;','Surprisingly okay':'&#128522;'};
+      var mej=document.getElementById('prev-mood-emoji');
+      var mtx=document.getElementById('prev-mood-text');
+      if(mej)mej.innerHTML=moodEmojis[todayLog.mood]||'&#128522;';
+      if(mtx)mtx.textContent='Feeling '+todayLog.mood;
+    }else{
+      moodSec.style.display='none';
+    }
+  }
+
+  // Show/hide needs
+  var needsSec=document.getElementById('prev-needs-section');
+  if(needsSec){
+    if(st.needs&&todayLog.bodyIntuition){
+      needsSec.style.display='block';
+      var ntx=document.getElementById('prev-needs-text');
+      if(ntx)ntx.textContent=todayLog.bodyIntuition;
+    }else{
+      needsSec.style.display='none';
+    }
+  }
+}
+
+function generatePartnerLink(){
+  var saved=JSON.parse(localStorage.getItem('ir_share_toggles')||'null');
+  var st=saved||{phase:true,mood:true,needs:true,syms:false,notes:false};
+  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  if(!setup.start){toast('Set up your cycle first');return;}
+
+  var day=cd(TODAY),phase=ph(day);
+  var daysLeft=userCycleLen-day;
+  var todayKey=TODAY.getFullYear()+'-'+String(TODAY.getMonth()+1).padStart(2,'0')+'-'+String(TODAY.getDate()).padStart(2,'0');
+  var todayLog=logs[todayKey]||{};
+
+  var params=new URLSearchParams();
+  params.set('phase',phase);
+  params.set('day',String(day));
+  params.set('total',String(userCycleLen));
+  params.set('left',String(daysLeft));
+  if(st.mood&&todayLog.mood)params.set('mood',todayLog.mood);
+  if(st.needs&&todayLog.bodyIntuition)params.set('needs',todayLog.bodyIntuition);
+  if(st.syms&&todayLog.syms&&todayLog.syms.length)params.set('syms',todayLog.syms.join(','));
+  if(st.notes&&todayLog.note)params.set('note',todayLog.note);
+
+  var acc=JSON.parse(localStorage.getItem('ir_account')||'{}');
+  if(acc.name)params.set('name',acc.name);
+
+  var base=window.location.href.replace('inner-rhythm.html','').replace(/\?.*$/,'');
+  var link=base+'partner.html?'+params.toString();
+
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(link).then(function(){
+      toast('Link copied! Share it with your partner \u2764');
+    }).catch(function(){
+      prompt('Copy this link for your partner:',link);
+    });
+  }else{
+    prompt('Copy this link for your partner:',link);
+  }
+}
+
+function loadPartnerScreen(){
+  updatePartnerPreview();
+}
+
+function toggleShare(key){
+  var saved=JSON.parse(localStorage.getItem('ir_share_toggles')||'null');
+  var st=saved||{phase:true,mood:true,needs:true,syms:false,notes:false};
+  st[key]=!st[key];
+  localStorage.setItem('ir_share_toggles',JSON.stringify(st));
+  updatePartnerPreview();
+}
 </script>
 
 
@@ -5218,101 +5257,104 @@ if('serviceWorker' in navigator){
   <!-- Partner Screen -->
     <div class="screen" id="screen-partner">
     <!-- Header -->
-    <div style="background:linear-gradient(160deg,#EEF8FF 0%,#E4F2FC 50%,#D8EAF8 100%);padding:max(44px,env(safe-area-inset-top)) 20px 20px;flex-shrink:0;">
+    <div style="background:linear-gradient(160deg,#FFF5F0 0%,#FFEEE8 50%,#FFE4D8 100%);padding:max(44px,env(safe-area-inset-top)) 20px 20px;flex-shrink:0;">
       <div style="display:flex;align-items:center;gap:12px;">
-        <button onclick="nav('settings')" style="background:rgba(74,170,196,.15);border:none;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#8592;</button>
+        <button onclick="nav('settings')" style="background:rgba(192,80,100,.12);border:none;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#8592;</button>
         <div>
-          <div style="font-family:Playfair Display,serif;font-size:20px;color:#1A3A4A;font-weight:700;">Partner view</div>
-          <div style="font-size:11px;color:rgba(40,100,140,.55);margin-top:2px;">Choose what your partner can see</div>
+          <div style="font-family:Playfair Display,serif;font-size:20px;color:#2A1218;font-weight:700;">Partner sharing</div>
+          <div style="font-size:11px;color:rgba(120,60,70,.6);margin-top:2px;">What your partner will see</div>
         </div>
       </div>
     </div>
 
-    <div class="scroll" style="background:#F4F7FA;border-radius:26px 26px 0 0;margin-top:-16px;padding:16px 16px max(80px,calc(env(safe-area-inset-bottom)+70px));z-index:1;position:relative;">
+    <div class="scroll" style="background:#FAF4F2;border-radius:26px 26px 0 0;margin-top:-16px;padding:16px 16px max(80px,calc(env(safe-area-inset-bottom)+70px));z-index:1;position:relative;">
 
-      <!-- Share toggles -->
-      <div style="font-size:10px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;padding-left:2px;">What they can see</div>
-      <div style="background:white;border-radius:18px;overflow:hidden;margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,.06);">
+      <!-- Partner preview card -->
+      <div style="font-size:10px;font-weight:800;color:#C08090;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;padding-left:2px;">Your partner will see this</div>
 
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:0.5px solid #F0F4F8;" onclick="toggleShare('phase')" id="stog-row-phase">
+      <!-- Preview — mirrors the partner.html experience -->
+      <div id="partner-preview" style="background:white;border-radius:20px;overflow:hidden;margin-bottom:16px;box-shadow:0 2px 16px rgba(180,80,80,.08);">
+
+        <!-- Preview header -->
+        <div id="prev-header" style="background:linear-gradient(135deg,#FFF0EC,#FFE4D8);padding:16px;border-bottom:0.5px solid rgba(192,80,80,.12);">
+          <div style="font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:#C05070;margin-bottom:4px;">Inner Rhythm</div>
+          <div style="font-family:Playfair Display,serif;font-size:18px;color:#2A1218;font-weight:700;margin-bottom:2px;" id="prev-title">Checking in on her</div>
+          <div style="font-size:12px;color:rgba(100,40,50,.55);" id="prev-day">Today</div>
+        </div>
+
+        <!-- Phase section -->
+        <div id="prev-phase-section" style="padding:14px 16px;border-bottom:0.5px solid #F5EAE8;">
+          <div style="font-size:10px;font-weight:800;color:#C08090;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Where she is</div>
           <div style="display:flex;align-items:center;gap:12px;">
-            <div style="width:34px;height:34px;border-radius:10px;background:#EEF8FF;display:flex;align-items:center;justify-content:center;font-size:16px;">&#127769;</div>
+            <div style="font-size:32px;" id="prev-emoji">&#127769;</div>
             <div>
-              <div style="font-size:13px;font-weight:700;color:#1A3A45;">Phase &amp; cycle day</div>
-              <div style="font-size:11px;color:#A8C0CC;margin-top:1px;">Where she is in her cycle</div>
+              <div style="font-size:16px;font-weight:700;color:#2A1218;font-family:Playfair Display,serif;" id="prev-phase-name">Luteal phase</div>
+              <div style="font-size:12px;color:#9A6070;margin-top:2px;" id="prev-phase-desc">The week before her period</div>
             </div>
           </div>
-          <div id="stog-phase" style="width:44px;height:26px;border-radius:13px;background:#4AAAC4;position:relative;flex-shrink:0;transition:background .2s;pointer-events:none;">
-            <div style="position:absolute;top:3px;left:21px;width:20px;height:20px;border-radius:50%;background:white;box-shadow:0 1px 4px rgba(0,0,0,.2);transition:left .2s;"></div>
+          <div style="font-size:13px;color:#5A3040;line-height:1.75;margin-top:10px;" id="prev-phase-context">Her emotional sensitivity is heightened right now. Small things can feel bigger than they look from the outside. This is hormonal, not personal.</div>
+        </div>
+
+        <!-- Mood section (if shared) -->
+        <div id="prev-mood-section" style="padding:14px 16px;border-bottom:0.5px solid #F5EAE8;display:none;">
+          <div style="font-size:10px;font-weight:800;color:#C08090;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">How she is feeling today</div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="font-size:26px;" id="prev-mood-emoji">&#128522;</div>
+            <div style="font-size:14px;font-weight:700;color:#2A1218;" id="prev-mood-text">Good</div>
           </div>
         </div>
 
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:0.5px solid #F0F4F8;" onclick="toggleShare('mood')" id="stog-row-mood">
-          <div style="display:flex;align-items:center;gap:12px;">
-            <div style="width:34px;height:34px;border-radius:10px;background:#FFF0F6;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128149;</div>
-            <div>
-              <div style="font-size:13px;font-weight:700;color:#1A3A45;">How she is feeling</div>
-              <div style="font-size:11px;color:#A8C0CC;margin-top:1px;">General mood, not the details</div>
-            </div>
-          </div>
-          <div id="stog-mood" style="width:44px;height:26px;border-radius:13px;background:#4AAAC4;position:relative;flex-shrink:0;transition:background .2s;pointer-events:none;">
-            <div style="position:absolute;top:3px;left:21px;width:20px;height:20px;border-radius:50%;background:white;box-shadow:0 1px 4px rgba(0,0,0,.2);transition:left .2s;"></div>
+        <!-- Needs section (if shared) -->
+        <div id="prev-needs-section" style="padding:14px 16px;border-bottom:0.5px solid #F5EAE8;display:none;">
+          <div style="font-size:10px;font-weight:800;color:#C08090;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">What she needs right now</div>
+          <div style="font-size:14px;font-weight:700;color:#2A1218;" id="prev-needs-text">Permission to rest</div>
+        </div>
+
+        <!-- Partner guidance — always shown, phase-specific -->
+        <div style="padding:14px 16px;background:linear-gradient(135deg,#FFF8F6,#FFF2EE);">
+          <div style="font-size:10px;font-weight:800;color:#C08090;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">How you can help</div>
+          <div style="font-size:13px;color:#5A3040;line-height:1.75;" id="prev-help-text">Quiet presence matters more than solutions right now. Check in gently without expecting much back.</div>
+          <div style="margin-top:10px;padding:10px 12px;background:rgba(192,80,100,.06);border-radius:10px;border-left:3px solid rgba(192,80,100,.3);">
+            <div style="font-size:12px;color:#9A4050;line-height:1.7;" id="prev-avoid-text">Not picking a fight today lands bigger than you would expect.</div>
           </div>
         </div>
 
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:0.5px solid #F0F4F8;" onclick="toggleShare('needs')" id="stog-row-needs">
-          <div style="display:flex;align-items:center;gap:12px;">
-            <div style="width:34px;height:34px;border-radius:10px;background:#F0EAF8;display:flex;align-items:center;justify-content:center;font-size:16px;">&#10024;</div>
-            <div>
-              <div style="font-size:13px;font-weight:700;color:#1A3A45;">What she needs</div>
-              <div style="font-size:11px;color:#A8C0CC;margin-top:1px;">Rest, space, comfort etc.</div>
-            </div>
-          </div>
-          <div id="stog-needs" style="width:44px;height:26px;border-radius:13px;background:#4AAAC4;position:relative;flex-shrink:0;transition:background .2s;pointer-events:none;">
-            <div style="position:absolute;top:3px;left:21px;width:20px;height:20px;border-radius:50%;background:white;box-shadow:0 1px 4px rgba(0,0,0,.2);transition:left .2s;"></div>
-          </div>
+      </div>
+
+      <!-- Share controls -->
+      <div style="font-size:10px;font-weight:800;color:#C08090;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;padding-left:2px;">What to include</div>
+      <div style="background:white;border-radius:16px;overflow:hidden;margin-bottom:14px;box-shadow:0 1px 8px rgba(180,80,80,.06);">
+
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:0.5px solid #F5EAE8;" onclick="toggleShare('phase');updatePartnerPreview();">
+          <div><div style="font-size:13px;font-weight:700;color:#2A1218;">Phase &amp; cycle day</div><div style="font-size:11px;color:#B09098;margin-top:1px;">Always included for context</div></div>
+          <div id="stog-phase" style="width:40px;height:24px;border-radius:12px;background:#C05070;position:relative;flex-shrink:0;pointer-events:none;"><div style="position:absolute;top:3px;left:19px;width:18px;height:18px;border-radius:50%;background:white;box-shadow:0 1px 3px rgba(0,0,0,.2);"></div></div>
         </div>
 
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:0.5px solid #F0F4F8;" onclick="toggleShare('syms')" id="stog-row-syms">
-          <div style="display:flex;align-items:center;gap:12px;">
-            <div style="width:34px;height:34px;border-radius:10px;background:#FFF8E8;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128137;</div>
-            <div>
-              <div style="font-size:13px;font-weight:700;color:#1A3A45;">Physical symptoms</div>
-              <div style="font-size:11px;color:#A8C0CC;margin-top:1px;">Cramps, fatigue, headaches</div>
-            </div>
-          </div>
-          <div id="stog-syms" style="width:44px;height:26px;border-radius:13px;background:#D0D8E0;position:relative;flex-shrink:0;transition:background .2s;pointer-events:none;">
-            <div style="position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:white;box-shadow:0 1px 4px rgba(0,0,0,.2);transition:left .2s;"></div>
-          </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:0.5px solid #F5EAE8;" onclick="toggleShare('mood');updatePartnerPreview();">
+          <div><div style="font-size:13px;font-weight:700;color:#2A1218;">How she is feeling</div><div style="font-size:11px;color:#B09098;margin-top:1px;">General mood, not the details</div></div>
+          <div id="stog-mood" style="width:40px;height:24px;border-radius:12px;background:#C05070;position:relative;flex-shrink:0;pointer-events:none;"><div style="position:absolute;top:3px;left:19px;width:18px;height:18px;border-radius:50%;background:white;box-shadow:0 1px 3px rgba(0,0,0,.2);"></div></div>
         </div>
 
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px;" onclick="toggleShare('notes')" id="stog-row-notes">
-          <div style="display:flex;align-items:center;gap:12px;">
-            <div style="width:34px;height:34px;border-radius:10px;background:#F0F8F0;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128221;</div>
-            <div>
-              <div style="font-size:13px;font-weight:700;color:#1A3A45;">Personal notes</div>
-              <div style="font-size:11px;color:#A8C0CC;margin-top:1px;">Her private journal entries</div>
-            </div>
-          </div>
-          <div id="stog-notes" style="width:44px;height:26px;border-radius:13px;background:#D0D8E0;position:relative;flex-shrink:0;transition:background .2s;pointer-events:none;">
-            <div style="position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:white;box-shadow:0 1px 4px rgba(0,0,0,.2);transition:left .2s;"></div>
-          </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:0.5px solid #F5EAE8;" onclick="toggleShare('needs');updatePartnerPreview();">
+          <div><div style="font-size:13px;font-weight:700;color:#2A1218;">What she needs</div><div style="font-size:11px;color:#B09098;margin-top:1px;">Rest, space, connection etc.</div></div>
+          <div id="stog-needs" style="width:40px;height:24px;border-radius:12px;background:#C05070;position:relative;flex-shrink:0;pointer-events:none;"><div style="position:absolute;top:3px;left:19px;width:18px;height:18px;border-radius:50%;background:white;box-shadow:0 1px 3px rgba(0,0,0,.2);"></div></div>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:0.5px solid #F5EAE8;" onclick="toggleShare('syms');updatePartnerPreview();">
+          <div><div style="font-size:13px;font-weight:700;color:#2A1218;">Physical symptoms</div><div style="font-size:11px;color:#B09098;margin-top:1px;">Cramps, fatigue, headaches</div></div>
+          <div id="stog-syms" style="width:40px;height:24px;border-radius:12px;background:#D0C0C4;position:relative;flex-shrink:0;pointer-events:none;"><div style="position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:white;box-shadow:0 1px 3px rgba(0,0,0,.2);"></div></div>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;" onclick="toggleShare('notes');updatePartnerPreview();">
+          <div><div style="font-size:13px;font-weight:700;color:#2A1218;">Personal notes</div><div style="font-size:11px;color:#B09098;margin-top:1px;">Her private journal entries</div></div>
+          <div id="stog-notes" style="width:40px;height:24px;border-radius:12px;background:#D0C0C4;position:relative;flex-shrink:0;pointer-events:none;"><div style="position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:white;box-shadow:0 1px 3px rgba(0,0,0,.2);"></div></div>
         </div>
       </div>
 
-      <!-- Partner preview -->
-      <div style="font-size:10px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;padding-left:2px;">Partner sees this</div>
-      <div id="partner-content" style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;">
-        <div style="text-align:center;padding:28px 20px;background:white;border-radius:16px;">
-          <div style="font-size:13px;color:#8AAAB4;">Loading...</div>
-        </div>
-      </div>
+      <!-- Share button -->
+      <button onclick="generatePartnerLink()" style="width:100%;background:linear-gradient(135deg,#C05070,#A03050);border:none;border-radius:16px;padding:16px;font-family:Nunito,sans-serif;font-size:15px;font-weight:800;color:white;cursor:pointer;margin-bottom:10px;letter-spacing:.3px;">Share link with partner &#8594;</button>
 
-      <!-- IR tip for partner -->
-      <div style="background:linear-gradient(135deg,#EEF8FF,#D8EAF8);border-radius:16px;padding:14px 15px;border:1.5px solid #B8D8F0;">
-        <div style="font-size:10px;font-weight:800;color:#2A6090;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;">For your partner</div>
-        <div style="font-size:13px;color:#1A4A6A;line-height:1.75;" id="partner-ir-tip">Share this screen with your partner so they know where you are in your cycle.</div>
-      </div>
+      <div style="text-align:center;font-size:11px;color:#B09098;line-height:1.6;padding:0 10px;">The link opens a private page just for them. Only what you choose above is shared.</div>
     </div>
   </div>
 
