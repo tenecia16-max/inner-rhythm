@@ -4847,7 +4847,13 @@ function setCiMode(mode){
       qc.innerHTML='';
       q.chips.forEach(function(c){
         var el=document.createElement('div');el.className='ci-chip';el.textContent=c;
-        el.onclick=function(){el.classList.toggle('sel');};
+        el.onclick=function(){
+          el.classList.toggle('sel');
+          // Track in feels array so saveCI picks it up
+          var idx=feels.indexOf(c);
+          if(el.classList.contains('sel')){if(idx===-1)feels.push(c);}
+          else{if(idx>-1)feels.splice(idx,1);}
+        };
         qc.appendChild(el);
       });
     }
@@ -4932,12 +4938,12 @@ function addCustomBI(){
   var v=inp?inp.value.trim():'';if(!v)return;
   var chips=document.getElementById('body-intuition-chips');if(!chips)return;
   var el=document.createElement('div');
-  el.className='bi-chip sel';
+  el.className='bi-chip';
   el.textContent='✨ '+v;
   el.onclick=function(){pickBI(el,v);};
   chips.appendChild(el);
   if(inp)inp.value='';
-  pickBI(el,v);
+  pickBI(el,v);  // selects it (starts unselected so toggle adds it)
 }
 function saveProfileEdit(){
   var acc=JSON.parse(localStorage.getItem('ir_account')||'{}');
