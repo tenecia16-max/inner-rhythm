@@ -1434,7 +1434,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
             <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;">IR</div>
             <div style="font-size:11px;font-weight:800;color:#7B5EA8;" id="deep-q-label">Something I always wonder</div>
           </div>
-          <div style="font-size:13px;color:#3A2A5A;line-height:1.75;margin-bottom:11px;font-style:italic;" id="deep-q-text">What is the loudest feeling you are carrying today?</div>
+          <div style="font-size:13px;color:#3A2A5A;line-height:1.75;margin-bottom:11px;font-style:italic;" id="deep-q-text">What is sitting with you most today — even if you can not fully name it?</div>
           <div style="display:flex;flex-wrap:wrap;gap:0;margin:-3px;" id="deep-q-chips"></div>
         </div>
         <div style="background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-radius:16px;padding:15px 16px;border:1.5px solid #E4D8F4;">
@@ -1560,7 +1560,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
           <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;">IR</div>
           <div style="font-size:11px;font-weight:800;color:#7B5EA8;" id="deep-q-label">Something I always wonder</div>
         </div>
-        <div style="font-size:13px;color:#3A2A5A;line-height:1.75;margin-bottom:11px;font-style:italic;" id="deep-q-text">What is the loudest feeling you are carrying today?</div>
+        <div style="font-size:13px;color:#3A2A5A;line-height:1.75;margin-bottom:11px;font-style:italic;" id="deep-q-text">What is sitting with you most today — even if you can not fully name it?</div>
         <div style="display:flex;flex-wrap:wrap;gap:0;margin:-3px;" id="deep-q-chips"></div>
       </div>
 
@@ -2572,62 +2572,58 @@ const phe=p=>({period:'🌑',follicular:'🌱',ovulation:'🌸',luteal:'🌙'}[p
 const phcol=p=>({period:'linear-gradient(90deg,#7A9EBE,#A0BED4)',follicular:'linear-gradient(90deg,#4E8C72,#72A88C)',ovulation:'linear-gradient(90deg,#C07830,#D8A050)',luteal:'linear-gradient(90deg,#3A7CA5,#6AADD4)'}[p]);
 
 // Daily messages — rotate by cycle day so each day feels different
-function getDailyMsg(phase, cycleDay) {
-  const msgs = {
-    // PERIOD — days 1-5, honest + gentle
-    period: [
-      `Day one. Your body just started something significant. You don't have to push through — resting today is not giving up, it's giving your body what it actually needs.`,
-      `Still in it. Your energy is low because your body is working, not because something is wrong with you. Be as gentle with yourself as you would be with someone you love.`,
-      `Day ${cycleDay}. The heaviness is real. So is the fact that this passes. You have been here before and come out the other side. Nothing is broken.`,
-      `Even if you feel steadier today, your body is still in full effort mode. Don't mistake a slightly better day for being back to normal — you're still in it.`,
-      `Almost through the hardest physical part. Your body has been working non-stop. Whatever you managed today counts — even if it was just getting through it.`
+function getDailyMsg(){
+  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  if(!setup.start)return 'Check in today and I will start learning how your cycle shapes how you feel.';
+  var day=cd(TODAY),phase=ph(day);
+  var daysLeft=userCycleLen-day;
+
+  // Check recent logs for continuity
+  var yd=new Date(TODAY);yd.setDate(yd.getDate()-1);
+  var ydKey=yd.getFullYear()+'-'+String(yd.getMonth()+1).padStart(2,'0')+'-'+String(yd.getDate()).padStart(2,'0');
+  var ydLog=logs[ydKey];
+  var todayKey=TODAY.getFullYear()+'-'+String(TODAY.getMonth()+1).padStart(2,'0')+'-'+String(TODAY.getDate()).padStart(2,'0');
+
+  // Continuity memory — reference yesterday if rough
+  if(ydLog&&(ydLog.mood==='Rough'||ydLog.mood==='Off')){
+    return 'Yesterday felt hard. Your emotions do not have to be productive to deserve attention. How are you carrying that into today?';
+  }
+
+  // Phase-specific daily messages — validate→normalize→support
+  var msgs={
+    period:[
+      'Your period is here. Both estrogen and progesterone are at their lowest right now. The fatigue and heaviness you might feel is physiological — you are not falling behind, your body is doing something significant.',
+      'Day '+day+' of your period. Rest is not laziness today — your body is working hard. You may not need to push yourself as hard as usual.',
+      'Cramps, low energy, emotional closeness — all of it makes sense right now. Your hormones are rebuilding from the ground up. This phase is the reset.',
+      'Your period phase. Emotions can sit closer to the surface here. Whatever you are feeling is allowed to just be felt.',
+      'The heaviness of your period is real. You do not have to function at full capacity today. Your body is asking for gentleness.'
     ],
-    // FOLLICULAR — days 6-13, rising energy, early vs mid
-    follicular: [
-      `The fog is lifting. You might not feel it yet but something is starting to shift. Give it a day or two and notice how differently the world looks.`,
-      `Energy coming back online. It happens quietly — you just notice at some point that things feel less heavy. That's your follicular phase doing its thing.`,
-      `You might actually want to do things today. Plans sound possible again. People sound interesting again. That's not random — that's your hormones shifting in your favour.`,
-      `This is your window for the hard stuff. The emails you've been avoiding, the conversation you've been putting off, the goal you keep starting but not finishing. Now is genuinely a good time.`,
-      `Day ${cycleDay}. Estrogen is still climbing and so is your confidence. This is real. You're not just in a good mood — your brain is literally sharper right now.`,
-      `Creative, clear, social. You might feel like a different person to the one who was struggling a week ago. You're not. Same person, different phase. Both are you.`,
-      `End of your follicular phase soon. Make the most of this energy window — ovulation is next and it builds on everything you've set in motion.`,
-      `Your best thinking window. The work you do now, the connections you make, the decisions you commit to — they tend to stick. Use this.`
+    follicular:[
+      'Your follicular phase. Estrogen is rising and it directly lifts serotonin and dopamine. That clarity and lightness you might feel starting is real — not coincidence.',
+      'Day '+day+'. This is usually when things start to feel more like you again. Your cognitive sharpness tends to improve here. Good week to start things.',
+      'Follicular phase. Energy coming back, mood often lifting, ideas feeling clearer. This is your window — not every phase feels like this.',
+      'Rising estrogen is doing a lot of quiet work right now. Your skin, your focus, your mood — all tend to improve here. Notice what feels easier.',
+      'This phase tends to be your better stretch. Not because everything is perfect — just because your chemistry is supporting you more than it does in other phases.'
     ],
-    // OVULATION — days 14-16, peak
-    ovulation: [
-      `Peak day. You're as switched on as you get in your cycle. Confidence up, communication sharp, energy high. Whatever felt hard last week — go at it now.`,
-      `You might feel magnetic today. More at ease in conversations, more yourself in a room. That's ovulation — lean into it rather than second-guessing it.`,
-      `This is your window. It's short — three, maybe four days. If there's something you've been waiting to feel ready for, this is the closest you'll get. Go.`
+    ovulation:[
+      'Ovulation. A brief estrogen and testosterone surge creates a window of heightened confidence and social energy. It only lasts a few days.',
+      'Day '+day+'. This is when you might feel most like yourself — sharpest, most present, most connected. Notice how you feel today.',
+      'Your ovulation window. Energy, communication, attraction responses — all peak here. It is a real biological shift, not just mood.',
+      'This is one of the shortest phases but often the most distinct. High estrogen plus a testosterone spike. Use it if you have it, rest if you need to.',
+      'Ovulation phase. You might feel more drawn to people, more articulate, more alive. Or not — and that is okay too. Not every cycle follows the average.'
     ],
-    // LUTEAL EARLY — days 17-21, settling in, honest
-    luteal_early: [
-      `You've crossed into your luteal phase. You probably won't notice much yet, but things will gradually feel a little heavier from here. Not bad — just different.`,
-      `Day ${cycleDay}. Progesterone is rising. Your body is in a different gear now — slower, more inward. That's not a flaw, it's biology. Work with it instead of against it.`,
-      `You might want less stimulation than usual — quieter evenings, fewer people, simpler plans. That's a signal worth listening to, not pushing through.`,
-      `Energy is starting its gradual shift. Some days in early luteal still feel good — enjoy those. When the dip comes, you'll be prepared for it.`,
-      `This is a good phase for finishing things, not starting them. Wrap up, close loops, rest into completion rather than chasing new energy.`
-    ],
-    // LUTEAL LATE — days 22-end, honest but kind
-    luteal_late: [
-      `The hard stretch. Everything feels bigger — frustration lands harder, small things feel huge, your fuse is shorter than usual. That's real, and it's hormones. You are not too much.`,
-      `Day ${cycleDay}. If you woke up feeling heavy or off before you'd even done anything — that's late luteal. Your body is preparing. You're not failing at being a person.`,
-      `The things you're worried about right now are probably real. But your brain is also amplifying them. Both things can be true. Before acting on something, sleep on it if you can.`,
-      `If people are getting on your nerves more than usual — or you need reassurance more than usual — that's not weakness and it's not drama. Your nervous system is running hot right now. Be kind to yourself about it.`,
-      `Almost there. The hardest emotional part of your cycle is usually the week before your period. If that's where you are — you're nearly through it. Hang on.`
+    luteal:[
+      'Luteal phase, day '+day+'. Progesterone is rising then falling. When it drops it directly affects GABA — the neurotransmitter that regulates calm. The anxiety or irritability you feel is not in your head.',
+      'This phase tends to be the most misunderstood. What feels like emotional instability is often a real neurological shift. Your stress threshold genuinely lowers. You are not becoming difficult.',
+      'Late luteal. Serotonin dips when progesterone falls. The sadness, flatness or overwhelm that shows up here has a physiological cause. Be gentler with yourself than you think you need to be.',
+      'Day '+day+'. Your body temperature rises slightly in luteal and your nervous system becomes more reactive. Small things can hit harder. That is not overreacting — that is biology.',
+      daysLeft<=5?'Period likely in about '+daysLeft+' days. That emotional heaviness you might be feeling is your hormones winding down. It will shift when they reset.':'Luteal. Your emotions are closer to the surface. Whatever you are feeling is allowed to be big.'
     ]
   };
 
-  // Pick the right sub-array
-  let arr;
-  if (phase === 'period') arr = msgs.period;
-  else if (phase === 'follicular') arr = msgs.follicular;
-  else if (phase === 'ovulation') arr = msgs.ovulation;
-  else if (phase === 'luteal') {
-    // Split luteal into early (days 17-21) and late (22+)
-    arr = cycleDay <= 21 ? msgs.luteal_early : msgs.luteal_late;
-  } else arr = msgs.period;
-
-  return arr[cycleDay % arr.length];
+  var arr=msgs[phase]||msgs.luteal;
+  // Rotate by day to feel different each time
+  return arr[day%arr.length];
 }
 
 function getDailyEmo(phase, cycleDay) {
@@ -2977,8 +2973,19 @@ function enterApp(){
 }
 
 function pickBI(el,val){
-  document.querySelectorAll('.bi-chip').forEach(function(c){c.classList.remove('sel');});
-  el.classList.add('sel');bodyIntuition=val;
+  // Toggle — allow multiple selections
+  if(el.classList.contains('sel')){
+    el.classList.remove('sel');
+    // Remove from bodyIntuition string
+    var parts=bodyIntuition?bodyIntuition.split(', ').filter(function(x){return x!==val;}):[];
+    bodyIntuition=parts.join(', ');
+  }else{
+    el.classList.add('sel');
+    // Add to bodyIntuition string
+    var parts2=bodyIntuition?bodyIntuition.split(', ').filter(function(x){return x;}):[]; 
+    if(parts2.indexOf(val)===-1)parts2.push(val);
+    bodyIntuition=parts2.join(', ');
+  }
 }
 
 function buildCycleCircle(){
@@ -3246,7 +3253,6 @@ function qlog(e,m){
   try{initHome();}catch(e){}
 }
 function pm(el,m){
-  // Multi-select toggle
   if(el.classList.contains('sel')){
     el.classList.remove('sel');
     moods=moods.filter(function(x){return x!==m;});
@@ -3256,83 +3262,118 @@ function pm(el,m){
   }
   mood=moods[0]||'';
 
-  // IR responds to first selected mood + phase
-  if(moods.length===0){
-    var ir=document.getElementById('ci-ir-response');
-    if(ir)ir.style.display='none';
-    return;
-  }
+  if(moods.length===0){var ir=document.getElementById('ci-ir-response');if(ir)ir.style.display='none';return;}
+
   var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
   var irEl=document.getElementById('ci-ir-response');
   var irTxt=document.getElementById('ci-ir-text');
   if(!irEl||!irTxt||!setup.start)return;
+
   var day=cd(TODAY),phase=ph(day);
   var allKeys=Object.keys(logs).sort();
   var phaseLogs=allKeys.filter(function(k){var d=new Date(k);return ph(cd(d))===phase;});
-  var moodCount=phaseLogs.filter(function(k){return logs[k].mood===moods[0]||( logs[k].moods&&logs[k].moods.indexOf(moods[0])>-1);}).length;
+  var moodCount=phaseLogs.filter(function(k){return logs[k].mood===moods[0]||(logs[k].moods&&logs[k].moods.indexOf(moods[0])>-1);}).length;
+
+  // validate → normalize → support (no toxic positivity, no advice-jumping)
   var responses={
-    'Amazing':{period:'Feeling amazing during your period is worth noting.',follicular:'This is your window. Follicular is when you feel most like yourself.',ovulation:'Peak estrogen, peak you. This is your sharpest phase.',luteal:'Feeling amazing in luteal? Your body is handling this phase really well.'},
-    'Good':{period:'Good during your period is solid. Rest and you are managing it well.',follicular:'This is your better week. Good makes complete sense right now.',ovulation:'Good in ovulation. Some people feel their absolute best here.',luteal:'Good in luteal is something to note. A lot of people find this phase harder.'},
-    'Happy':{period:'Happy during your period is genuinely solid.',follicular:'Rising estrogen is lifting you. Enjoy it.',ovulation:'High estrogen and you are feeling it.',luteal:'Happy in luteal is worth celebrating.'},
-    'Meh':{period:'Meh during your period is completely valid.',follicular:'Meh in follicular is worth paying attention to.',ovulation:'Meh in ovulation is less common. Your body might be telling you something.',luteal:'Meh is very on-pattern for luteal. Progesterone dropping tends to flatten things.'},
-    'Off':{period:'Feeling off during your period makes complete sense. Both hormones are at their lowest.',follicular:'Off in follicular is worth noting. This is usually your better week.',ovulation:'Off during ovulation is less common. Worth logging.',luteal:moodCount>=2?'Very on-pattern for you. You tend to feel Off in luteal almost every cycle. It is hormonal, not personal.':'Off in luteal is completely on-pattern. Progesterone dropping does this to almost everyone.'},
-    'Rough':{period:'Rough during your period is real. Both hormones drop and your body is working hard.',follicular:'Rough in follicular is unusual. Something beyond your cycle might be going on.',ovulation:'Rough in ovulation is worth noting.',luteal:'I hear you. Luteal can be the hardest phase. This will shift.'},
-    'Sensitive':{period:'Sensitivity during your period is very normal.',follicular:'Sensitivity in follicular is a little unusual.',ovulation:'Feeling sensitive during ovulation. Your nervous system is heightened.',luteal:'Sensitivity in luteal is textbook. Your nervous system is more reactive this week.'},
-    'Irritated':{period:'Irritability during your period is real.',follicular:'Irritation in follicular is less expected.',ovulation:'A little edge during ovulation can happen.',luteal:'Irritation in luteal is one of the most common things I see logged.'},
-    'Anxious':{period:'Anxiety during your period can come from the hormonal drop.',follicular:'Anxiety in follicular is worth looking at.',ovulation:'Some people feel social anxiety around ovulation despite high energy.',luteal:'Anxiety in luteal is very common. Progesterone affects your nervous system directly.'},
-    'Sad':{period:'Sadness during your period can be hormonally driven. Be gentle.',follicular:'Feeling sad in follicular is worth paying attention to.',ovulation:'Sadness during ovulation is less common.',luteal:'Sadness in late luteal is one of the most reported things.'},
-    'Numb':{period:'Numbness during your period can be a sign your body is in survival mode.',follicular:'Feeling numb in follicular is unusual.',ovulation:'Numbness during ovulation is worth noting.',luteal:'Feeling numb in luteal is more common than people realise.'},
-    'Weepy':{period:'Weepy during your period is so common. Low hormones together can do this.',follicular:'Feeling weepy in follicular is less expected.',ovulation:'Weepiness during ovulation can happen with the hormonal surge.',luteal:'Weepy in late luteal is almost universal.'},
-    'Angry':{period:'Anger during your period is real and valid.',follicular:'Anger in follicular is less expected.',ovulation:'High energy in ovulation can sometimes tip into anger.',luteal:'Anger in luteal is hormonally driven.'}
-  };
-  var phaseResp=responses[moods[0]]||{};
-  var msg=phaseResp[phase]||'Got it. Tell me more about how you are feeling today.';
-  if(moods.length>1)msg+=' And '+moods.slice(1).map(function(x){return x.toLowerCase();}).join(' and ')+' on top of that.';
-  irTxt.innerHTML=msg;
-  var phaseColors={period:'#FFF0F6',follicular:'#EEF8FF',ovulation:'#FFFAF0',luteal:'#F8F4FF'};
-  var phaseBorders={period:'#D4709A',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#9B7EC8'};
-  var phaseTextColors={period:'#7A1040',follicular:'#1A4A6A',ovulation:'#6A4800',luteal:'#3A2A5A'};
-  irEl.style.background='linear-gradient(135deg,'+phaseColors[phase]+','+phaseColors[phase]+'88)';
-  irEl.style.borderLeftColor=phaseBorders[phase]||'#4AAAC4';
-  irEl.style.borderLeftWidth='3px';
-  irEl.style.borderLeftStyle='solid';
-  if(irTxt)irTxt.style.color=phaseTextColors[phase]||'#1A4A6A';
-  irEl.style.display='block';
-}
-
-
-  // Today summary strip
-  var todayKey=TODAY.toISOString().slice(0,10);
-  var todayLog=logs[todayKey];
-  var strip=document.getElementById('today-cal-strip');
-  var stripContent=document.getElementById('today-strip-content');
-  var stripLabel=document.getElementById('today-strip-label');
-  if(strip&&stripContent){
-    if(calY===TODAY.getFullYear()&&calM===TODAY.getMonth()){
-      strip.style.display='block';
-      if(todayLog&&todayLog.mood){
-        var mEmoji=moodEmoji[todayLog.mood]||'';
-        var parts=[mEmoji+' '+todayLog.mood];
-        if(todayLog.driver)parts.push(todayLog.driver);
-        if(todayLog.energies&&todayLog.energies.length)parts.push(todayLog.energies[0]);
-        if(todayLog.flow&&todayLog.flow!=='None')parts.push('Flow: '+todayLog.flow);
-        stripContent.textContent=parts.join(' · ');
-        if(stripLabel)stripLabel.textContent='Today — tap to edit';
-        strip.style.cursor='pointer';
-        strip.onclick=function(){checkInDate=null;initCheckin();nav('checkin');};
-      }else{
-        var _s1=document.createElement('span');_s1.style.color='#A8C0CC';_s1.textContent='Nothing logged yet today — ';var _s2=document.createElement('span');_s2.style.cssText='color:#9B7EC8;font-weight:700;cursor:pointer;';_s2.textContent='Log now →';_s2.onclick=function(){checkInDate=null;initCheckin();nav('checkin');};stripContent.innerHTML='';stripContent.appendChild(_s1);stripContent.appendChild(_s2);
-        if(stripLabel)stripLabel.textContent='Today';
-        strip.onclick=null;
-        strip.style.cursor='default';
-      }
-    }else{
-      strip.style.display='none';
+    'Amazing':{
+      period:'Feeling amazing during your period is genuinely worth noting. Your body is doing a lot right now.',
+      follicular:'This is your window. Estrogen lifting serotonin — that sharp clarity you feel is real, not coincidence.',
+      ovulation:'Peak estrogen, peak you. This is one of the most researched windows in the cycle. Enjoy it.',
+      luteal:'Feeling amazing in luteal is something to hold onto. Your body is handling this phase really well.'
+    },
+    'Good':{
+      period:'Good during your period is solid. That takes something.',
+      follicular:'Good in follicular makes a lot of sense. Your brain chemistry is genuinely lifting right now.',
+      ovulation:'Good in ovulation. Some people feel their absolute best here — high estrogen tends to do that.',
+      luteal:'Good in luteal is worth noticing. A lot of people find this phase harder. You are doing okay.'
+    },
+    'Meh':{
+      period:'Meh during your period is completely valid. Both hormones are at their lowest — that flatness makes physiological sense.',
+      follicular:'Meh in follicular is worth sitting with. This is usually your better week — so if it feels flat, something else might be asking for attention.',
+      ovulation:'Meh in ovulation is less common. Your body might be telling you something. Not every cycle follows the script.',
+      luteal:'That flatness in luteal is real. Progesterone dropping tends to make everything feel a bit greyer than it is.'
+    },
+    'Off':{
+      period:'Feeling off during your period makes complete sense. Both hormones drop together — your nervous system feels it.',
+      follicular:moodCount>=2?'You have logged off in follicular before. Something beyond your cycle might be worth paying attention to.':'Off in follicular is a little unusual. This is normally your better stretch.',
+      ovulation:'Off during ovulation is less typical. It is worth noting — not every body follows the average pattern.',
+      luteal:moodCount>=2?'You tend to feel off in luteal — you have logged it before. This is your pattern, not a character flaw. It is hormonal.':'That disconnected feeling in luteal is one of the most common things people log. Progesterone drop affects mood more than most people realise.'
+    },
+    'Rough':{
+      period:'Rough during your period is real. Your body is working hard and your hormones are at their lowest. You are not failing — you are in the hardest part of the cycle.',
+      follicular:'Rough in follicular is worth taking seriously. This is normally when things lift. Something else might need attention.',
+      ovulation:'Rough during ovulation can happen — not everyone peaks the same way. You do not have to match the average.',
+      luteal:'I hear you. Late luteal can be the hardest stretch. Your stress threshold genuinely lowers when progesterone drops. This will shift.'
+    },
+    'Sensitive':{
+      period:'Sensitivity during your period is real and physiological. Low estrogen affects emotional processing.',
+      follicular:'Sensitivity in follicular is worth noting. A little unusual — you might need more gentleness this cycle.',
+      ovulation:'Feeling sensitive during ovulation can happen despite the energy surge. Both can be true at once.',
+      luteal:'Sensitivity in luteal is textbook. Your nervous system is more reactive. Everything feeling louder makes complete sense.'
+    },
+    'Irritated':{
+      period:'Irritability during your period comes from the same hormonal drop that causes cramps. It is physical, not personal.',
+      follicular:'Irritation in follicular is a little unexpected. Something specific might be at the surface today.',
+      ovulation:'Some edge during ovulation can come with the energy spike. High estrogen is not always calm.',
+      luteal:'Irritation in luteal is one of the most common things logged here. Your patience threshold literally lowers — that is chemistry, not character.'
+    },
+    'Anxious':{
+      period:'Anxiety during your period can come from the hormonal drop. Low progesterone removes a buffer your nervous system usually has.',
+      follicular:'Anxiety in follicular is worth paying attention to. Rising estrogen does not always feel settled at first.',
+      ovulation:'Some people feel social anxiety around ovulation despite the energy. High estrogen can amplify everything — including worry.',
+      luteal:'Anxiety in luteal is very common. Progesterone affects GABA receptors — the ones that regulate calm. You are not imagining it.'
+    },
+    'Sad':{
+      period:'Sadness during your period can be hormonally driven. Be gentle with yourself today.',
+      follicular:'Feeling sad in follicular is worth sitting with. It does not always have a hormonal cause — sometimes it just is.',
+      ovulation:'Sadness during ovulation is less common. Whatever is underneath it, it is real and it is worth acknowledging.',
+      luteal:'Sadness in late luteal is one of the most reported feelings. Serotonin dips when progesterone falls. Your brain chemistry is shifting — it will shift back.'
+    },
+    'Numb':{
+      period:'Numbness during your period can be your body in a kind of survival mode. Rest if you can.',
+      follicular:'Feeling numb in follicular is unusual. Sometimes numbness is what happens when we have been going too long without real rest.',
+      ovulation:'Numbness during ovulation is worth noting. A phase associated with high energy feeling flat is your body asking for something.',
+      luteal:'Feeling numb in luteal is more common than most people realise. Hormonal shifts can make emotions feel muted or unreachable.'
+    },
+    'Weepy':{
+      period:'Weepy during your period is so common. Low estrogen and low progesterone together can make tears come easier.',
+      follicular:'Feeling weepy in follicular is less expected but completely valid. Sometimes it just needs to come out.',
+      ovulation:'Weepiness during ovulation can happen with the hormonal surge. High feeling can tip in different directions.',
+      luteal:'Weepy in late luteal is almost universal. Your emotions are closer to the surface right now. That is not weakness.'
+    },
+    'Angry':{
+      period:'Anger during your period is real and valid. Low hormones affect your tolerance and your body is in pain.',
+      follicular:'Anger in follicular is less expected. Something specific might be worth looking at.',
+      ovulation:'High energy in ovulation can tip into anger. You are feeling everything more intensely right now.',
+      luteal:'Anger in luteal is hormonally driven. Your threshold is genuinely lower. You do not have to justify feeling it.'
+    },
+    'Happy':{
+      period:'Happy during your period is genuinely worth celebrating.',
+      follicular:'Rising estrogen is lifting you. That happiness is real and earned.',
+      ovulation:'High estrogen and testosterone together can create a real sense of aliveness. You are in it.',
+      luteal:'Happy in luteal is something to hold. Not every cycle looks the same.'
     }
+  };
+
+  var phaseResp=responses[moods[0]]||{};
+  var msg=phaseResp[phase]||'That makes sense for where you are in your cycle.';
+
+  // Add second mood context if multiple selected
+  if(moods.length>1){
+    msg+='\n\nYour emotions do not have to be tidy. Feeling '+moods.slice(1).map(function(x){return x.toLowerCase();}).join(' and ')+' at the same time is human.';
   }
 
+  irTxt.innerHTML=msg.replace(/\n\n/g,'<br><br>');
 
-
+  var phaseColors={period:'#FFF0F6',follicular:'#EEF8FF',ovulation:'#FFFAF0',luteal:'#F8F4FF'};
+  var phaseBorders={period:'#D4709A',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#9B7EC8'};
+  var phaseText={period:'#7A1040',follicular:'#1A4A6A',ovulation:'#6A4800',luteal:'#3A2A5A'};
+  irEl.style.background='linear-gradient(135deg,'+phaseColors[phase]+','+phaseColors[phase]+'88)';
+  irEl.style.borderLeft='3px solid '+(phaseBorders[phase]||'#4AAAC4');
+  if(irTxt)irTxt.style.color=phaseText[phase]||'#1A4A6A';
+  irEl.style.display='block';
+}
 
 function showReward(badgeId){
   var b=typeof BADGES!=='undefined'?BADGES[badgeId]:null;
@@ -3911,20 +3952,30 @@ function pickDriver(el,v){
 function addCustomMood(){
   var inp=document.getElementById('mood-custom');
   var v=inp?inp.value.trim():'';if(!v)return;
-  var emojis=['\ud83d\ude04','\ud83d\ude0c','\ud83e\udd70','\ud83e\udd29','\ud83d\ude14','\ud83d\ude2c','\ud83d\ude34','\ud83d\ude0f'];
+  var emojis=['😊','😌','🥰','🤩','😔','😩','😴','😏'];
   var emoji=emojis[Math.floor(Math.random()*emojis.length)];
+  var card=inp?inp.closest('.card-ci'):null;
+  if(card){
+    var chip=document.createElement('div');
+    chip.className='mopt ci-extra-chip';
+    chip.style.cssText='display:inline-flex;align-items:center;gap:5px;border-radius:20px;padding:5px 10px;border:1.5px solid #E0EAF0;cursor:pointer;margin:3px;font-size:12px;font-weight:700;color:#5A7A8A;background:white;-webkit-tap-highlight-color:transparent;';
+    chip.innerHTML='<span style="font-size:18px;">'+emoji+'</span><span>'+escHtml(v)+'</span>';
+    chip.onclick=function(){pm(chip,v);};
+    var addRow=inp.closest('.add-custom');
+    if(addRow){card.insertBefore(chip,addRow);}else{card.appendChild(chip);}
+    if(inp)inp.value='';
+    pm(chip,v);
+    return;
+  }
   var extra=document.getElementById('mood-extra');
-  if(extra&&extra.style.display==='none')extra.style.display='block';
-  var wrap=extra?extra.querySelector('div'):null;if(!wrap)return;
-  var chip=document.createElement('div');
-  chip.className='mopt ci-extra-chip';
-  chip.innerHTML='<span style="font-size:18px;">'+emoji+'</span><span style="font-size:12px;font-weight:700;color:#5A7A8A;">'+escHtml(v)+'</span>';
-  chip.onclick=function(){pm(chip,v);};
-  wrap.appendChild(chip);
-  if(inp)inp.value='';
-  pm(chip,v);
+  if(!extra)return;
+  if(extra.style.display==='none')extra.style.display='block';
+  var wrap=extra.querySelector('div');if(!wrap)return;
+  var chip2=document.createElement('div');chip2.className='mopt ci-extra-chip';
+  chip2.innerHTML='<span style="font-size:18px;">'+emoji+'</span><span style="font-size:12px;font-weight:700;color:#5A7A8A;">'+escHtml(v)+'</span>';
+  chip2.onclick=function(){pm(chip2,v);};
+  wrap.appendChild(chip2);if(inp)inp.value='';pm(chip2,v);
 }
-
 function addCustomEnergy(){
   var inp=document.getElementById('energy-custom');
   var v=inp?inp.value.trim():'';if(!v)return;
@@ -4322,158 +4373,231 @@ var quickAnswer = '';
 
 function buildIRQuestion(){
   var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
-  if(!setup.start){
-    setDefaultQuestion();
-    return;
-  }
+  if(!setup.start){setDefaultQuestion();return;}
   var day=cd(TODAY);
   var phase=ph(day);
   var allKeys=Object.keys(logs).sort();
 
-  // Analyse past logs for patterns
-  var phaseLogs=allKeys.filter(function(k){
-    return ph(cd(new Date(k)))===phase;
-  });
+  // Recent log analysis
+  var recentKeys=allKeys.slice(-14);
+  var phaseLogs=allKeys.filter(function(k){return ph(cd(new Date(k)))===phase;});
 
-  // Find most common mood in this phase
+  // Mood frequency in this phase
   var moodFreq={};
   phaseLogs.forEach(function(k){
-    var l=logs[k];
-    var m=l.mood||(l.moods&&l.moods[0])||'';
+    var l=logs[k];var m=l.mood||(l.moods&&l.moods[0])||'';
     if(m)moodFreq[m]=(moodFreq[m]||0)+1;
   });
   var topMood=Object.entries(moodFreq).sort(function(a,b){return b[1]-a[1];})[0];
 
-  // Find most common symptom
+  // Symptom frequency
   var symFreq={};
-  phaseLogs.forEach(function(k){
-    var l=logs[k];
-    if(l.syms)l.syms.forEach(function(s){symFreq[s]=(symFreq[s]||0)+1;});
-  });
+  phaseLogs.forEach(function(k){var l=logs[k];if(l.syms)l.syms.forEach(function(s){symFreq[s]=(symFreq[s]||0)+1;});});
   var topSym=Object.entries(symFreq).sort(function(a,b){return b[1]-a[1];})[0];
 
-  // Find most common body intuition
-  var biFreq={};
-  phaseLogs.forEach(function(k){
-    var l=logs[k];
-    if(l.bodyIntuition)biFreq[l.bodyIntuition]=(biFreq[l.bodyIntuition]||0)+1;
-  });
-  var topBI=Object.entries(biFreq).sort(function(a,b){return b[1]-a[1];})[0];
-
-  // Check yesterday's log
+  // Continuity memory — what did they log yesterday?
   var yd=new Date(TODAY);yd.setDate(yd.getDate()-1);
-  var ydKey=yd.toISOString().slice(0,10);
+  var ydKey=yd.getFullYear()+'-'+String(yd.getMonth()+1).padStart(2,'0')+'-'+String(yd.getDate()).padStart(2,'0');
   var ydLog=logs[ydKey];
+
+  // Recent pattern — last 3 days
+  var last3=[];
+  for(var i=1;i<=3;i++){var d2=new Date(TODAY);d2.setDate(d2.getDate()-i);var k2=d2.getFullYear()+'-'+String(d2.getMonth()+1).padStart(2,'0')+'-'+String(d2.getDate()).padStart(2,'0');if(logs[k2])last3.push(logs[k2]);}
+  var recentLow=last3.filter(function(l){return l.mood==='Rough'||l.mood==='Off'||l.mood==='Meh';}).length;
+  var recentHigh=last3.filter(function(l){return l.mood==='Amazing'||l.mood==='Good';}).length;
 
   var q=null;
 
-  // Pattern-based questions (need enough data)
-  if(phaseLogs.length>=4&&topMood&&topMood[1]>=3){
-    var moodName=topMood[0].toLowerCase();
+  // ── CONTINUITY MEMORY — if rough last few days, acknowledge it first ──
+  if(recentLow>=2&&phaseLogs.length>=3){
+    q={
+      sub:'Checking in on you',
+      question:'You have logged feeling rough or off the last few days. How are you doing today?',
+      answers:['Still not great honestly','A bit better than yesterday','Today feels different, lighter','Actually okay, needed to hear that']
+    };
+  }
+
+  // ── PATTERN-BASED — mood pattern detected ──
+  if(!q&&phaseLogs.length>=4&&topMood&&topMood[1]>=3){
+    var mn=topMood[0].toLowerCase();
     var moodQs={
-      anxious:{sub:'I noticed something',q:'You tend to feel anxious around this time. Is that showing up today?',answers:['Yes, it is there underneath everything','A little but I am managing it','Not today actually \u2014 feeling okay','Something else is going on']},
-      rough:{sub:'Checking in on you',q:'This phase tends to hit you harder than others. How are you holding up today?',answers:['Pretty rough honestly','Getting through it','Surprisingly okay today','Actually better than usual']},
-      off:{sub:'Your pattern',q:'You often feel a bit off at this point in your cycle. Is today one of those days?',answers:['Yes, just feel off','Kind of, but not as bad','Not really today','Something specific is going on']},
-      tired:{sub:'Energy check',q:'Tiredness tends to show up for you here. How is your energy landing today?',answers:['Completely drained','Running low but managing','Actually okay today','More energy than expected']},
-      irritated:{sub:'I see a pattern',q:'You tend to feel more irritable at this point. Is that coming through today?',answers:['Yes, everything is getting to me','A little more on edge than usual','Not really today','Something specific set me off']},
-      sad:{sub:'Checking in',q:'You sometimes feel heavier emotionally around this time. How are you today?',answers:['Yes, feeling heavy','A little low but okay','Actually feeling okay','Something specific is weighing on me']},
-      good:{sub:'Your strong phase',q:'You tend to feel good around this time. Is that holding today?',answers:['Yes, feeling solid','Pretty good actually','Mixed today','Lower than usual for this phase']},
-      amazing:{sub:'Your power phase',q:'This is usually one of your better stretches. How are you feeling today?',answers:['Amazing, really in it','Good but not my best','Average today','Lower than this phase usually feels']}
+      anxious:{sub:'I notice a pattern here',question:'You tend to feel anxious around this point in your cycle. Is that showing up today?',
+        answers:['Yes, and it feels overwhelming','It is there underneath everything','Not as bad as usual today','Actually calm today']},
+      rough:{sub:'This phase tends to be harder',question:'This part of your cycle usually hits you harder. How honest can you be right now?',
+        answers:['Genuinely struggling today','Going through the motions','Holding it together, barely','Surprising myself, feeling okay']},
+      off:{sub:'Your pattern',question:'You often feel a bit disconnected around now. Does that feel true today?',
+        answers:['Yes, just feel off and I cannot explain it','Kind of, but not as heavy','Not really, feeling more present','Something specific is going on']},
+      tired:{sub:'Energy check',question:'Tiredness shows up for you around this phase. How is your energy landing today?',
+        answers:['Completely drained, hard to function','Running low but getting through','Actually okay today','More energy than I expected']},
+      irritated:{sub:'I see this pattern',question:'You tend to feel more on edge around now. Is everything getting to you today?',
+        answers:['Yes, patience is completely gone','A little more irritable than usual','Managing it today','Feeling steady actually']},
+      sad:{sub:'Checking in',question:'You sometimes feel heavier emotionally around this time. How are you today?',
+        answers:['Yes, feeling low and I do not know why','A little sad but functional','Mixed, not sure what I am feeling','Genuinely okay today']},
+      sensitive:{sub:'Your emotional pattern',question:'Everything tends to feel louder for you around now. Is that true today?',
+        answers:['Yes, everything feels personal','Tired but restless about it','I want comfort but also space','Feeling more grounded today']},
+      good:{sub:'Your strong stretch',question:'This is usually one of your better phases. Is that holding today?',
+        answers:['Yes, feeling like myself','Good but not at my best','Mixed today','Lower than this phase usually feels']},
+      amazing:{sub:'Your power window',question:'You tend to come alive around this phase. How are you showing up today?',
+        answers:['Really in it, sharp and present','Good, feeling myself','Going through the motions','Quieter than usual for this phase']}
     };
-    var qData=moodQs[moodName.split(' ')[0]]||moodQs[moodName];
-    if(qData){q={sub:qData.sub,question:qData.q,answers:qData.answers,key:'quick_mood',value:moodName};}
+    var qData=moodQs[mn.split(' ')[0]]||moodQs[mn];
+    if(qData)q=qData;
   }
 
-  // Symptom-based question
+  // ── SYMPTOM-BASED ──
   if(!q&&topSym&&topSym[1]>=3){
-    var symName=topSym[0].toLowerCase();
+    var sn=topSym[0].toLowerCase();
     var symQs={
-      cramps:{sub:'Day '+day+' \u2014 I see you',q:'Cramps tend to show up for you around now. How is your body feeling today?',answers:['Pretty rough, they are there','There but manageable','Lighter than usual today','Barely noticeable this cycle']},
-      headache:{sub:'Checking your body',q:'You often get headaches at this point in your cycle. Is that showing up today?',answers:['Yes, head is not happy','A bit of pressure but okay','Not today','Had one but it passed']},
-      bloating:{sub:'Body pattern',q:'Bloating tends to show up for you around now. How is your body today?',answers:['Yes, uncomfortable today','A little but manageable','Not bad today','Feeling fine actually']},
-      insomnia:{sub:'Sleep check',q:'Sleep tends to get harder for you around this time. How did you sleep?',answers:['Badly, was awake a lot','Restless but got some sleep','Okay actually','Slept really well']},
-      cravings:{sub:'Body signal',q:'Cravings tend to hit for you around now. How is that going today?',answers:['Strong, hard to ignore','There but I am managing','Mild today','Not really feeling it']}
+      cramps:{sub:'Day '+day+' — I see you',question:'Cramps tend to show up for you around now. How is your body holding up today?',
+        answers:['Pretty rough, they are there','There but managing with heat','Lighter than usual this cycle','Barely noticeable today']},
+      headache:{sub:'Body check',question:'Headaches often come around this time for you. How are you feeling physically?',
+        answers:['Head is not happy today','Some pressure but manageable','Not today actually','Had one but it passed']},
+      bloating:{sub:'Body pattern',question:'Bloating tends to show up for you here. How is your body today?',
+        answers:['Yes, uncomfortable today','A little but manageable','Not bad today','Feeling fine actually']},
+      insomnia:{sub:'Sleep check',question:'Sleep gets harder for you around now. How did you sleep?',
+        answers:['Badly, was awake most of the night','Restless but got some sleep','Okay actually','Really well, better than expected']},
+      cravings:{sub:'Body signal',question:'Cravings tend to hit for you around now. How are you managing?',
+        answers:['Strong and hard to ignore','There but I am managing','Mild today','Not really feeling it']}
     };
-    var sqData=symQs[symName.split(' ')[0]];
-    if(sqData){q={sub:sqData.sub,question:sqData.q,answers:sqData.answers,key:'quick_sym',value:symName};}
+    var sqData=symQs[sn.split(' ')[0]];
+    if(sqData)q=sqData;
   }
 
-  // Body intuition question
-  if(!q&&topBI&&topBI[1]>=3){
-    var biName=topBI[0].toLowerCase();
-    q={
-      sub:'What your body asks for',
-      question:'Your body tends to need '+biName+' around this phase. Is that what you are feeling today?',
-      answers:['Yes, craving exactly that','A little, but not strongly','Not really today','Something different today'],
-      key:'quick_bi',value:biName
-    };
-  }
-
-  // Yesterday followup
+  // ── YESTERDAY FOLLOWUP ──
   if(!q&&ydLog&&ydLog.mood){
-    var ydMood=ydLog.mood.toLowerCase();
-    q={
-      sub:'Following up from yesterday',
-      question:'Yesterday you logged '+ydMood+'. How are you feeling compared to that today?',
-      answers:['Still feeling '+ydMood,'A little better than yesterday','Quite a bit better','Different \u2014 something shifted'],
-      key:'quick_followup',value:ydMood
-    };
+    var ydMood=(ydLog.mood||'').toLowerCase();
+    var ydNote=ydLog.quickNote||ydLog.note||'';
+    if(ydMood==='rough'||ydMood==='off'){
+      q={sub:'Following up from yesterday',
+        question:'Yesterday felt hard. How are you carrying that into today?',
+        answers:['Still not great','A little lighter than yesterday','Actually better, something shifted','Different kind of hard today']};
+    }else if(ydNote){
+      q={sub:'You mentioned something yesterday',
+        question:'Yesterday you wrote something that stayed with me. How are things sitting today?',
+        answers:['Still processing it','A little clearer now','Moved on from it','Something new is sitting with me']};
+    }else{
+      q={sub:'Following up',
+        question:'Yesterday you logged '+ydMood+'. How are you feeling compared to that today?',
+        answers:['Still feeling '+ydMood,'A little better than yesterday','Quite a bit better','Different — something shifted']};
+    }
   }
 
-  // Phase-based fallback (no data yet)
+  // ── PHASE FALLBACK — layered emotional questions (not generic) ──
   if(!q){
-    var fallbacks={
-      period:{sub:'Period phase',question:'How is your body doing today?',answers:['Heavy and hard','Getting through it','Okay, managing','Lighter than expected']},
-      follicular:{sub:'Follicular phase',question:'How is your energy landing today?',answers:['Back and building','Quietly okay','Still finding my footing','Lower than expected']},
-      ovulation:{sub:'Ovulation phase',question:'How are you showing up today?',answers:['Sharp and present','Good, feeling myself','Going through the motions','Quieter than this phase usually feels']},
-      luteal:{sub:'Luteal phase',question:'Are you carrying anything heavy today?',answers:['Yes, feels relentless','A little, holding it together','Managing okay','Actually feeling lighter today']}
+    var layered={
+      period:{sub:'Day '+day+' of your period',
+        question:'What feels hardest right now?',
+        answers:['My body is tired and I need rest','I feel emotionally raw','I am getting through it okay','Lighter than I expected today']},
+      follicular:{sub:'Follicular phase',
+        question:'How is your energy landing today?',
+        answers:['Back and building, feels good','Quietly okay, nothing major','Still finding my footing','Lower than I would like right now']},
+      ovulation:{sub:'Ovulation phase',
+        question:'How are you showing up today?',
+        answers:['Sharp and really present','Good, feeling like myself','Going through the motions','A bit quieter than this phase usually feels']},
+      luteal:{sub:'Luteal check-in',
+        question:'What feels most true right now?',
+        answers:['Tired but restless','Emotional for no obvious reason','Okay on the surface','My patience is running low']}
     };
-    q=fallbacks[phase]||fallbacks.luteal;
-    q.key='quick_phase';
+    q=layered[phase]||layered.luteal;
   }
 
-  // Render the question
+  // ── RENDER ──
   var sublabel=document.getElementById('ci-q-sublabel');
   var questionEl=document.getElementById('ci-ir-question');
   var answerList=document.getElementById('quick-answer-list');
-  if(sublabel)sublabel.textContent=q.sub||'How are you doing?';
-  if(questionEl)questionEl.textContent=q.question||'How are you today?';
+  if(sublabel)sublabel.textContent=q.sub||'How are you today?';
+  if(questionEl)questionEl.textContent=q.question||'How are you feeling right now?';
   if(answerList){
     answerList.innerHTML='';
-    q.answers.forEach(function(ans,i){
+    q.answers.forEach(function(ans){
       var btn=document.createElement('button');
       btn.className='quick-ans-btn';
       btn.style.cssText='width:100%;background:white;border:1.5px solid #E8EEF2;border-radius:14px;padding:13px 16px;text-align:left;font-family:Nunito,sans-serif;font-size:13px;font-weight:700;color:#1A3A45;cursor:pointer;margin-bottom:8px;display:flex;align-items:center;gap:10px;-webkit-tap-highlight-color:transparent;transition:all .15s;';
       var dot=document.createElement('div');
       dot.style.cssText='width:8px;height:8px;border-radius:50%;background:#E0E8F0;flex-shrink:0;transition:background .15s;';
-      var txt=document.createElement('span');
-      txt.textContent=ans;
+      var txt=document.createElement('span');txt.textContent=ans;
       btn.appendChild(dot);btn.appendChild(txt);
       btn.onclick=function(){
         document.querySelectorAll('.quick-ans-btn').forEach(function(b){
           b.style.background='white';b.style.borderColor='#E8EEF2';b.style.color='#1A3A45';
-          b.querySelector('div').style.background='#E0E8F0';
+          var d=b.querySelector('div');if(d)d.style.background='#E0E8F0';
         });
         btn.style.background='#F0EAF8';btn.style.borderColor='#9B7EC8';btn.style.color='#3A2A5A';
         dot.style.background='#9B7EC8';
         quickAnswer=ans;
-        // Save key insight to log data
-        window._quickQ={key:q.key,question:q.question,answer:ans,value:q.value};
+        window._quickQ={key:'quick',question:q.question,answer:ans};
+        // Show micro-recognition moment
+        showMicroRecognition(ans,phase,day);
       };
       answerList.appendChild(btn);
     });
   }
 }
 
+// ── MICRO-RECOGNITION MOMENTS ──────────────────────────────────────────
+function showMicroRecognition(answer,phase,day){
+  var lower=answer.toLowerCase();
+  var msg='';
+
+  // Detect heavy / struggling answers
+  if(lower.indexOf('rough')>-1||lower.indexOf('struggling')>-1||lower.indexOf('overwhelm')>-1||lower.indexOf('drained')>-1||lower.indexOf('hard')>-1){
+    var msgs={
+      period:'Feeling this way during your period is not weakness. Your hormones are at their lowest point. You are not failing.',
+      follicular:'Feeling low when you expect to feel better can be disorienting. That is okay. Your body has its own timeline.',
+      ovulation:'Feeling off during a phase that is usually energetic can feel confusing. It makes sense. Not every cycle follows the script.',
+      luteal:'That kind of heaviness in luteal is real. Your nervous system is genuinely more reactive right now. You are not overreacting.'
+    };
+    msg=msgs[phase]||msgs.luteal;
+  } else if(lower.indexOf('emotional')>-1||lower.indexOf('sensitive')>-1||lower.indexOf('raw')>-1||lower.indexOf('personal')>-1){
+    msg='When emotions feel amplified, even small things can hit harder. Your body and emotions can both feel more intense during this part of your cycle. You do not have to push through everything today.';
+  } else if(lower.indexOf('restless')>-1||lower.indexOf('tired but')>-1||lower.indexOf('wired')>-1){
+    msg='That tired but restless feeling is one of the most common things logged in luteal. It is your body in two states at once — exhausted but unable to settle. It will pass.';
+  } else if(lower.indexOf('patience')>-1||lower.indexOf('irritat')>-1||lower.indexOf('edge')>-1){
+    msg='Your threshold for irritation genuinely lowers in this phase. It is not your personality — it is progesterone affecting your nervous system. You are not becoming a different person.';
+  } else if(lower.indexOf('comfort')>-1&&(lower.indexOf('space')>-1||lower.indexOf('alone')>-1)){
+    msg='Wanting comfort but also wanting everyone to leave you alone is one of the most luteal feelings there is. Both things can be true.';
+  } else if(lower.indexOf('okay')>-1||lower.indexOf('fine')>-1||lower.indexOf('good')>-1||lower.indexOf('better')>-1){
+    msg='';// No need to add anything when they feel okay
+  }
+
+  if(msg){
+    // Show as a micro-recognition card below the answers
+    var existing=document.getElementById('micro-recognition');
+    if(!existing){
+      existing=document.createElement('div');
+      existing.id='micro-recognition';
+      existing.style.cssText='background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-radius:14px;padding:13px 15px;border-left:3px solid #9B7EC8;margin-top:4px;margin-bottom:8px;';
+      var answerList=document.getElementById('quick-answer-list');
+      if(answerList&&answerList.parentNode){
+        answerList.parentNode.insertBefore(existing,answerList.nextSibling);
+      }
+    }
+    existing.innerHTML='<div style="display:flex;gap:8px;align-items:flex-start;"><div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:white;flex-shrink:0;margin-top:1px;">IR</div><div style="font-size:12px;color:#3A2A5A;line-height:1.75;">'+msg+'</div></div>';
+    existing.style.display='block';
+  }else{
+    var ex=document.getElementById('micro-recognition');
+    if(ex)ex.style.display='none';
+  }
+}
+
 function setDefaultQuestion(){
   var sublabel=document.getElementById('ci-q-sublabel');
   var questionEl=document.getElementById('ci-ir-question');
-  if(sublabel)sublabel.textContent='How are you doing?';
-  if(questionEl)questionEl.textContent='How are you feeling today?';
+  if(sublabel)sublabel.textContent='How are you doing today?';
+  if(questionEl)questionEl.textContent='What feels most true right now?';
   var answerList=document.getElementById('quick-answer-list');
   if(answerList){
     answerList.innerHTML='';
-    ['Really good actually','Getting through it','A bit off today','Rough one'].forEach(function(ans){
+    // Mixed feeling answers — emotionally specific, not generic
+    var defaults=[
+      'Tired but restless',
+      'Emotional for no obvious reason',
+      'Okay on the surface',
+      'Wanting support but also space',
+      'Genuinely good today',
+      'A lot going on inside'
+    ];
+    defaults.forEach(function(ans){
       var btn=document.createElement('button');
       btn.className='quick-ans-btn';
       btn.style.cssText='width:100%;background:white;border:1.5px solid #E8EEF2;border-radius:14px;padding:13px 16px;text-align:left;font-family:Nunito,sans-serif;font-size:13px;font-weight:700;color:#1A3A45;cursor:pointer;margin-bottom:8px;display:flex;align-items:center;gap:10px;-webkit-tap-highlight-color:transparent;';
@@ -4481,26 +4605,15 @@ function setDefaultQuestion(){
       var txt=document.createElement('span');txt.textContent=ans;
       btn.appendChild(dot);btn.appendChild(txt);
       btn.onclick=function(){
-        document.querySelectorAll('.quick-ans-btn').forEach(function(b){b.style.background='white';b.style.borderColor='#E8EEF2';b.querySelector('div').style.background='#E0E8F0';});
-        btn.style.background='#F0EAF8';btn.style.borderColor='#9B7EC8';dot.style.background='#9B7EC8';
+        document.querySelectorAll('.quick-ans-btn').forEach(function(b){b.style.background='white';b.style.borderColor='#E8EEF2';b.style.color='#1A3A45';var d=b.querySelector('div');if(d)d.style.background='#E0E8F0';});
+        btn.style.background='#F0EAF8';btn.style.borderColor='#9B7EC8';btn.style.color='#3A2A5A';dot.style.background='#9B7EC8';
         quickAnswer=ans;
+        showMicroRecognition(ans,'luteal',14);
       };
       answerList.appendChild(btn);
     });
   }
 }
-
-
-// ── DEEP MODE STEP SYSTEM ─────────────────────────────────────────────
-var deepStep=0;
-var deepTotal=5;
-var deepHeaders=[
-  {sub:'I noticed something',q:'You tend to feel more at this point in your cycle. Tell me what is actually going on.'},
-  {sub:'Vibe check',q:'How are you actually feeling today? Pick everything that fits.'},
-  {sub:'Your body',q:'How is your energy landing — and is your body saying anything?'},
-  {sub:'Going a little deeper',q:'Two things I want to ask you about today.'},
-  {sub:'Just between us',q:'Anything you need to say that you have not been able to.'}
-];
 
 function initDeepSteps(){
   deepStep=0;
@@ -4847,6 +4960,7 @@ function loadPartnerScreen(){
   el.innerHTML=html;
 }
 </script>
+
 
   <!-- REWARD OVERLAY -->
   <div id="reward-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);align-items:center;justify-content:center;flex-direction:column;padding:32px;">
