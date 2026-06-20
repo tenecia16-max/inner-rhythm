@@ -2546,7 +2546,11 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
     <button class="nb" id="nav-calendar" onclick="nav('calendar')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendar</button>
     <button class="nb" id="nav-settings" onclick="nav('settings')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4Hconst TODAY=new Date();TODAY.setHours(0,0,0,0);
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</button>
+  </nav>
+
+<script>
+const TODAY=new Date();TODAY.setHours(0,0,0,0);
 // User cycle settings — loaded from storage or defaults
 var savedSetup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
 var userLP=savedSetup.start?new Date(savedSetup.start):new Date(TODAY);
@@ -5057,10 +5061,6 @@ function checkNoteForCrisis(){
   var quickEl=document.getElementById('quick-open-text');
   var text=(noteEl?noteEl.value:'')+(quickEl?quickEl.value:'');
   checkForCrisisLanguage(text);
-}
-;">Next period in about '+daysLeft+' days.</div>';
-  html+='</div>';
-  el.innerHTML=html;
 }
 </script>
 
