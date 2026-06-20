@@ -1569,15 +1569,23 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
           <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;">IR</div>
           <div style="font-size:11px;font-weight:800;color:#7B5EA8;" id="body-intuition-q">What would actually help you right now?</div>
         </div>
-        <div style="display:flex;flex-wrap:wrap;gap:7px;" id="body-intuition-chips">
-          <div class="bi-chip" onclick="pickBI(this,'Rest')">&#128564; Rest</div>
-          <div class="bi-chip" onclick="pickBI(this,'Movement')">&#127939; Movement</div>
-          <div class="bi-chip" onclick="pickBI(this,'Connection')">&#129309; Connection</div>
-          <div class="bi-chip" onclick="pickBI(this,'Solitude')">&#127807; Solitude</div>
-          <div class="bi-chip" onclick="pickBI(this,'Nourishment')">&#127861; Nourishment</div>
-          <div class="bi-chip" onclick="pickBI(this,'Release')">&#127754; Release</div>
-          <div class="bi-chip" onclick="pickBI(this,'Creativity')">&#127912; Creativity</div>
-          <div class="bi-chip" onclick="pickBI(this,'Nothing clear')">&#129335; Nothing clear</div>
+        <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px;" id="body-intuition-chips">
+          <div class="bi-chip" onclick="pickBI(this,'A good cry')">&#128557; A good cry</div>
+          <div class="bi-chip" onclick="pickBI(this,'To be left alone')">&#129335; To be left alone</div>
+          <div class="bi-chip" onclick="pickBI(this,'Someone to talk to')">&#129309; Someone to talk to</div>
+          <div class="bi-chip" onclick="pickBI(this,'Comfort food')">&#127857; Comfort food</div>
+          <div class="bi-chip" onclick="pickBI(this,'Fresh air')">&#127807; Fresh air</div>
+          <div class="bi-chip" onclick="pickBI(this,'To move my body')">&#127939; To move my body</div>
+          <div class="bi-chip" onclick="pickBI(this,'Music')">&#127925; Music</div>
+          <div class="bi-chip" onclick="pickBI(this,'Sleep')">&#128564; Sleep</div>
+          <div class="bi-chip" onclick="pickBI(this,'A distraction')">&#127916; A distraction</div>
+          <div class="bi-chip" onclick="pickBI(this,'Permission to rest')">&#10024; Permission to rest</div>
+          <div class="bi-chip" onclick="pickBI(this,'To do nothing')">&#129393; To do nothing</div>
+          <div class="bi-chip" onclick="pickBI(this,'I honestly don&#39;t know')">&#129300; I honestly don&#39;t know</div>
+        </div>
+        <div class="add-custom" style="margin-top:2px;">
+          <input class="custom-inp" id="bi-custom" placeholder="Something else..." onkeydown="if(event.key===&#39;Enter&#39;){addCustomBI()}">
+          <button class="add-btn" onclick="addCustomBI()">+ Add</button>
         </div>
       </div>
 
@@ -2943,10 +2951,11 @@ function saveCI(){
   localStorage.setItem('ir4',JSON.stringify(logs));
   toast('Saved ✓');
   setTimeout(function(){checkRewards();},500);
-  // Reload logs from storage to stay in sync
+  // Reload logs from storage
   logs=JSON.parse(localStorage.getItem('ir4')||'{}');
   checkInDate=null;
   nav('home');
+  try{initHome();}catch(e){}
 }
 
 function enterApp(){
@@ -3042,16 +3051,34 @@ function showCalDay(date,d,c,p,k,log,isPred){
   html+='<div style="font-size:12px;font-weight:800;color:'+col+';text-transform:uppercase;letter-spacing:.5px;">'+months[date.getMonth()]+' '+d+(isT?' · Today':'')+'</div>';
   html+='<div style="background:'+col+'22;border-radius:8px;padding:3px 9px;font-size:10px;font-weight:700;color:'+col+';">'+phaseNames[p]+'</div>';
   html+='</div>';
-  if(log&&log.mood){
-    html+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">';
-    html+='<div style="font-size:32px;">'+(moodEmoji[log.mood]||'')+'</div>';
-    html+='<div>';
-    html+='<div style="font-size:14px;font-weight:800;color:#1A3A45;margin-bottom:2px;">Felt '+log.mood+'</div>';
-    if(log.driver)html+='<div style="font-size:12px;color:#6A8A9A;margin-bottom:2px;">'+log.driver+'</div>';
-    if(log.energies&&log.energies.length)html+='<div style="font-size:11px;color:#8AAAB4;margin-bottom:2px;">&#9889; '+log.energies.join(', ')+'</div>';
-    if(log.flow&&log.flow!=='None')html+='<div style="font-size:11px;color:#C05080;margin-bottom:2px;">&#9679; '+log.flow+'</div>';
-    if(log.note)html+='<div style="font-size:12px;color:#5A7A8A;margin-top:6px;font-style:italic;">"'+log.note+'"</div>';
-    html+='</div></div>';
+  if(log&&(log.mood||log.quickAnswer||log.quickNote)){
+    // Mood
+    var moodDisplay=log.mood||(log.moods&&log.moods[0])||'';
+    if(moodDisplay){
+      html+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">';
+      html+='<div style="font-size:32px;">'+(moodEmoji[moodDisplay]||'✨')+'</div>';
+      html+='<div style="flex:1;">';
+      html+='<div style="font-size:14px;font-weight:800;color:#1A3A45;margin-bottom:2px;">Felt '+moodDisplay+'</div>';
+      // All moods
+      if(log.moods&&log.moods.length>1)html+='<div style="font-size:11px;color:#8AAAB4;margin-bottom:4px;">'+log.moods.join(' · ')+'</div>';
+      html+='</div></div>';
+    }
+    // Quick answer
+    if(log.quickAnswer)html+='<div style="background:#F8F9FB;border-radius:10px;padding:9px 12px;margin-bottom:8px;font-size:12px;color:#5A7A8A;line-height:1.6;"><span style="font-weight:700;color:#9B7EC8;">IR asked:</span> '+log.quickAnswer+'</div>';
+    // Own words
+    if(log.quickNote)html+='<div style="background:#F0EAF8;border-radius:10px;padding:9px 12px;margin-bottom:8px;font-size:12px;color:#3A2A5A;font-style:italic;line-height:1.65;border-left:3px solid #9B7EC8;">'+log.quickNote+'</div>';
+    // Energies
+    if(log.energies&&log.energies.length)html+='<div style="font-size:11px;color:#4AAAC4;font-weight:600;margin-bottom:6px;">&#9889; '+log.energies.join(' · ')+'</div>';
+    // Body intuition
+    if(log.bodyIntuition)html+='<div style="font-size:11px;color:#9B7EC8;font-weight:600;margin-bottom:6px;">&#10024; Needed: '+log.bodyIntuition+'</div>';
+    // Feelings
+    if(log.feels&&log.feels.length)html+='<div style="font-size:11px;color:#5A7A8A;margin-bottom:6px;">Feelings: '+log.feels.join(' · ')+'</div>';
+    // Symptoms
+    if(log.syms&&log.syms.length)html+='<div style="font-size:11px;color:#A0707A;margin-bottom:6px;">Body: '+log.syms.join(' · ')+'</div>';
+    // Flow
+    if(log.flow&&log.flow!=='None')html+='<div style="font-size:11px;color:#C05080;margin-bottom:6px;">&#9679; Flow: '+log.flow+'</div>';
+    // Deep note
+    if(log.note)html+='<div style="background:#F8F4FF;border-radius:10px;padding:9px 12px;margin-top:4px;font-size:12px;color:#3A2A5A;font-style:italic;line-height:1.65;border-left:3px solid #E4D8F4;">'+log.note+'</div>';
     html+='<button onclick="checkInDate=new Date('+date.getFullYear()+','+date.getMonth()+','+d+',12,0,0);nav(\'checkin\');" style="width:100%;background:#F0F8FC;border:none;border-radius:11px;padding:11px;font-family:Nunito,sans-serif;font-size:13px;font-weight:800;color:#4AAAC4;cursor:pointer;margin-top:8px;">Edit this log &#8594;</button>';
   }else if(isPred){
     html+='<div style="font-size:13px;color:#C05080;font-weight:600;margin-bottom:10px;">Period predicted around this day.</div>';
@@ -3200,7 +3227,24 @@ function buildWeek(){
 function buildNotifs(){document.getElementById('nlist').innerHTML=NOTIFS.map(n=>`<div class="nitem${n.unread?' unread':''}"><div class="norb" style="background:${n.bg}">${n.icon}</div><div><div class="nwhen">${n.when}</div><div class="ntxt">${n.txt}</div></div></div>`).join('')}
 function buildUCDays(){const dn=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];document.getElementById('uc-days').innerHTML=[1,2,3].map(i=>{const d=new Date(TODAY);d.setDate(d.getDate()+i*4);return`<div class="uc-day"><span class="dn">${phe(ph(cd(d)))}</span>${dn[d.getDay()]}</div>`}).join('')}
 
-function qlog(e,m){e.stopPropagation();document.querySelectorAll('.mpill').forEach(p=>p.classList.remove('picked'));e.currentTarget.classList.add('picked');const k=TODAY.getFullYear()+'-'+String(TODAY.getMonth()+1).padStart(2,'0')+'-'+String(TODAY.getDate()).padStart(2,'0');logs[k]={mood:m,ts:Date.now()};localStorage.setItem('ir4',JSON.stringify(logs));toast('Got it ✓')}
+function qlog(e,m){
+  e.stopPropagation();
+  document.querySelectorAll('.mpill').forEach(p=>p.classList.remove('picked'));
+  e.currentTarget.classList.add('picked');
+  const k=TODAY.getFullYear()+'-'+String(TODAY.getMonth()+1).padStart(2,'0')+'-'+String(TODAY.getDate()).padStart(2,'0');
+  // MERGE with existing log — don't wipe deep check-in data
+  var existing=logs[k]||{};
+  existing.mood=m;
+  existing.moods=existing.moods||[m];
+  if(existing.moods.indexOf(m)===-1)existing.moods.push(m);
+  existing.ts=Date.now();
+  logs[k]=existing;
+  localStorage.setItem('ir4',JSON.stringify(logs));
+  // Refresh logs from storage to stay in sync
+  logs=JSON.parse(localStorage.getItem('ir4')||'{}');
+  toast('Got it ✓');
+  try{initHome();}catch(e){}
+}
 function pm(el,m){
   // Multi-select toggle
   if(el.classList.contains('sel')){
@@ -3477,6 +3521,13 @@ function renderCal(){
       }
     }else{strip.style.display='none';}
   }
+  // Auto-show today when calendar loads
+  try{
+    var todayAutoKey=TODAY.getFullYear()+'-'+String(TODAY.getMonth()+1).padStart(2,'0')+'-'+String(TODAY.getDate()).padStart(2,'0');
+    var todayAutoLog=logs[todayAutoKey]||null;
+    showCalDay(TODAY,TODAY.getDate(),'',ph(cd(TODAY)),todayAutoKey,todayAutoLog,false);
+  }catch(err){}
+
 }
 
 function buildPatterns(){
