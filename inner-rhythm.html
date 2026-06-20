@@ -2961,6 +2961,10 @@ function saveCI(){
   }
   var qotEl=document.getElementById('quick-open-text');
   if(qotEl&&qotEl.value.trim()&&ciMode==='quick'){existing.quickNote=qotEl.value.trim();}
+  // Deep mode: save step 0 open text and quickAnswer
+  var deepOtEl=document.getElementById('deep-open-text');
+  if(deepOtEl&&deepOtEl.value.trim()){existing.quickNote=deepOtEl.value.trim();}
+  if(quickAnswer&&ciMode==='deep'){existing.quickAnswer=quickAnswer;quickAnswer='';}
   existing.ts=Date.now();
   logs[k]=existing;
   localStorage.setItem('ir4',JSON.stringify(logs));
@@ -3547,6 +3551,7 @@ function chM(dir){
 }
 
 function renderCal(){
+  logs=JSON.parse(localStorage.getItem('ir4')||'{}');
   var lbl=document.getElementById('cmlbl');
   if(lbl)lbl.textContent=new Date(calY,calM,1).toLocaleDateString('en-US',{month:'long',year:'numeric'});
   var g=document.getElementById('cgrid');
@@ -4676,7 +4681,7 @@ function initDeepSteps(){
 
     // Check yesterday for followup
     var yd=new Date(TODAY);yd.setDate(yd.getDate()-1);
-    var ydLog=logs[yd.toISOString().slice(0,10)];
+    var ydLog=logs[yd.getFullYear()+'-'+String(yd.getMonth()+1).padStart(2,'0')+'-'+String(yd.getDate()).padStart(2,'0')];
 
     // Phase fallback answers
     var phaseAnswers={
@@ -4749,6 +4754,11 @@ function updateDeepHeader(){
 
 function deepNextStep(){
   if(deepStep<deepTotal-1){
+    // Capture flow selection from current step before moving
+    if(deepStep===0){
+      var flowEls=document.querySelectorAll('.flow-opt.sel');
+      if(flowEls.length)selectedFlow=flowEls[0].dataset.flow||flowEls[0].textContent.trim();
+    }
     deepStep++;
     showDeepStep(deepStep);
     updateDeepHeader();
