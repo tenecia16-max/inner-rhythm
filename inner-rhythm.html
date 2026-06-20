@@ -1320,7 +1320,10 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
 
         <!-- Open text — escape hatch -->
         <div style="margin-top:4px;">
-          <textarea id="quick-open-text" placeholder="Or say it in your own words..." style="width:100%;background:#F8F9FB;border:1.5px solid #E8EEF2;border-radius:14px;padding:12px 14px;font-family:Nunito,sans-serif;font-size:13px;color:#1A3A45;resize:none;height:72px;outline:none;line-height:1.6;transition:border .2s;" onfocus="this.style.borderColor='#9B7EC8'" onblur="this.style.borderColor='#E8EEF2'"></textarea>
+          <div style="margin-top:4px;position:relative;">
+          <textarea id="quick-open-text" placeholder="Add your own — what&#39;s actually going on today..." style="width:100%;background:#F8F9FB;border:1.5px solid #E8EEF2;border-radius:14px;padding:12px 14px 12px 14px;font-family:Nunito,sans-serif;font-size:13px;color:#1A3A45;resize:none;height:76px;outline:none;line-height:1.6;transition:border .2s;" onfocus="this.style.borderColor='#9B7EC8'" onblur="this.style.borderColor='#E8EEF2'"></textarea>
+          <div style="font-size:10px;color:#B0C0CC;margin-top:4px;font-style:italic;">Saved with your log &#8212; IR reads this too</div>
+        </div>
         </div>
       </div>
 
@@ -1439,15 +1442,23 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
             <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;">IR</div>
             <div style="font-size:11px;font-weight:800;color:#7B5EA8;" id="body-intuition-q">What would actually help you right now?</div>
           </div>
-          <div style="display:flex;flex-wrap:wrap;gap:7px;" id="body-intuition-chips">
-            <div class="bi-chip" onclick="pickBI(this,'Rest')">&#128564; Rest</div>
-            <div class="bi-chip" onclick="pickBI(this,'Movement')">&#127939; Movement</div>
-            <div class="bi-chip" onclick="pickBI(this,'Connection')">&#129309; Connection</div>
-            <div class="bi-chip" onclick="pickBI(this,'Solitude')">&#127807; Solitude</div>
-            <div class="bi-chip" onclick="pickBI(this,'Nourishment')">&#127861; Nourishment</div>
-            <div class="bi-chip" onclick="pickBI(this,'Release')">&#127754; Release</div>
-            <div class="bi-chip" onclick="pickBI(this,'Creativity')">&#127912; Creativity</div>
-            <div class="bi-chip" onclick="pickBI(this,'Nothing clear')">&#129335; Nothing clear</div>
+          <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px;" id="body-intuition-chips">
+            <div class="bi-chip" onclick="pickBI(this,'A good cry')">&#128557; A good cry</div>
+            <div class="bi-chip" onclick="pickBI(this,'To be left alone')">&#129335; To be left alone</div>
+            <div class="bi-chip" onclick="pickBI(this,'Someone to talk to')">&#129309; Someone to talk to</div>
+            <div class="bi-chip" onclick="pickBI(this,'Comfort food')">&#127857; Comfort food</div>
+            <div class="bi-chip" onclick="pickBI(this,'Fresh air')">&#127807; Fresh air</div>
+            <div class="bi-chip" onclick="pickBI(this,'To move my body')">&#127939; To move my body</div>
+            <div class="bi-chip" onclick="pickBI(this,'Music')">&#127925; Music</div>
+            <div class="bi-chip" onclick="pickBI(this,'Sleep')">&#128564; Sleep</div>
+            <div class="bi-chip" onclick="pickBI(this,'A distraction')">&#127916; A distraction</div>
+            <div class="bi-chip" onclick="pickBI(this,'Permission to rest')">&#10024; Permission to rest</div>
+            <div class="bi-chip" onclick="pickBI(this,'To do nothing')">&#129393; To do nothing</div>
+            <div class="bi-chip" onclick="pickBI(this,'I honestly don&#39;t know')">&#129300; I honestly don&#39;t know</div>
+          </div>
+          <div class="add-custom" style="margin-top:2px;">
+            <input class="custom-inp" id="bi-custom" placeholder="Something else..." onkeydown="if(event.key===&#39;Enter&#39;){addCustomBI()}">
+            <button class="add-btn" onclick="addCustomBI()">+ Add</button>
           </div>
         </div>
       </div>
@@ -2520,10 +2531,14 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
 </div>
   <nav class="nav" id="main-nav">
     <button class="nb active" id="nav-home" onclick="nav('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</button>
-    <button class="nb" id="nav-checkin" onclick="nav('checkin')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Check-in</button>
-    <button class="nb" id="nav-patterns" onclick="nav('patterns')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Patterns</button>
-    <button class="nb" id="nav-calendar" onclick="nav('calendar')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendar</button>
-    <button class="nb" id="nav-settings" onclick="nav('settings')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</button>
+    <button class="nb" id="nav-checkin" onclick="nav('checkin')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Check-in</button>
+    <button class="nb" id="nav-patterns" onclick="nav('patterns')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Patterns</button>
+    <button class="nb" id="nav-calendar" onclick="nav('calendar')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendar</button>
+    <button class="nb" id="nav-settings" onclick="nav('settings')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</button>
   </nav>
 
 <script>
@@ -2835,6 +2850,9 @@ function nav(sc){
   if(sc==='sharing'){updatePartnerPreview();const lnkEl=document.getElementById('companion-link-display');if(lnkEl){const pr=JSON.parse(localStorage.getItem('ir_profile')||'{}');lnkEl.textContent=pr.name?'innerrhythm.app/companion/'+pr.name.toLowerCase().replace(/\s+/g,'-'):'Set your name in Profile first';}}
   if(sc==='ttc')updateTTCScreen();
   if(sc==='checkin'){initCheckin();}
+  if(sc==='notifs'){try{loadNotifPrefs();}catch(e){}}
+  if(sc==='partner'){try{loadPartnerScreen();}catch(e){}}
+  if(sc==='about'||sc==='privacy'){}
 }
 
 
@@ -2886,7 +2904,8 @@ function doAuth(){
 }
 
 function saveCI(){
-  var k=(checkInDate||TODAY).toISOString().slice(0,10);
+  var _d=checkInDate||TODAY;
+  var k=_d.getFullYear()+'-'+String(_d.getMonth()+1).padStart(2,'0')+'-'+String(_d.getDate()).padStart(2,'0');
   var noteEl=document.getElementById('ci-note');
   var logData={
     mood:moods.length?moods[0]:mood,
@@ -3033,13 +3052,13 @@ function showCalDay(date,d,c,p,k,log,isPred){
     if(log.flow&&log.flow!=='None')html+='<div style="font-size:11px;color:#C05080;margin-bottom:2px;">&#9679; '+log.flow+'</div>';
     if(log.note)html+='<div style="font-size:12px;color:#5A7A8A;margin-top:6px;font-style:italic;">"'+log.note+'"</div>';
     html+='</div></div>';
-    html+='<button onclick="checkInDate=new Date('+date.getFullYear()+','+date.getMonth()+','+d+');initCheckin();nav(\'checkin\');" style="width:100%;background:#F0F8FC;border:none;border-radius:11px;padding:11px;font-family:Nunito,sans-serif;font-size:13px;font-weight:800;color:#4AAAC4;cursor:pointer;margin-top:8px;">Edit this log &#8594;</button>';
+    html+='<button onclick="checkInDate=new Date('+date.getFullYear()+','+date.getMonth()+','+d+',12,0,0);nav(\'checkin\');" style="width:100%;background:#F0F8FC;border:none;border-radius:11px;padding:11px;font-family:Nunito,sans-serif;font-size:13px;font-weight:800;color:#4AAAC4;cursor:pointer;margin-top:8px;">Edit this log &#8594;</button>';
   }else if(isPred){
     html+='<div style="font-size:13px;color:#C05080;font-weight:600;margin-bottom:10px;">Period predicted around this day.</div>';
-    html+='<button onclick="checkInDate=new Date('+date.getFullYear()+','+date.getMonth()+','+d+');initCheckin();nav(\'checkin\');" style="width:100%;background:linear-gradient(135deg,#D4709A,#C05080);color:white;border:none;border-radius:11px;padding:11px;font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer;">Log this day &#8594;</button>';
+    html+='<button onclick="checkInDate=new Date('+date.getFullYear()+','+date.getMonth()+','+d+',12,0,0);nav(\'checkin\');" style="width:100%;background:linear-gradient(135deg,#D4709A,#C05080);color:white;border:none;border-radius:11px;padding:11px;font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer;">Log this day &#8594;</button>';
   }else{
     html+='<div style="font-size:13px;color:#8AAAB4;margin-bottom:10px;">No log for this day.</div>';
-    html+='<button onclick="checkInDate=new Date('+date.getFullYear()+','+date.getMonth()+','+d+');initCheckin();nav(\'checkin\');" style="width:100%;background:linear-gradient(135deg,#4AAAC4,#7DC8E0);color:white;border:none;border-radius:11px;padding:11px;font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer;">Log this day &#8594;</button>';
+    html+='<button onclick="checkInDate=new Date('+date.getFullYear()+','+date.getMonth()+','+d+',12,0,0);nav(\'checkin\');" style="width:100%;background:linear-gradient(135deg,#4AAAC4,#7DC8E0);color:white;border:none;border-radius:11px;padding:11px;font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer;">Log this day &#8594;</button>';
   }
   dd.innerHTML=html;dd.style.display='block';
   dd.scrollIntoView({behavior:'smooth',block:'nearest'});
@@ -3181,7 +3200,7 @@ function buildWeek(){
 function buildNotifs(){document.getElementById('nlist').innerHTML=NOTIFS.map(n=>`<div class="nitem${n.unread?' unread':''}"><div class="norb" style="background:${n.bg}">${n.icon}</div><div><div class="nwhen">${n.when}</div><div class="ntxt">${n.txt}</div></div></div>`).join('')}
 function buildUCDays(){const dn=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];document.getElementById('uc-days').innerHTML=[1,2,3].map(i=>{const d=new Date(TODAY);d.setDate(d.getDate()+i*4);return`<div class="uc-day"><span class="dn">${phe(ph(cd(d)))}</span>${dn[d.getDay()]}</div>`}).join('')}
 
-function qlog(e,m){e.stopPropagation();document.querySelectorAll('.mpill').forEach(p=>p.classList.remove('picked'));e.currentTarget.classList.add('picked');const k=TODAY.toISOString().slice(0,10);logs[k]={mood:m,ts:Date.now()};localStorage.setItem('ir4',JSON.stringify(logs));toast('Got it ✓')}
+function qlog(e,m){e.stopPropagation();document.querySelectorAll('.mpill').forEach(p=>p.classList.remove('picked'));e.currentTarget.classList.add('picked');const k=TODAY.getFullYear()+'-'+String(TODAY.getMonth()+1).padStart(2,'0')+'-'+String(TODAY.getDate()).padStart(2,'0');logs[k]={mood:m,ts:Date.now()};localStorage.setItem('ir4',JSON.stringify(logs));toast('Got it ✓')}
 function pm(el,m){
   // Multi-select toggle
   if(el.classList.contains('sel')){
@@ -3642,7 +3661,8 @@ function initCheckin(){
       dl.textContent=checkInDate.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
     }
   }
-  var k=(checkInDate||TODAY).toISOString().slice(0,10);
+  var _d=checkInDate||TODAY;
+  var k=_d.getFullYear()+'-'+String(_d.getMonth()+1).padStart(2,'0')+'-'+String(_d.getDate()).padStart(2,'0');
   var alEl=document.getElementById('ci-already-logged');
   if(logs[k]&&logs[k].mood){
     if(alEl)alEl.style.display='block';
@@ -3832,7 +3852,8 @@ function pickDriver(el,v){
   document.querySelectorAll('#driver-chips .ci-chip').forEach(function(c){c.classList.remove('sel');});
   el.classList.add('sel');
   ciDriver=v;
-  var k=(checkInDate||TODAY).toISOString().slice(0,10);
+  var _d=checkInDate||TODAY;
+  var k=_d.getFullYear()+'-'+String(_d.getMonth()+1).padStart(2,'0')+'-'+String(_d.getDate()).padStart(2,'0');
   if(logs[k]){logs[k].driver=v;localStorage.setItem('ir4',JSON.stringify(logs));}
 }
 
@@ -4680,6 +4701,25 @@ function closeProfileEdit(){
   if(sheet)sheet.style.display='none';
 }
 
+
+
+
+
+
+
+
+function addCustomBI(){
+  var inp=document.getElementById('bi-custom');
+  var v=inp?inp.value.trim():'';if(!v)return;
+  var chips=document.getElementById('body-intuition-chips');if(!chips)return;
+  var el=document.createElement('div');
+  el.className='bi-chip sel';
+  el.textContent='✨ '+v;
+  el.onclick=function(){pickBI(el,v);};
+  chips.appendChild(el);
+  if(inp)inp.value='';
+  pickBI(el,v);
+}
 function saveProfileEdit(){
   var acc=JSON.parse(localStorage.getItem('ir_account')||'{}');
   var prof=JSON.parse(localStorage.getItem('ir_profile')||'{}');
@@ -4712,6 +4752,49 @@ function doSignOut(){
   }
 }
 
+
+function loadPartnerScreen(){
+  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  var acc=JSON.parse(localStorage.getItem('ir_account')||'{}');
+  var el=document.getElementById('partner-content');
+  if(!el)return;
+  if(!setup.start){
+    el.innerHTML='<div style="text-align:center;padding:32px 20px;"><div style="font-size:32px;margin-bottom:12px;">🤝</div><div style="font-size:15px;font-weight:700;color:#1A3A45;margin-bottom:8px;">Set up your cycle first</div><div style="font-size:13px;color:#8AAAB4;line-height:1.7;">Add your last period date in Profile so your partner can see your cycle.</div></div>';
+    return;
+  }
+  var day=cd(TODAY);
+  var phase=ph(day);
+  var phaseNames={period:'Period',follicular:'Follicular',ovulation:'Ovulation',luteal:'Luteal'};
+  var phaseEmojis={period:'🩸',follicular:'🌿',ovulation:'☀️',luteal:'🌙'};
+  var phaseMsgs={
+    period:'She is in her period phase. She may need more rest and gentle support right now.',
+    follicular:'She is in her follicular phase. Energy is coming back — a good time to make plans.',
+    ovulation:'She is in her ovulation phase. She may feel her most social and energetic this week.',
+    luteal:'She is in her luteal phase. She may feel more sensitive or need more space than usual.'
+  };
+  var todayKey=TODAY.getFullYear()+'-'+String(TODAY.getMonth()+1).padStart(2,'0')+'-'+String(TODAY.getDate()).padStart(2,'0');
+  var todayLog=logs[todayKey];
+  var html='<div style="background:white;border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:0 2px 12px rgba(0,0,0,.06);">';
+  html+='<div style="font-size:11px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;">Right now</div>';
+  html+='<div style="font-size:28px;margin-bottom:8px;">'+phaseEmojis[phase]+'</div>';
+  html+='<div style="font-family:Playfair Display,serif;font-size:20px;color:#1A3A45;font-weight:700;margin-bottom:8px;">Day '+day+' · '+phaseNames[phase]+'</div>';
+  html+='<div style="font-size:13px;color:#5A7A8A;line-height:1.75;">'+phaseMsgs[phase]+'</div>';
+  html+='</div>';
+  if(todayLog&&todayLog.mood){
+    html+='<div style="background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-radius:16px;padding:14px 15px;border:1.5px solid #E4D8F4;margin-bottom:14px;">';
+    html+='<div style="font-size:11px;font-weight:800;color:#9B7EC8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">She logged today</div>';
+    html+='<div style="font-size:15px;font-weight:700;color:#2A1A4A;">Feeling '+todayLog.mood+'</div>';
+    if(todayLog.bodyIntuition)html+='<div style="font-size:13px;color:#5A7A8A;margin-top:6px;">Needs: '+todayLog.bodyIntuition+'</div>';
+    html+='</div>';
+  }
+  var daysLeft=userCycleLen-day;
+  html+='<div style="background:white;border-radius:16px;padding:14px 15px;box-shadow:0 2px 8px rgba(0,0,0,.04);">';
+  html+='<div style="font-size:11px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Coming up</div>';
+  if(daysLeft<=3&&daysLeft>=0)html+='<div style="font-size:13px;color:#C05080;font-weight:700;margin-bottom:6px;">🩸 Period expected '+(daysLeft===0?'today':daysLeft===1?'tomorrow':'in '+daysLeft+' days')+'</div>';
+  html+='<div style="font-size:13px;color:#5A7A8A;">Next period in about '+daysLeft+' days.</div>';
+  html+='</div>';
+  el.innerHTML=html;
+}
 </script>
 
   <!-- REWARD OVERLAY -->
@@ -4737,5 +4820,48 @@ if('serviceWorker' in navigator){
   });
 }
 </script>
+
+  <!-- Partner Screen -->
+  <div class="screen" id="screen-partner">
+    <div style="background:linear-gradient(160deg,#F0F8FF 0%,#E8F2FC 50%,#D8EAF8 100%);padding:max(44px,env(safe-area-inset-top)) 20px 24px;flex-shrink:0;position:relative;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px;">
+        <button onclick="nav('settings')" style="background:rgba(74,170,196,.15);border:none;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#8592;</button>
+        <div style="font-family:Playfair Display,serif;font-size:22px;color:#1A3A4A;font-weight:700;">Partner view</div>
+      </div>
+      <div style="font-size:12px;color:rgba(40,100,140,.6);margin-top:6px;">A gentle window into her cycle</div>
+    </div>
+    <div class="scroll" style="background:#F7F5FA;border-radius:26px 26px 0 0;margin-top:-16px;padding:18px 16px max(80px,calc(env(safe-area-inset-bottom)+70px));position:relative;z-index:1;" id="partner-content">
+      <div style="text-align:center;padding:40px 20px;">
+        <div style="font-size:32px;margin-bottom:12px;">🤝</div>
+        <div style="font-size:14px;color:#8AAAB4;">Loading...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- About Screen -->
+  <div class="screen" id="screen-about">
+    <div style="background:linear-gradient(160deg,#F8F0FF 0%,#F2E8FC 50%,#EDE0F8 100%);padding:max(44px,env(safe-area-inset-top)) 20px 24px;flex-shrink:0;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button onclick="nav('settings')" style="background:rgba(155,126,200,.15);border:none;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#8592;</button>
+        <div style="font-family:Playfair Display,serif;font-size:22px;color:#2A1A4A;font-weight:700;">About Inner Rhythm</div>
+      </div>
+    </div>
+    <div class="scroll" style="background:#F7F5FA;border-radius:26px 26px 0 0;margin-top:-16px;padding:18px 16px max(80px,calc(env(safe-area-inset-bottom)+70px));position:relative;z-index:1;">
+      <div style="background:white;border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05);">
+        <div style="font-family:Playfair Display,serif;font-size:18px;color:#1A3A45;font-weight:700;margin-bottom:8px;">Inner Rhythm</div>
+        <div style="font-size:12px;color:#9B7EC8;font-weight:700;margin-bottom:12px;font-style:italic;">for every phase of you</div>
+        <div style="font-size:13px;color:#5A7A8A;line-height:1.8;">Inner Rhythm learns how your cycle shapes how you feel, and talks to you like it actually knows you. Because over time, it will.</div>
+      </div>
+      <div style="background:white;border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05);">
+        <div style="font-size:11px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Privacy</div>
+        <div style="font-size:13px;color:#5A7A8A;line-height:1.8;">Everything you log stays on your device. Inner Rhythm does not have servers. Your data is never uploaded, sold, or shared. Ever.</div>
+      </div>
+      <div style="background:white;border-radius:18px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.05);">
+        <div style="font-size:11px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Version</div>
+        <div style="font-size:13px;color:#5A7A8A;">Beta · June 2026</div>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
