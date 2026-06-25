@@ -1316,7 +1316,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
         <div style="padding-left:10px;">
           <div style="font-size:10px;font-weight:800;color:#9B7EC8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Emotional check-in</div>
           <div style="font-size:16px;font-weight:800;color:#1A3A45;margin-bottom:6px;">How are you feeling?</div>
-          <div style="font-size:12px;color:#8AAAB4;line-height:1.6;margin-bottom:14px;">A quick pulse or a deeper conversation with IR. This is where the emotional intelligence lives.</div>
+          <div style="font-size:12px;color:#8AAAB4;line-height:1.6;margin-bottom:14px;">A quick pulse or a deeper conversation. Purely emotional — no body tracking here.</div>
           <div style="display:flex;gap:8px;">
             <div style="flex:1;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);border-radius:11px;padding:10px;text-align:center;font-size:11px;font-weight:800;color:white;">Quick &middot; 10 sec</div>
             <div style="flex:1;background:#F0EAF8;border-radius:11px;padding:10px;text-align:center;font-size:11px;font-weight:800;color:#7B5EA8;">Deep &middot; 3 min</div>
@@ -1328,13 +1328,125 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
         <div style="padding-left:10px;">
           <div style="font-size:10px;font-weight:800;color:#C05080;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Body log</div>
           <div style="font-size:16px;font-weight:800;color:#1A3A45;margin-bottom:6px;">Track your body today</div>
-          <div style="font-size:12px;color:#8AAAB4;line-height:1.6;margin-bottom:14px;">Period, flow, symptoms, sleep, intimacy. Tap what is relevant &mdash; nothing is required.</div>
+          <div style="font-size:12px;color:#8AAAB4;line-height:1.6;margin-bottom:14px;">Period, flow, energy, symptoms, sleep, intimacy. Nothing is required.</div>
           <div style="background:linear-gradient(135deg,#C05080,#9B3060);border-radius:11px;padding:10px;text-align:center;font-size:11px;font-weight:800;color:white;">Open body log &rarr;</div>
         </div>
       </div>
       <div style="text-align:center;font-size:11px;color:#B0C0C8;">They work together &mdash; IR reads both.</div>
     </div>
   </div>
+
+  <div class="screen" id="screen-bodylog">
+    <div style="background:linear-gradient(160deg,#FFF0F5 0%,#F0EAF8 60%,#E8F4FC 100%);padding:max(44px,env(safe-area-inset-top)) 20px 20px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+        <button onclick="nav('logchoice')" style="background:rgba(192,80,120,.12);border:none;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#8592;</button>
+        <div>
+          <div style="font-family:'Playfair Display',serif;font-size:20px;color:#1A3A45;font-weight:700;">Body log</div>
+          <div style="font-size:11px;color:rgba(120,60,80,.55);margin-top:1px;" id="bodylog-date">Today</div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:rgba(100,40,60,.5);">Nothing is required. Log what feels relevant.</div>
+    </div>
+    <div class="scroll" style="background:#FAF4F2;border-radius:26px 26px 0 0;margin-top:-16px;padding:16px 16px max(80px,calc(env(safe-area-inset-bottom)+70px));z-index:1;position:relative;">
+      <div style="font-size:10px;font-weight:800;color:#C08090;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;padding-left:2px;">Period</div>
+      <div style="background:linear-gradient(135deg,#FFF0F5,#FFE4EE);border-radius:18px;margin-bottom:14px;border:1.5px solid rgba(192,80,120,.15);overflow:hidden;">
+        <div style="padding:14px 15px 10px;">
+          <div style="display:flex;gap:8px;margin-bottom:10px;">
+            <button onclick="logPeriodEvent('started')" id="btn-period-started" style="flex:1;background:white;border:1.5px solid rgba(192,80,120,.3);border-radius:12px;padding:11px;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;color:#C05080;cursor:pointer;">&#129768; Period started</button>
+            <button onclick="logPeriodEvent('ended')" id="btn-period-ended" style="flex:1;background:#C05080;border:none;border-radius:12px;padding:11px;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;color:white;cursor:pointer;">Period ended</button>
+          </div>
+          <div style="font-size:10px;font-weight:800;color:#C08090;text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px;">Flow</div>
+          <div style="display:flex;gap:5px;">
+            <div class="flow-opt" onclick="pickFlow(this,'Spotting')" style="flex:1;background:#FEF0F4;border-radius:9px;padding:8px 4px;text-align:center;font-size:10px;font-weight:700;color:#C05080;border:1.5px solid rgba(192,80,120,.15);cursor:pointer;">Spotting</div>
+            <div class="flow-opt" onclick="pickFlow(this,'Light')" style="flex:1;background:#FAD8E4;border-radius:9px;padding:8px 4px;text-align:center;font-size:10px;font-weight:700;color:#A03060;border:1.5px solid rgba(192,80,120,.25);cursor:pointer;">Light</div>
+            <div class="flow-opt" onclick="pickFlow(this,'Medium')" style="flex:1;background:#F090B0;border-radius:9px;padding:8px 4px;text-align:center;font-size:10px;font-weight:700;color:white;border:1.5px solid #D06090;cursor:pointer;">Medium</div>
+            <div class="flow-opt" onclick="pickFlow(this,'Heavy')" style="flex:1;background:#C04070;border-radius:9px;padding:8px 4px;text-align:center;font-size:10px;font-weight:700;color:white;border:1.5px solid #A02050;cursor:pointer;">Heavy</div>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:10px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;padding-left:2px;">Track today</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;" id="bodylog-tiles">
+        <div class="bl-tile" id="tile-energy" onclick="toggleBodyTile('energy')"><div class="bl-tile-icon">&#9889;</div><div class="bl-tile-label">Energy</div></div>
+        <div class="bl-tile" id="tile-symptoms" onclick="toggleBodyTile('symptoms')"><div class="bl-tile-icon">&#129705;</div><div class="bl-tile-label">Symptoms</div></div>
+        <div class="bl-tile" id="tile-sleep" onclick="toggleBodyTile('sleep')"><div class="bl-tile-icon">&#128564;</div><div class="bl-tile-label">Sleep</div></div>
+        <div class="bl-tile" id="tile-intimacy" onclick="toggleBodyTile('intimacy')"><div class="bl-tile-icon">&#129293;</div><div class="bl-tile-label">Intimacy</div></div>
+        <div class="bl-tile" id="tile-medication" onclick="toggleBodyTile('medication')"><div class="bl-tile-icon">&#128138;</div><div class="bl-tile-label">Medication</div></div>
+        <div class="bl-tile" id="tile-notes" onclick="toggleBodyTile('notes')"><div class="bl-tile-icon">&#9997;&#65039;</div><div class="bl-tile-label">Notes</div></div>
+      </div>
+      <div id="panel-energy" class="bl-panel" style="display:none;">
+        <div class="bl-panel-header"><span style="font-size:16px;">&#9889;</span><span class="bl-panel-title">Energy today</span><button class="bl-panel-close" onclick="closeBodyTile('energy')">Done</button></div>
+        <div class="bl-panel-body">
+          <div class="bl-chip" onclick="toggleBodyChip(this,'energy','Full energy')">Full energy</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'energy','Good')">Good</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'energy','Okay')">Okay</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'energy','Foggy')">Foggy</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'energy','Low')">Low</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'energy','Wired but tired')">Wired but tired</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'energy','Running on empty')">Running on empty</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'energy','Cozy low')">Cozy low</div>
+        </div>
+      </div>
+      <div id="panel-symptoms" class="bl-panel" style="display:none;">
+        <div class="bl-panel-header"><span style="font-size:16px;">&#129705;</span><span class="bl-panel-title">Symptoms</span><button class="bl-panel-close" onclick="closeBodyTile('symptoms')">Done</button></div>
+        <div class="bl-panel-body">
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Cramps')">Cramps</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Bloating')">Bloating</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Headache')">Headache</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Fatigue')">Fatigue</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Backache')">Backache</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Nausea')">Nausea</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Tender breasts')">Tender breasts</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Insomnia')">Insomnia</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Cravings')">Cravings</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Acne')">Acne</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Dizziness')">Dizziness</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Hot flashes')">Hot flashes</div>
+        </div>
+      </div>
+      <div id="panel-sleep" class="bl-panel" style="display:none;">
+        <div class="bl-panel-header"><span style="font-size:16px;">&#128564;</span><span class="bl-panel-title">Sleep last night</span><button class="bl-panel-close" onclick="closeBodyTile('sleep')">Done</button></div>
+        <div class="bl-panel-body">
+          <div class="bl-chip" onclick="toggleBodyChip(this,'sleep','Less than 5 hrs')">Less than 5 hrs</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'sleep','5-6 hrs')">5&#8211;6 hrs</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'sleep','6-7 hrs')">6&#8211;7 hrs</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'sleep','7-8 hrs')">7&#8211;8 hrs</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'sleep','8+ hrs')">8+ hrs</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'sleep','Restless')">Restless</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'sleep','Vivid dreams')">Vivid dreams</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'sleep','Trouble falling asleep')">Trouble falling asleep</div>
+        </div>
+      </div>
+      <div id="panel-intimacy" class="bl-panel" style="display:none;">
+        <div class="bl-panel-header"><span style="font-size:16px;">&#129293;</span><span class="bl-panel-title">Intimacy</span><button class="bl-panel-close" onclick="closeBodyTile('intimacy')">Done</button></div>
+        <div class="bl-panel-body">
+          <div class="bl-chip" onclick="toggleBodyChip(this,'intimacy','Protected sex')">Protected sex</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'intimacy','Unprotected sex')">Unprotected sex</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'intimacy','High desire')">High desire</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'intimacy','Low desire')">Low desire</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'intimacy','Masturbation')">Masturbation</div>
+        </div>
+      </div>
+      <div id="panel-medication" class="bl-panel" style="display:none;">
+        <div class="bl-panel-header"><span style="font-size:16px;">&#128138;</span><span class="bl-panel-title">Medication</span><button class="bl-panel-close" onclick="closeBodyTile('medication')">Done</button></div>
+        <div class="bl-panel-body">
+          <div class="bl-chip" onclick="toggleBodyChip(this,'medication','Pill taken')">Pill taken</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'medication','Painkiller')">Painkiller</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'medication','Iron supplement')">Iron supplement</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'medication','Antihistamine')">Antihistamine</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'medication','Antidepressant')">Antidepressant</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'medication','Other')">Other</div>
+        </div>
+      </div>
+      <div id="panel-notes" class="bl-panel" style="display:none;">
+        <div class="bl-panel-header"><span style="font-size:16px;">&#9997;&#65039;</span><span class="bl-panel-title">Notes</span><button class="bl-panel-close" onclick="closeBodyTile('notes')">Done</button></div>
+        <div style="padding:10px 14px 12px;">
+          <textarea id="bodylog-note" placeholder="Anything else worth noting today..." style="width:100%;background:#FAF4F2;border:1.5px solid rgba(192,80,120,.15);border-radius:12px;padding:12px 14px;font-family:Nunito,sans-serif;font-size:13px;color:#1A3A45;resize:none;height:90px;outline:none;line-height:1.6;" onfocus="this.style.borderColor='#C05080'" onblur="this.style.borderColor='rgba(192,80,120,.15)'"></textarea>
+        </div>
+      </div>
+      <button onclick="saveBodyLog()" style="width:100%;background:linear-gradient(135deg,#C05080,#9B3060);color:white;border:none;border-radius:16px;padding:15px;font-family:Nunito,sans-serif;font-size:15px;font-weight:800;cursor:pointer;margin-top:4px;box-shadow:0 4px 16px rgba(192,80,120,.25);">Save body log</button>
+    </div>
+  </div>
+
 <div class="screen" id="screen-checkin">
 
     <!-- Phase-tinted header -->
@@ -1426,16 +1538,6 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
           </div>
           <textarea id="deep-open-text" placeholder="Or say it in your own words..." style="width:100%;background:#F8F9FB;border:1.5px solid #E8EEF2;border-radius:12px;padding:12px 14px;font-family:Nunito,sans-serif;font-size:13px;color:#1A3A45;resize:none;height:72px;outline:none;line-height:1.6;margin-top:4px;transition:border .2s;" onfocus="this.style.borderColor='#9B7EC8'" onblur="this.style.borderColor='#E8EEF2'"></textarea>
         </div>
-        <div class="card-ci">
-          <div class="ci-sec">Period flow</div>
-          <div class="flow-row" id="flow-row-deep">
-            <div class="flow-opt" onclick="pickFlow(this,'None')"><span class="flbl">None</span></div>
-            <div class="flow-opt" onclick="pickFlow(this,'Spotting')"><span style="font-size:9px;color:#D4709A;display:block;line-height:1.2;">&#9679;</span><span class="flbl">Spotting</span></div>
-            <div class="flow-opt" onclick="pickFlow(this,'Light')"><span style="font-size:9px;color:#C05080;display:block;line-height:1.2;">&#9679;&#9679;</span><span class="flbl">Light</span></div>
-            <div class="flow-opt" onclick="pickFlow(this,'Medium')"><span style="font-size:9px;color:#A03060;display:block;line-height:1.2;">&#9679;&#9679;&#9679;</span><span class="flbl">Medium</span></div>
-            <div class="flow-opt" onclick="pickFlow(this,'Heavy')"><span style="font-size:9px;color:#80204A;display:block;line-height:1.2;">&#9679;&#9679;&#9679;&#9679;</span><span class="flbl">Heavy</span></div>
-          </div>
-        </div>
       </div>
 
       <!-- ═══ DEEP STEP 1: Mood ═══ -->
@@ -1463,42 +1565,8 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
         </div>
       </div>
 
-      <!-- ═══ DEEP STEP 2: Energy + Body ═══ -->
+      <!-- ═══ DEEP STEP 2: IR combined moment ═══ -->
       <div id="deep-step-2" class="ci-deep-step" style="display:none;">
-        <div class="card-ci">
-          <div class="ci-sec">Energy today</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:4px;" id="energy-row">
-            <div class="eopt" onclick="pe(this,'Full energy')" style="display:flex;align-items:center;gap:8px;border-radius:12px;padding:10px 12px;"><span class="ei">&#128267;</span>Full energy</div>
-            <div class="eopt" onclick="pe(this,'Foggy')" style="display:flex;align-items:center;gap:8px;border-radius:12px;padding:10px 12px;"><span class="ei">&#128164;</span>Foggy</div>
-            <div class="eopt" onclick="pe(this,'Wired but tired')" style="display:flex;align-items:center;gap:8px;border-radius:12px;padding:10px 12px;"><span class="ei">&#129760;</span>Wired but tired</div>
-            <div class="eopt" onclick="pe(this,'Running on empty')" style="display:flex;align-items:center;gap:8px;border-radius:12px;padding:10px 12px;"><span class="ei">&#128251;</span>Running on empty</div>
-            <div class="eopt" onclick="pe(this,'Cozy low')" style="display:flex;align-items:center;gap:8px;border-radius:12px;padding:10px 12px;"><span class="ei">&#128524;</span>Cozy low</div>
-            <div class="eopt" onclick="pe(this,'Just okay')" style="display:flex;align-items:center;gap:8px;border-radius:12px;padding:10px 12px;"><span class="ei">&#128262;</span>Just okay</div>
-          </div>
-          <div class="add-custom" style="margin-top:8px;"><input class="custom-inp" id="energy-custom" placeholder="Add your own..." onkeydown="if(event.key==='Enter'){addCustomEnergy()}"><button class="add-btn" onclick="addCustomEnergy()">+ Add</button></div>
-        </div>
-        <div class="card-ci">
-          <div class="ci-sec">Body &#8212; anything showing up?</div>
-          <div id="sym-chips" style="display:flex;flex-wrap:wrap;gap:0;margin:-3px;">
-            <div class="ci-chip" onclick="tfi(this,'Cramps','s')">&#129768; Cramps</div>
-            <div class="ci-chip" onclick="tfi(this,'Headache','s')">&#129314; Headache</div>
-            <div class="ci-chip" onclick="tfi(this,'Bloating','s')">&#128534; Bloating</div>
-            <div class="ci-chip" onclick="tfi(this,'Tired','s')">&#128164; Tired</div>
-            <div class="ci-chip" onclick="tfi(this,'Acne','s')">&#128142; Acne</div>
-            <div class="ci-chip" onclick="tfi(this,'Tense','s')">&#128245; Tense</div>
-            <div class="ci-chip" onclick="tfi(this,'Backache','s')">&#129463; Backache</div>
-            <div class="ci-chip" onclick="tfi(this,'Nausea','s')">&#129314; Nausea</div>
-            <div class="ci-chip" onclick="tfi(this,'Tender chest','s')">&#129293; Tender chest</div>
-            <div class="ci-chip" onclick="tfi(this,'Cravings','s')">&#127860; Cravings</div>
-            <div class="ci-chip" onclick="tfi(this,'Insomnia','s')">&#128336; Insomnia</div>
-            <div class="ci-chip" onclick="tfi(this,'Hot flashes','s')">&#127798; Hot flashes</div>
-          </div>
-          <div class="add-custom" style="margin-top:8px;"><input class="custom-inp" id="sym-custom" placeholder="Add your own..." onkeydown="if(event.key==='Enter'){addCustomSym()}"><button class="add-btn" onclick="addCustomSym()">+ Add</button></div>
-        </div>
-      </div>
-
-      <!-- ═══ DEEP STEP 3: IR combined moment ═══ -->
-      <div id="deep-step-3" class="ci-deep-step" style="display:none;">
         <div style="background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-radius:16px;padding:15px 16px;border:1.5px solid #E4D8F4;margin-bottom:10px;">
           <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px;">
             <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;">IR</div>
@@ -1507,34 +1575,11 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
           <div style="font-size:13px;color:#3A2A5A;line-height:1.75;margin-bottom:11px;font-style:italic;" id="deep-q-text">What is sitting with you most today — even if you can not fully name it?</div>
           <div style="display:flex;flex-wrap:wrap;gap:0;margin:-3px;" id="deep-q-chips"></div>
         </div>
-        <div style="background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-radius:16px;padding:15px 16px;border:1.5px solid #E4D8F4;">
-          <div style="display:flex;align-items:center;gap:9px;margin-bottom:11px;">
-            <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;">IR</div>
-            <div style="font-size:11px;font-weight:800;color:#7B5EA8;" id="body-intuition-q">What would actually help you right now?</div>
-          </div>
-          <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px;" id="body-intuition-chips">
-            <div class="bi-chip" onclick="pickBI(this,'A good cry')">&#128557; A good cry</div>
-            <div class="bi-chip" onclick="pickBI(this,'To be left alone')">&#129335; To be left alone</div>
-            <div class="bi-chip" onclick="pickBI(this,'Someone to talk to')">&#129309; Someone to talk to</div>
-            <div class="bi-chip" onclick="pickBI(this,'Comfort food')">&#127857; Comfort food</div>
-            <div class="bi-chip" onclick="pickBI(this,'Fresh air')">&#127807; Fresh air</div>
-            <div class="bi-chip" onclick="pickBI(this,'To move my body')">&#127939; To move my body</div>
-            <div class="bi-chip" onclick="pickBI(this,'Music')">&#127925; Music</div>
-            <div class="bi-chip" onclick="pickBI(this,'Sleep')">&#128564; Sleep</div>
-            <div class="bi-chip" onclick="pickBI(this,'A distraction')">&#127916; A distraction</div>
-            <div class="bi-chip" onclick="pickBI(this,'Permission to rest')">&#10024; Permission to rest</div>
-            <div class="bi-chip" onclick="pickBI(this,'To do nothing')">&#129393; To do nothing</div>
-            <div class="bi-chip" onclick="pickBI(this,'I honestly don&#39;t know')">&#129300; I honestly don&#39;t know</div>
-          </div>
-          <div class="add-custom" style="margin-top:2px;">
-            <input class="custom-inp" id="bi-custom" placeholder="Something else..." onkeydown="if(event.key===&#39;Enter&#39;){addCustomBI()}">
-            <button class="add-btn" onclick="addCustomBI()">+ Add</button>
-          </div>
-        </div>
+
       </div>
 
-      <!-- ═══ DEEP STEP 4: Unsent letter ═══ -->
-      <div id="deep-step-4" class="ci-deep-step" style="display:none;">
+      <!-- ═══ DEEP STEP 3: Unsent letter ═══ -->
+      <div id="deep-step-3" class="ci-deep-step" style="display:none;">
         <div class="card-ci">
           <div style="font-size:14px;font-weight:700;color:#1A3A45;margin-bottom:5px;">Unsent letter</div>
           <div style="font-size:12px;color:#A8C0CC;font-style:italic;margin-bottom:12px;">Say what you cannot say out loud. Just us.</div>
@@ -1670,112 +1715,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
   </div>
 
   <!-- ======= PATTERNS ======= -->
-  <div class="screen" id="screen-bodylog">
-    <div style="background:linear-gradient(160deg,#FFF0F5 0%,#F0EAF8 60%,#E8F4FC 100%);padding:max(44px,env(safe-area-inset-top)) 20px 20px;">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
-        <button onclick="nav('logchoice')" style="background:rgba(192,80,120,.12);border:none;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#8592;</button>
-        <div>
-          <div style="font-family:'Playfair Display',serif;font-size:20px;color:#1A3A45;font-weight:700;">Body log</div>
-          <div style="font-size:11px;color:rgba(120,60,80,.55);margin-top:1px;" id="bodylog-date">Today</div>
-        </div>
-      </div>
-      <div style="font-size:12px;color:rgba(100,40,60,.5);">Nothing is required. Log what feels relevant.</div>
-    </div>
-    <div class="scroll" style="background:#FAF4F2;border-radius:26px 26px 0 0;margin-top:-16px;padding:16px 16px max(80px,calc(env(safe-area-inset-bottom)+70px));z-index:1;position:relative;">
-      <div style="font-size:10px;font-weight:800;color:#C08090;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;padding-left:2px;">Period</div>
-      <div style="background:linear-gradient(135deg,#FFF0F5,#FFE4EE);border-radius:18px;margin-bottom:14px;border:1.5px solid rgba(192,80,120,.15);overflow:hidden;">
-        <div style="padding:14px 15px 10px;">
-          <div style="display:flex;gap:8px;margin-bottom:10px;">
-            <button onclick="logPeriodEvent('started')" id="btn-period-started" style="flex:1;background:white;border:1.5px solid rgba(192,80,120,.3);border-radius:12px;padding:11px;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;color:#C05080;cursor:pointer;">&#129768; Period started</button>
-            <button onclick="logPeriodEvent('ended')" id="btn-period-ended" style="flex:1;background:#C05080;border:none;border-radius:12px;padding:11px;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;color:white;cursor:pointer;">Period ended</button>
-          </div>
-          <div style="font-size:10px;font-weight:800;color:#C08090;text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px;">Flow</div>
-          <div style="display:flex;gap:5px;">
-            <div class="flow-opt" onclick="pickFlow(this,'Spotting')" style="flex:1;background:#FEF0F4;border-radius:9px;padding:8px 4px;text-align:center;font-size:10px;font-weight:700;color:#C05080;border:1.5px solid rgba(192,80,120,.15);cursor:pointer;">Spotting</div>
-            <div class="flow-opt" onclick="pickFlow(this,'Light')" style="flex:1;background:#FAD8E4;border-radius:9px;padding:8px 4px;text-align:center;font-size:10px;font-weight:700;color:#A03060;border:1.5px solid rgba(192,80,120,.25);cursor:pointer;">Light</div>
-            <div class="flow-opt" onclick="pickFlow(this,'Medium')" style="flex:1;background:#F090B0;border-radius:9px;padding:8px 4px;text-align:center;font-size:10px;font-weight:700;color:white;border:1.5px solid #D06090;cursor:pointer;">Medium</div>
-            <div class="flow-opt" onclick="pickFlow(this,'Heavy')" style="flex:1;background:#C04070;border-radius:9px;padding:8px 4px;text-align:center;font-size:10px;font-weight:700;color:white;border:1.5px solid #A02050;cursor:pointer;">Heavy</div>
-          </div>
-        </div>
-      </div>
-      <div style="font-size:10px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;padding-left:2px;">Track today</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;" id="bodylog-tiles">
-        <div class="bl-tile" id="tile-symptoms" onclick="toggleBodyTile('symptoms')"><div class="bl-tile-icon">&#129705;</div><div class="bl-tile-label">Symptoms</div></div>
-        <div class="bl-tile" id="tile-sleep" onclick="toggleBodyTile('sleep')"><div class="bl-tile-icon">&#128564;</div><div class="bl-tile-label">Sleep</div></div>
-        <div class="bl-tile" id="tile-intimacy" onclick="toggleBodyTile('intimacy')"><div class="bl-tile-icon">&#129293;</div><div class="bl-tile-label">Intimacy</div></div>
-        <div class="bl-tile" id="tile-medication" onclick="toggleBodyTile('medication')"><div class="bl-tile-icon">&#128138;</div><div class="bl-tile-label">Medication</div></div>
-        <div class="bl-tile" id="tile-water" onclick="toggleBodyTile('water')"><div class="bl-tile-icon">&#128167;</div><div class="bl-tile-label">Water</div></div>
-        <div class="bl-tile" id="tile-notes" onclick="toggleBodyTile('notes')"><div class="bl-tile-icon">&#9997;&#65039;</div><div class="bl-tile-label">Notes</div></div>
-      </div>
-      <div id="panel-symptoms" class="bl-panel" style="display:none;">
-        <div class="bl-panel-header"><span style="font-size:16px;">&#129705;</span><span class="bl-panel-title">Symptoms</span><button class="bl-panel-close" onclick="closeBodyTile('symptoms')">Done</button></div>
-        <div class="bl-panel-body">
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Cramps')">Cramps</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Bloating')">Bloating</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Headache')">Headache</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Fatigue')">Fatigue</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Backache')">Backache</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Nausea')">Nausea</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Tender breasts')">Tender breasts</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Insomnia')">Insomnia</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Cravings')">Cravings</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Acne')">Acne</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Dizziness')">Dizziness</div>
-        </div>
-      </div>
-      <div id="panel-sleep" class="bl-panel" style="display:none;">
-        <div class="bl-panel-header"><span style="font-size:16px;">&#128564;</span><span class="bl-panel-title">Sleep last night</span><button class="bl-panel-close" onclick="closeBodyTile('sleep')">Done</button></div>
-        <div class="bl-panel-body">
-          <div class="bl-chip" onclick="toggleBodyChip(this,'sleep','Less than 5 hrs')">Less than 5 hrs</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'sleep','5-6 hrs')">5&#8211;6 hrs</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'sleep','6-7 hrs')">6&#8211;7 hrs</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'sleep','7-8 hrs')">7&#8211;8 hrs</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'sleep','8+ hrs')">8+ hrs</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'sleep','Restless')">Restless</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'sleep','Vivid dreams')">Vivid dreams</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'sleep','Trouble falling asleep')">Trouble falling asleep</div>
-        </div>
-      </div>
-      <div id="panel-intimacy" class="bl-panel" style="display:none;">
-        <div class="bl-panel-header"><span style="font-size:16px;">&#129293;</span><span class="bl-panel-title">Intimacy</span><button class="bl-panel-close" onclick="closeBodyTile('intimacy')">Done</button></div>
-        <div class="bl-panel-body">
-          <div class="bl-chip" onclick="toggleBodyChip(this,'intimacy','Protected sex')">Protected sex</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'intimacy','Unprotected sex')">Unprotected sex</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'intimacy','High desire')">High desire</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'intimacy','Low desire')">Low desire</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'intimacy','Masturbation')">Masturbation</div>
-        </div>
-      </div>
-      <div id="panel-medication" class="bl-panel" style="display:none;">
-        <div class="bl-panel-header"><span style="font-size:16px;">&#128138;</span><span class="bl-panel-title">Medication</span><button class="bl-panel-close" onclick="closeBodyTile('medication')">Done</button></div>
-        <div class="bl-panel-body">
-          <div class="bl-chip" onclick="toggleBodyChip(this,'medication','Pill taken')">Pill taken</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'medication','Painkiller')">Painkiller</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'medication','Iron supplement')">Iron supplement</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'medication','Antihistamine')">Antihistamine</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'medication','Antidepressant')">Antidepressant</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'medication','Other')">Other</div>
-        </div>
-      </div>
-      <div id="panel-water" class="bl-panel" style="display:none;">
-        <div class="bl-panel-header"><span style="font-size:16px;">&#128167;</span><span class="bl-panel-title">Water intake</span><button class="bl-panel-close" onclick="closeBodyTile('water')">Done</button></div>
-        <div class="bl-panel-body">
-          <div class="bl-chip" onclick="toggleBodyChip(this,'water','Very little')">Very little</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'water','Some')">Some</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'water','Good amount')">Good amount</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'water','Well hydrated')">Well hydrated</div>
-        </div>
-      </div>
-      <div id="panel-notes" class="bl-panel" style="display:none;">
-        <div class="bl-panel-header"><span style="font-size:16px;">&#9997;&#65039;</span><span class="bl-panel-title">Notes</span><button class="bl-panel-close" onclick="closeBodyTile('notes')">Done</button></div>
-        <div style="padding:10px 14px 12px;">
-          <textarea id="bodylog-note" placeholder="Anything else worth noting today..." style="width:100%;background:#FAF4F2;border:1.5px solid rgba(192,80,120,.15);border-radius:12px;padding:12px 14px;font-family:Nunito,sans-serif;font-size:13px;color:#1A3A45;resize:none;height:90px;outline:none;line-height:1.6;" onfocus="this.style.borderColor='#C05080'" onblur="this.style.borderColor='rgba(192,80,120,.15)'"></textarea>
-        </div>
-      </div>
-      <button onclick="saveBodyLog()" style="width:100%;background:linear-gradient(135deg,#C05080,#9B3060);color:white;border:none;border-radius:16px;padding:15px;font-family:Nunito,sans-serif;font-size:15px;font-weight:800;cursor:pointer;margin-top:4px;box-shadow:0 4px 16px rgba(192,80,120,.25);">Save body log</button>
-    </div>
-  </div>
-<div class="screen" id="screen-patterns">
+  <div class="screen" id="screen-patterns">
 
     <!-- Watercolour phase hero — matches home/checkin -->
     <div id="pat-hero" style="background:linear-gradient(160deg,#F8F0FF 0%,#F2E8FC 50%,#EDE0F8 100%);padding:max(44px,env(safe-area-inset-top)) 20px 26px;flex-shrink:0;position:relative;overflow:hidden;transition:background .5s;">
@@ -2737,13 +2677,12 @@ let usePw=false,authMethod='email',authTab='up';
 // ── Missing globals fixed ─────────────────────────────────────────────
 var checkInDate=null,selectedFlow='',bodyIntuition='',ciMode='quick',ciDriver='';
 var curPatPhase='luteal',calYear=TODAY.getFullYear(),calMonth=TODAY.getMonth();
-var deepStep=0,deepTotal=5,quickAnswer='';
+var deepStep=0,deepTotal=4,quickAnswer='';
 var deepHeaders=[
   {sub:'How are you doing today',q:'How are you actually feeling right now? Be as honest as you want.'},
-  {sub:'Vibe check',q:'How are you actually feeling today? Pick everything that fits.'},
-  {sub:'Your body',q:'How is your energy landing — and is your body saying anything today?'},
-  {sub:'Going a little deeper',q:'Two things I want to ask you about today.'},
-  {sub:'Just between us',q:'Anything you need to say that you have not been able to.'}
+  {sub:'Vibe check',q:'How are you feeling today? Pick everything that fits.'},
+  {sub:'Going deeper',q:'What is sitting with you most today — even if you cannot fully name it?'},
+  {sub:'Just between us',q:'Anything you need to say that you have not been able to say out loud.'}
 ];
 let shareToggles={mood:true,phase:true,day:true,needs:true,syms:false,notes:false};
 let shareLevel=2;
@@ -4931,11 +4870,6 @@ function updateDeepHeader(){
 
 function deepNextStep(){
   if(deepStep<deepTotal-1){
-    // Capture flow selection from current step before moving
-    if(deepStep===0){
-      var flowEls=document.querySelectorAll('.flow-opt.sel');
-      if(flowEls.length)selectedFlow=flowEls[0].dataset.flow||flowEls[0].textContent.trim();
-    }
     deepStep++;
     showDeepStep(deepStep);
     updateDeepHeader();
@@ -5438,14 +5372,12 @@ function initBodyLog(){
 }
 
 function updateTileStates(){
-  var keys={symptoms:'syms',sleep:'sleep',intimacy:'intimacy',
-            medication:'medication',water:'water',notes:'notes'};
+  var keys={symptoms:'syms',sleep:'sleep',intimacy:'intimacy',medication:'medication',water:'water',notes:'notes'};
   Object.keys(keys).forEach(function(t){
     var tile=document.getElementById('tile-'+t);
     if(!tile)return;
     var k=keys[t];
-    var has=k==='notes'?(bodyLogData.notes&&bodyLogData.notes.length>0)
-                       :(bodyLogData[k]&&bodyLogData[k].length>0);
+    var has=k==='notes'?(bodyLogData.notes&&bodyLogData.notes.length>0):(bodyLogData[k]&&bodyLogData[k].length>0);
     tile.classList.toggle('logged',!!has);
   });
 }
