@@ -1373,6 +1373,8 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
         <div class="bl-tile" id="tile-intimacy" onclick="toggleBodyTile('intimacy')"><div class="bl-tile-icon">&#129293;</div><div class="bl-tile-label">Intimacy</div></div>
         <div class="bl-tile" id="tile-medication" onclick="toggleBodyTile('medication')"><div class="bl-tile-icon">&#128138;</div><div class="bl-tile-label">Medication</div></div>
         <div class="bl-tile" id="tile-notes" onclick="toggleBodyTile('notes')"><div class="bl-tile-icon">&#9997;&#65039;</div><div class="bl-tile-label">Notes</div></div>
+        <div class="bl-tile" id="tile-cervical" onclick="toggleBodyTile('cervical')"><div class="bl-tile-icon">&#129714;</div><div class="bl-tile-label">Cervical mucus</div></div>
+        <div class="bl-tile" id="tile-ovulation" onclick="toggleBodyTile('ovulation')"><div class="bl-tile-icon">&#129381;</div><div class="bl-tile-label">Ovulation test</div></div>
       </div>
       <div id="panel-energy" class="bl-panel" style="display:none;">
         <div class="bl-panel-header"><span style="font-size:16px;">&#9889;</span><span class="bl-panel-title">Energy today</span><button class="bl-panel-close" onclick="closeBodyTile('energy')">Done</button></div>
@@ -1394,14 +1396,40 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
           <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Bloating')">Bloating</div>
           <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Headache')">Headache</div>
           <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Fatigue')">Fatigue</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Backache')">Backache</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Lower back pain')">Lower back pain</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Pelvic pain')">Pelvic pain</div>
           <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Nausea')">Nausea</div>
           <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Tender breasts')">Tender breasts</div>
           <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Insomnia')">Insomnia</div>
           <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Cravings')">Cravings</div>
           <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Acne')">Acne</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Dizziness')">Dizziness</div>
           <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Hot flashes')">Hot flashes</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Night sweats')">Night sweats</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Chills')">Chills</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Dry skin')">Dry skin</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Constipation')">Constipation</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Diarrhea')">Diarrhea</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Abdominal swelling')">Abdominal swelling</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Dizziness')">Dizziness</div>
+        </div>
+      </div>
+
+      <div id="panel-cervical" class="bl-panel" style="display:none;">
+        <div class="bl-panel-header"><span style="font-size:16px;">&#129714;</span><span class="bl-panel-title">Cervical mucus</span><button class="bl-panel-close" onclick="closeBodyTile('cervical')">Done</button></div>
+        <div class="bl-panel-body">
+          <div class="bl-chip" onclick="toggleBodyChip(this,'cervical','Egg white')">Egg white</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'cervical','Watery')">Watery</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'cervical','Creamy')">Creamy</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'cervical','Sticky')">Sticky</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'cervical','No mucus')">No mucus</div>
+        </div>
+      </div>
+
+      <div id="panel-ovulation" class="bl-panel" style="display:none;">
+        <div class="bl-panel-header"><span style="font-size:16px;">&#129381;</span><span class="bl-panel-title">Ovulation test</span><button class="bl-panel-close" onclick="closeBodyTile('ovulation')">Done</button></div>
+        <div class="bl-panel-body">
+          <div class="bl-chip" onclick="toggleBodyChip(this,'ovulation','Positive')">Positive</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'ovulation','Negative')">Negative</div>
         </div>
       </div>
       <div id="panel-sleep" class="bl-panel" style="display:none;">
@@ -2662,7 +2690,10 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
     <button class="nb" id="nav-calendar" onclick="nav('calendar')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendar</button>
     <button class="nb" id="nav-settings" onclick="nav('settings')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</button>
+  </nav>
+
+<script>
 const TODAY=new Date();TODAY.setHours(0,0,0,0);
 // User cycle settings — loaded from storage or defaults
 var savedSetup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
@@ -5351,7 +5382,8 @@ function initBodyLog(){
   var dl=document.getElementById('bodylog-date');
   if(dl)dl.textContent=TODAY.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
   bodyLogData={syms:ex.syms||[],sleep:ex.sleep||[],intimacy:ex.intimacy||[],
-               medication:ex.medication||[],water:ex.water||[],notes:ex.bodyNote||''};
+               medication:ex.medication||[],water:ex.water||[],notes:ex.bodyNote||'',
+               cervical:ex.cervical||[],ovulation:ex.ovulation||[]};
   if(ex.flow){
     document.querySelectorAll('.flow-opt').forEach(function(el){
       el.classList.toggle('sel',el.textContent.trim()===ex.flow);
@@ -5372,7 +5404,7 @@ function initBodyLog(){
 }
 
 function updateTileStates(){
-  var keys={symptoms:'syms',sleep:'sleep',intimacy:'intimacy',medication:'medication',water:'water',notes:'notes'};
+  var keys={symptoms:'syms',sleep:'sleep',intimacy:'intimacy',medication:'medication',water:'water',notes:'notes',cervical:'cervical',ovulation:'ovulation'};
   Object.keys(keys).forEach(function(t){
     var tile=document.getElementById('tile-'+t);
     if(!tile)return;
@@ -5448,6 +5480,8 @@ function saveBodyLog(){
   if(bodyLogData.medication.length)ex.medication=bodyLogData.medication;
   if(bodyLogData.water.length)ex.water=bodyLogData.water;
   if(bodyLogData.notes)ex.bodyNote=bodyLogData.notes;
+  if(bodyLogData.cervical.length)ex.cervical=bodyLogData.cervical;
+  if(bodyLogData.ovulation.length)ex.ovulation=bodyLogData.ovulation;
   if(selectedFlow)ex.flow=selectedFlow;
   ex.ts=Date.now();
   logs[k]=ex;
@@ -5495,10 +5529,6 @@ function buildHomeSupportChips(setup){
     d.textContent=chip;
     el.appendChild(d);
   });
-}
-age.getItem('ir4')||'{}');
-  toast('Body log saved \u2713');
-  setTimeout(function(){nav('home');},600);
 }
 </script>
 
