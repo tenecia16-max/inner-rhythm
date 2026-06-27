@@ -1,211 +1,415 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script>
-// If already logged in skip the landing page entirely
-if(localStorage.getItem('ir_session')==='1'&&localStorage.getItem('ir_onboarded')==='1'){
-  window.location.replace('inner-rhythm.html');
-}
-</script>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<title>Inner Rhythm — Know your cycle</title>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#060B18">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Inner Rhythm">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;1,500&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Inner Rhythm</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Nunito:wght@400;600;700;800&display=swap">
 <style>
-*{box-sizing:border-box;margin:0;padding:0;}
-body{min-height:100vh;background:#030508;font-family:'Nunito',sans-serif;display:flex;align-items:center;justify-content:center;padding:20px 16px;}
-.phone{width:100%;max-width:390px;min-height:800px;border-radius:40px;position:relative;overflow:hidden;background:#060B18;box-shadow:0 0 0 1px rgba(255,255,255,.07),0 40px 100px rgba(0,0,0,.9);display:flex;flex-direction:column;}
-.aurora{position:absolute;inset:0;background:linear-gradient(160deg,#060B18 0%,#0D1535 20%,#1A0A3A 40%,#3D1060 60%,#8B2070 80%,#C04878 100%);pointer-events:none;z-index:0;}
-.orb{position:absolute;border-radius:50%;pointer-events:none;z-index:0;}
-.star{position:absolute;border-radius:50%;background:white;pointer-events:none;z-index:0;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;font-family:'Nunito',sans-serif;}
 
-/* Logo — much more prominent */
-.logo-bar{position:relative;z-index:2;text-align:center;padding:48px 20px 0;flex-shrink:0;}
-.logo-wordmark{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:white;letter-spacing:.5px;line-height:1;}
-.logo-sub{font-size:11px;font-weight:700;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:3px;margin-top:5px;}
+.slides-wrap{
+  display:flex;
+  width:300vw;
+  height:100%;
+  transition:transform .45s cubic-bezier(.4,0,.2,1);
+}
+.slide{
+  width:100vw;
+  height:100%;
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+}
 
-.dots{display:flex;gap:5px;justify-content:center;padding:16px 0 0;position:relative;z-index:2;flex-shrink:0;}
-.dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.2);transition:all .3s;}
-.dot.on{width:22px;border-radius:3px;background:white;}
+/* Shared background */
+.slide-bg{
+  position:absolute;inset:0;z-index:0;
+  background:linear-gradient(160deg,#0D0818 0%,#1E0A38 40%,#2E1050 70%,#3A1060 100%);
+}
+.slide-bg::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 60%,rgba(220,100,80,.18) 0%,transparent 65%),
+             radial-gradient(ellipse at 80% 20%,rgba(140,60,180,.15) 0%,transparent 50%);
+}
 
-.stage{position:relative;z-index:3;flex:1;margin:14px 14px 0;min-height:520px;overflow:hidden;border-radius:26px;}
-.card{position:absolute;inset:0;border-radius:26px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(150deg,rgb(10,18,42),rgb(22,8,50));display:flex;flex-direction:column;overflow:hidden;transition:transform .4s cubic-bezier(.4,0,.2,1),opacity .4s;will-change:transform,opacity;}
-.card.p0{transform:none;opacity:1;pointer-events:auto;}
-.card.p1{transform:scale(.92) translateY(22px);opacity:.6;pointer-events:none;}
-.card.p2{transform:scale(.84) translateY(44px);opacity:.22;pointer-events:none;}
-.card.p1::after,.card.p2::after{content:'';position:absolute;inset:0;background:rgba(6,11,24,.7);border-radius:26px;pointer-events:none;z-index:10;}
-.card.p2::after{background:rgba(6,11,24,.88);}
-.card.gone{transform:translateX(-120%) rotate(-8deg);opacity:0;pointer-events:none;transition:transform .38s cubic-bezier(.4,0,.2,1),opacity .25s;}
-.pstrip{height:4px;flex-shrink:0;background:linear-gradient(90deg,#F9C8D8 13%,#B8E0F0 30%,#FFE08A 42%,#D8C8F0 100%);}
-.pstrip.all{background:linear-gradient(90deg,#9B7EC8,#C05080,#E8A840,#4AAAC4);}
-.cbody{flex:1;padding:26px 24px 20px;display:flex;flex-direction:column;overflow:hidden;}
-.bubble{border-radius:16px;padding:14px 15px;margin-bottom:10px;display:flex;gap:10px;align-items:flex-start;flex-shrink:0;}
-.irav{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;margin-top:1px;}
-.hint{position:relative;z-index:2;text-align:center;padding:12px 16px 26px;flex-shrink:0;}
+/* Stars */
+.stars{position:absolute;inset:0;z-index:1;overflow:hidden;}
+.star{position:absolute;border-radius:50%;background:white;animation:twinkle 3s infinite;}
+@keyframes twinkle{0%,100%{opacity:.3;}50%{opacity:.9;}}
+
+/* Glow orb */
+.orb{
+  position:absolute;border-radius:50%;
+  background:radial-gradient(circle,rgba(210,100,80,.5) 0%,rgba(160,60,130,.3) 40%,transparent 70%);
+  filter:blur(2px);animation:pulse 4s ease-in-out infinite;z-index:1;
+}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:.7;}50%{transform:scale(1.08);opacity:1;}}
+
+/* Content layer */
+.slide-content{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;padding:max(52px,env(safe-area-inset-top)) 28px max(32px,env(safe-area-inset-bottom));}
+
+/* Top bar */
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:auto;}
+.logo{font-family:'Playfair Display',serif;font-size:15px;color:rgba(255,255,255,.9);line-height:1.2;}
+.logo span{display:block;}
+.logo-plus{color:#E8A0C8;margin-left:4px;}
+.slide-counter{background:rgba(255,255,255,.12);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;color:rgba(255,255,255,.7);}
+
+/* Progress dots */
+.dots{display:flex;gap:5px;justify-content:center;margin-bottom:20px;}
+.dot{height:3px;border-radius:2px;background:rgba(255,255,255,.25);transition:all .3s;}
+.dot.active{background:white;width:24px;}
+.dot:not(.active){width:6px;}
+
+/* Slide 1 */
+.s1-headline{font-family:'Playfair Display',serif;font-size:42px;color:white;font-weight:700;line-height:1.15;margin:28px 0 10px;}
+.s1-headline em{color:#E8A0C8;font-style:italic;}
+.s1-sub{font-size:14px;color:rgba(255,255,255,.55);line-height:1.7;margin-bottom:28px;max-width:280px;}
+
+.feature-cards{display:flex;flex-direction:column;gap:8px;margin-bottom:24px;}
+.fcard{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:12px 16px;display:flex;align-items:center;gap:14px;}
+.fcard-icon{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.fcard-title{font-size:13px;font-weight:800;color:white;margin-bottom:2px;}
+.fcard-sub{font-size:11px;color:rgba(255,255,255,.5);line-height:1.4;}
+
+.quote-block{background:rgba(255,255,255,.06);border-radius:14px;padding:14px 16px;margin-bottom:24px;border-left:3px solid rgba(232,160,200,.4);}
+.quote-text{font-size:13px;color:rgba(255,255,255,.75);font-style:italic;line-height:1.65;margin-bottom:8px;}
+.quote-meta{display:flex;align-items:center;gap:8px;}
+.quote-name{font-size:11px;color:rgba(255,255,255,.4);font-weight:700;}
+
+/* Slide 2 */
+.s2-headline{font-family:'Playfair Display',serif;font-size:34px;color:white;font-weight:700;line-height:1.2;margin:24px 0 8px;}
+.s2-headline em{color:#E8A0C8;font-style:italic;display:block;}
+.s2-sub{font-size:13px;color:rgba(255,255,255,.5);line-height:1.6;margin-bottom:20px;}
+
+.rhythm-chart{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:14px 16px;margin-bottom:20px;}
+.chart-label{font-size:10px;font-weight:800;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;}
+.chart-svg{width:100%;height:56px;}
+.chart-legend{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;}
+.legend-item{display:flex;align-items:center;gap:4px;font-size:9px;color:rgba(255,255,255,.5);font-weight:700;}
+.legend-dot{width:7px;height:7px;border-radius:50%;}
+.chart-ends{display:flex;justify-content:space-between;font-size:9px;color:rgba(255,255,255,.35);margin-top:4px;}
+
+.benefits{display:flex;flex-direction:column;gap:10px;margin-bottom:24px;}
+.benefit{display:flex;align-items:flex-start;gap:12px;}
+.benefit-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
+.benefit-title{font-size:13px;font-weight:800;color:white;margin-bottom:1px;}
+.benefit-sub{font-size:11px;color:rgba(255,255,255,.45);}
+
+.swipe-hint{text-align:center;font-size:11px;color:rgba(255,255,255,.3);margin-bottom:20px;}
+
+/* Slide 3 */
+.s3-headline{font-family:'Playfair Display',serif;font-size:28px;color:white;font-weight:700;line-height:1.25;margin:20px 0 16px;}
+.s3-headline span{color:#E8A0C8;}
+
+.insight-card{border-radius:18px;padding:16px;margin-bottom:10px;position:relative;overflow:hidden;}
+.ic-primary{background:linear-gradient(135deg,#2A1248,#3D1A6A);}
+.ic-secondary{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);}
+.ic-label{font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:5px;}
+.ic-text{font-size:15px;color:white;font-weight:700;line-height:1.45;margin-bottom:4px;}
+.ic-sub{font-size:11px;color:rgba(255,255,255,.5);font-style:italic;}
+
+.cycle-strip{background:rgba(255,255,255,.06);border-radius:14px;padding:12px 14px;margin-bottom:16px;}
+.cs-title{font-size:11px;font-weight:800;color:rgba(255,255,255,.5);margin-bottom:10px;text-transform:uppercase;letter-spacing:.4px;}
+.cs-dots{display:flex;gap:3px;align-items:center;margin-bottom:8px;}
+.cs-dot{width:10px;height:10px;border-radius:50%;}
+.cs-active{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:white;}
+.cs-info{font-size:11px;color:rgba(255,255,255,.6);line-height:1.5;}
+.cs-tag{display:inline-block;background:rgba(255,255,255,.1);border-radius:20px;padding:4px 12px;font-size:10px;font-weight:700;color:rgba(255,255,255,.7);margin-top:6px;}
+
+.social-proof{text-align:center;font-size:11px;color:rgba(255,255,255,.35);margin-bottom:16px;}
+.stars-row{color:#E8A840;font-size:13px;letter-spacing:1px;}
+
+/* Shared CTA */
+.cta-btn{
+  width:100%;background:linear-gradient(135deg,#C05080,#8B2070);
+  color:white;border:none;border-radius:18px;padding:17px;
+  font-family:'Nunito',sans-serif;font-size:16px;font-weight:800;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 8px 32px rgba(192,80,120,.4);
+  -webkit-tap-highlight-color:transparent;
+}
+.cta-small{text-align:center;font-size:11px;color:rgba(255,255,255,.3);margin-top:8px;}
 </style>
 </head>
 <body>
-<div class="phone">
 
-  <div class="aurora"></div>
-  <div class="orb" style="top:4%;left:6%;width:240px;height:240px;background:radial-gradient(circle,rgba(155,70,200,.3),transparent 70%);"></div>
-  <div class="orb" style="top:16%;right:2%;width:160px;height:160px;background:radial-gradient(circle,rgba(74,170,196,.18),transparent 70%);"></div>
-  <div class="orb" style="top:0%;left:38%;width:220px;height:220px;background:radial-gradient(circle,rgba(192,80,128,.13),transparent 70%);"></div>
-  <div class="star" style="top:4%;left:18%;width:2px;height:2px;opacity:.9;"></div>
-  <div class="star" style="top:8%;left:74%;width:1px;height:1px;opacity:.6;"></div>
-  <div class="star" style="top:13%;left:43%;width:2px;height:2px;opacity:.5;background:rgba(210,170,255,.9);"></div>
-  <div class="star" style="top:3%;left:86%;width:1px;height:1px;opacity:.7;"></div>
-  <div class="star" style="top:19%;left:26%;width:1px;height:1px;opacity:.4;"></div>
-  <div class="star" style="top:10%;left:58%;width:2px;height:2px;opacity:.3;background:rgba(200,160,255,.7);"></div>
-  <div class="star" style="top:6%;left:35%;width:1px;height:1px;opacity:.5;"></div>
-  <div class="star" style="top:15%;left:68%;width:1px;height:1px;opacity:.35;"></div>
+<div class="slides-wrap" id="slides">
 
-  <!-- Logo — prominent -->
-  <div class="logo-bar">
-    <div class="logo-wordmark">Inner Rhythm</div>
-    <div class="logo-sub">Know your cycle</div>
-  </div>
+  <!-- ── SLIDE 1 ── -->
+  <div class="slide">
+    <div class="slide-bg"></div>
+    <div class="stars" id="stars1"></div>
+    <div class="orb" style="width:280px;height:280px;bottom:-60px;left:50%;transform:translateX(-50%);"></div>
 
-  <div class="dots">
-    <div class="dot on" id="d0"></div>
-    <div class="dot" id="d1"></div>
-    <div class="dot" id="d2"></div>
-  </div>
-
-  <div class="stage" id="stage">
-
-    <!-- CARD 0: Hook + Reveal — bigger, bolder -->
-    <div class="card p0" id="c0">
-      <div class="pstrip"></div>
-      <div class="cbody">
-
-        <!-- Big opening question -->
-        <div style="font-family:'Playfair Display',serif;font-size:26px;color:white;font-weight:700;line-height:1.3;margin-bottom:18px;">Want to understand<br>the inner you<br>a little better?</div>
-
-        <div style="font-size:14px;color:rgba(255,255,255,.62);line-height:1.8;margin-bottom:20px;">That version of you that feels completely different some days. More tired, more sensitive, harder to reach — all for reasons you could not quite place.</div>
-
-        <!-- Divider -->
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
-          <div style="flex:1;height:0.5px;background:rgba(255,255,255,.12);"></div>
-          <div style="font-size:16px;opacity:.3;">&#10022;</div>
-          <div style="flex:1;height:0.5px;background:rgba(255,255,255,.12);"></div>
-        </div>
-
-        <!-- The reveal — much bigger and bolder -->
-        <div style="font-size:14px;color:rgba(255,255,255,.62);line-height:1.8;margin-bottom:20px;">Understand the moods that catch you off guard. The days that feel harder than they should. The patterns you never knew were patterns.</div>
-
-        <!-- Landing statement — this needs to punch -->
-        <div style="margin-top:auto;">
-          <div style="background:linear-gradient(135deg,rgba(155,126,200,.2),rgba(192,80,128,.15));border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:16px 18px;text-align:center;">
-            <div style="font-family:'Playfair Display',serif;font-size:20px;color:white;font-weight:700;line-height:1.35;">That is what<br>Inner Rhythm is for.</div>
-            <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:8px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;">Swipe to see what it looks like &#8594;</div>
-          </div>
-        </div>
-
+    <div class="slide-content">
+      <div class="topbar">
+        <div class="logo"><span>Inner <span class="logo-plus">+</span></span><span>Rhythm</span></div>
+        <div class="slide-counter">1 / 3</div>
       </div>
-    </div>
 
-    <!-- CARD 1: IR insights — personal, bigger, yours -->
-    <div class="card p1" id="c1">
-      <div class="pstrip"></div>
-      <div class="cbody">
-        <div style="font-size:10px;font-weight:800;color:rgba(155,126,200,.8);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;">This is what IR would say to you</div>
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+        <div class="s1-headline">Understand<br>yourself<br>in <em>patterns.</em></div>
+        <div class="s1-sub">Emotional check-ins, cycle tracking and pattern insights — all in one private space.</div>
 
-        <div class="bubble" style="background:rgba(155,126,200,.15);border-left:3px solid #9B7EC8;">
-          <div class="irav" style="background:linear-gradient(135deg,#9B7EC8,#7B5EA8);">IR</div>
-          <div style="font-size:13px;color:rgba(255,255,255,.85);line-height:1.7;">"You tend to get more stressed around days 19 to 22 every single cycle. You are not imagining it — it is your luteal phase and I see it every time."</div>
-        </div>
-
-        <div class="bubble" style="background:rgba(74,170,196,.13);border-left:3px solid #4AAAC4;">
-          <div class="irav" style="background:linear-gradient(135deg,#4AAAC4,#2A8AAC);">IR</div>
-          <div style="font-size:13px;color:rgba(255,255,255,.85);line-height:1.7;">"Your follicular phase is when you come alive. You log more energy, more focus, more good days here than anywhere else in your cycle."</div>
-        </div>
-
-        <div class="bubble" style="background:rgba(232,168,64,.1);border-left:3px solid #E8A840;">
-          <div class="irav" style="background:linear-gradient(135deg,#E8A840,#C07820);">IR</div>
-          <div style="font-size:13px;color:rgba(255,255,255,.85);line-height:1.7;">"Your body seems to crave more solitude in late luteal. Every time you give it that, you tell me you felt better the next day."</div>
-        </div>
-
-        <div style="margin-top:auto;padding-top:10px;text-align:center;font-size:12px;color:rgba(255,255,255,.28);font-weight:700;">Swipe to begin &#8594;</div>
-      </div>
-    </div>
-
-    <!-- CARD 2: How it works + Begin combined -->
-    <div class="card p2" id="c2">
-      <div class="pstrip all"></div>
-      <div class="cbody">
-        <div style="font-family:'Playfair Display',serif;font-size:26px;color:white;font-weight:700;line-height:1.25;margin-bottom:8px;">Begin your<br>rhythm.</div>
-        <div style="font-size:13px;color:rgba(255,255,255,.45);line-height:1.7;margin-bottom:18px;">Free to try. 30 seconds to set up. Everything stays on your phone.</div>
-
-        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:18px;">
-          <div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.06);border-radius:14px;padding:12px 14px;">
-            <div style="font-size:20px;flex-shrink:0;">&#9997;&#65039;</div>
+        <div class="feature-cards">
+          <div class="fcard">
+            <div class="fcard-icon" style="background:rgba(192,80,120,.2);">&#129505;</div>
             <div>
-              <div style="font-size:12px;font-weight:700;color:white;margin-bottom:2px;">Log how you feel</div>
-              <div style="font-size:11px;color:rgba(255,255,255,.4);">Quick or deep. 30 seconds max.</div>
+              <div class="fcard-title">Emotional check-ins</div>
+              <div class="fcard-sub">Quick reflections that feel human, not clinical.</div>
             </div>
           </div>
-          <div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.06);border-radius:14px;padding:12px 14px;">
-            <div style="font-size:20px;flex-shrink:0;">&#127769;</div>
+          <div class="fcard">
+            <div class="fcard-icon" style="background:rgba(124,92,138,.2);">&#127769;</div>
             <div>
-              <div style="font-size:12px;font-weight:700;color:white;margin-bottom:2px;">IR learns your patterns</div>
-              <div style="font-size:11px;color:rgba(255,255,255,.4);">Gets personal after 5 days.</div>
+              <div class="fcard-title">Pattern recognition</div>
+              <div class="fcard-sub">Notice emotional shifts before they overwhelm you.</div>
             </div>
           </div>
-          <div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.06);border-radius:14px;padding:12px 14px;">
-            <div style="font-size:20px;flex-shrink:0;">&#128274;</div>
+          <div class="fcard">
+            <div class="fcard-icon" style="background:rgba(74,170,196,.2);">&#128274;</div>
             <div>
-              <div style="font-size:12px;font-weight:700;color:white;margin-bottom:2px;">Fully private</div>
-              <div style="font-size:11px;color:rgba(255,255,255,.4);">No cloud. No servers. Just you.</div>
+              <div class="fcard-title">100% private</div>
+              <div class="fcard-sub">No cloud. No sharing. Just your rhythm.</div>
             </div>
           </div>
         </div>
 
-        <div style="margin-top:auto;">
-          <button onclick="window.location.href='inner-rhythm.html'" style="width:100%;background:white;border:none;border-radius:16px;padding:17px;font-family:'Nunito',sans-serif;font-size:16px;font-weight:800;color:#0A0612;cursor:pointer;margin-bottom:8px;">Begin your rhythm &#8594;</button>
-          <div style="text-align:center;font-size:11px;color:rgba(255,255,255,.25);">Free &#183; Private &#183; No card needed</div>
+        <div class="quote-block">
+          <div class="quote-text">"I finally understand why I feel so different some days."</div>
+          <div class="quote-meta"><div class="quote-name">— IR User</div></div>
         </div>
       </div>
-    </div>
 
+      <div class="dots">
+        <div class="dot active" id="d1-0"></div>
+        <div class="dot" id="d1-1"></div>
+        <div class="dot" id="d1-2"></div>
+      </div>
+      <button class="cta-btn" onclick="goToSlide(1)">See how it works &rarr;</button>
+      <div class="cta-small">Free &middot; Private &middot; No card needed</div>
+    </div>
   </div>
 
-  <div class="hint" id="hint">
-    <div style="font-size:12px;color:rgba(255,255,255,.28);font-weight:700;">Tap or swipe to explore &#8594;</div>
+  <!-- ── SLIDE 2 ── -->
+  <div class="slide">
+    <div class="slide-bg"></div>
+    <div class="stars" id="stars2"></div>
+    <div class="orb" style="width:220px;height:220px;top:10%;right:-40px;"></div>
+
+    <div class="slide-content">
+      <div class="topbar">
+        <div class="logo"><span>Inner <span class="logo-plus">+</span></span><span>Rhythm</span></div>
+        <div class="slide-counter">2 / 3</div>
+      </div>
+
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+        <div class="s2-headline">Some versions<br>of you make<br>no sense...<br><em>until you see the pattern.</em></div>
+        <div class="s2-sub">Your emotions, energy and needs rise and fall with your cycle. It is not random. It is rhythmic.</div>
+
+        <div class="rhythm-chart">
+          <div class="chart-label">Your emotional rhythm</div>
+          <svg class="chart-svg" viewBox="0 0 300 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 40 Q20 42 30 38 Q45 32 60 36 Q75 40 85 38 Q100 34 115 20 Q130 8 145 14 Q155 18 165 10 Q175 4 185 14 Q195 22 210 28 Q225 34 235 38 Q250 42 265 36 Q275 32 285 30 Q292 28 300 32" stroke="url(#grad1)" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="165" cy="10" r="4" fill="#E8A840"/>
+            <defs>
+              <linearGradient id="grad1" x1="0" y1="0" x2="300" y2="0" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#C05080"/>
+                <stop offset="35%" stop-color="#7C5C8A"/>
+                <stop offset="65%" stop-color="#E8A840"/>
+                <stop offset="100%" stop-color="#7C5C8A"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="chart-ends"><span>Day 1</span><span>Day 28</span></div>
+          <div class="chart-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:#C05080;"></div>Menstrual</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#4AAAC4;"></div>Follicular</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#E8A840;"></div>Ovulatory</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#7C5C8A;"></div>Luteal</div>
+          </div>
+        </div>
+
+        <div class="benefits">
+          <div class="benefit">
+            <div class="benefit-icon">&#129504;</div>
+            <div><div class="benefit-title">Understand your mood shifts</div><div class="benefit-sub">See what is really going on.</div></div>
+          </div>
+          <div class="benefit">
+            <div class="benefit-icon">&#9889;</div>
+            <div><div class="benefit-title">Predict your highs and lows</div><div class="benefit-sub">Prepare, not just react.</div></div>
+          </div>
+          <div class="benefit">
+            <div class="benefit-icon">&#129505;</div>
+            <div><div class="benefit-title">Make kinder decisions</div><div class="benefit-sub">For your body, mind and day.</div></div>
+          </div>
+          <div class="benefit">
+            <div class="benefit-icon">&#10024;</div>
+            <div><div class="benefit-title">Feel more like you</div><div class="benefit-sub">Not perfect. Just aligned.</div></div>
+          </div>
+        </div>
+
+        <div class="swipe-hint">Tap or swipe to explore</div>
+      </div>
+
+      <div class="dots">
+        <div class="dot" id="d2-0"></div>
+        <div class="dot active" id="d2-1"></div>
+        <div class="dot" id="d2-2"></div>
+      </div>
+      <button class="cta-btn" onclick="goToSlide(2)">This is what IR would say &rarr;</button>
+      <div class="cta-small">Free &middot; Private &middot; No card needed</div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 3 ── -->
+  <div class="slide">
+    <div class="slide-bg"></div>
+    <div class="stars" id="stars3"></div>
+    <div class="orb" style="width:250px;height:250px;bottom:-40px;right:-40px;"></div>
+
+    <div class="slide-content">
+      <div class="topbar">
+        <div class="logo"><span>Inner <span class="logo-plus">+</span></span><span>Rhythm</span></div>
+        <div class="slide-counter">3 / 3</div>
+      </div>
+
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+        <div class="s3-headline">This is what IR<br><span>would say to you.</span></div>
+
+        <div class="insight-card ic-primary">
+          <div class="ic-label" style="color:#E8A840;">&#11088; TOP INSIGHT</div>
+          <div class="ic-text">You tend to feel more stressed and sensitive 3 days before your period.</div>
+          <div class="ic-sub">Every. Single. Cycle.</div>
+          <div style="position:absolute;right:14px;top:14px;font-size:28px;opacity:.25;">&#127769;</div>
+        </div>
+
+        <div class="insight-card ic-secondary">
+          <div class="ic-label" style="color:#E8A840;">&#9889; ENERGY PATTERN</div>
+          <div class="ic-text" style="font-size:13px;">Your energy naturally rises during your follicular phase. This is your zone of clarity, focus and motivation.</div>
+        </div>
+
+        <div class="cycle-strip">
+          <div class="cs-title">Your cycle at a glance</div>
+          <div class="cs-dots">
+            <div class="cs-dot" style="background:#C05080;opacity:.5;"></div>
+            <div class="cs-dot" style="background:#C05080;opacity:.5;"></div>
+            <div class="cs-dot" style="background:#C05080;opacity:.5;"></div>
+            <div class="cs-dot" style="background:#C05080;opacity:.5;"></div>
+            <div class="cs-dot" style="background:#C05080;opacity:.5;"></div>
+            <div class="cs-dot" style="background:#4AAAC4;opacity:.4;"></div>
+            <div class="cs-dot" style="background:#4AAAC4;opacity:.4;"></div>
+            <div class="cs-dot" style="background:#4AAAC4;opacity:.4;"></div>
+            <div class="cs-dot" style="background:#4AAAC4;opacity:.4;"></div>
+            <div class="cs-dot" style="background:#4AAAC4;opacity:.4;"></div>
+            <div class="cs-dot" style="background:#4AAAC4;opacity:.4;"></div>
+            <div class="cs-dot" style="background:#4AAAC4;opacity:.5;"></div>
+            <div class="cs-active" style="background:#4AAAC4;">12</div>
+            <div class="cs-dot" style="background:#E8A840;opacity:.4;"></div>
+            <div class="cs-dot" style="background:#E8A840;opacity:.4;"></div>
+            <div class="cs-dot" style="background:#E8A840;opacity:.4;"></div>
+            <div class="cs-dot" style="background:#7C5C8A;opacity:.4;"></div>
+            <div class="cs-dot" style="background:#7C5C8A;opacity:.4;"></div>
+            <div class="cs-dot" style="background:#7C5C8A;opacity:.4;"></div>
+            <div class="cs-dot" style="background:#7C5C8A;opacity:.4;"></div>
+          </div>
+          <div class="cs-info">Day 12 &middot; Follicular Phase &middot; Energy rising</div>
+          <div class="cs-tag">Great day for: focus, plans, movement</div>
+        </div>
+
+        <div class="social-proof">
+          <div class="stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div style="margin-top:4px;">Trusted by thousands who want to understand themselves on a deeper level.</div>
+        </div>
+      </div>
+
+      <div class="dots">
+        <div class="dot" id="d3-0"></div>
+        <div class="dot" id="d3-1"></div>
+        <div class="dot active" id="d3-2"></div>
+      </div>
+      <button class="cta-btn" onclick="beginRhythm()">Begin your rhythm &rarr;</button>
+      <div class="cta-small">Free &middot; Private &middot; No card needed</div>
+    </div>
   </div>
 
 </div>
 
 <script>
-var cur=0,n=3,sx=0,sy=0;
-var pos=['p0','p1','p2'];
-function update(){
-  for(var i=0;i<n;i++){
-    var el=document.getElementById('c'+i);
-    el.className='card';
-    var d=i-cur;
-    if(d<0)el.classList.add('gone');
-    else if(d<3)el.classList.add(pos[d]);
-    el.style.zIndex=d<0?0:(10-d);
-    el.style.pointerEvents=d===0?'auto':'none';
-    document.getElementById('d'+i).className='dot'+(i===cur?' on':'');
+// Stars
+function makeStars(containerId, count){
+  var c = document.getElementById(containerId);
+  if(!c) return;
+  for(var i=0;i<count;i++){
+    var s=document.createElement('div');
+    s.style.cssText='position:absolute;border-radius:50%;background:white;';
+    var size = Math.random()*2+0.5;
+    s.style.width=size+'px';
+    s.style.height=size+'px';
+    s.style.left=Math.random()*100+'%';
+    s.style.top=Math.random()*100+'%';
+    s.style.opacity=Math.random()*0.6+0.1;
+    s.style.animationDelay=Math.random()*3+'s';
+    s.style.animationDuration=(Math.random()*2+2)+'s';
+    s.classList.add('star');
+    c.appendChild(s);
   }
-  document.getElementById('hint').style.visibility=cur===n-1?'hidden':'visible';
 }
-function next(){if(cur<n-1){cur++;update();}}
-var stage=document.getElementById('stage');
-stage.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY;},{passive:true});
-stage.addEventListener('touchend',function(e){
-  var dx=e.changedTouches[0].clientX-sx;
-  var dy=e.changedTouches[0].clientY-sy;
-  if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>40)next();
+makeStars('stars1',60);
+makeStars('stars2',50);
+makeStars('stars3',55);
+
+// Slides
+var current=0;
+var slides=document.getElementById('slides');
+var startX=0;
+var dragging=false;
+
+function goToSlide(n){
+  current=n;
+  slides.style.transform='translateX(-'+n*100+'vw)';
+  // Update dots
+  [0,1,2].forEach(function(i){
+    for(var s=1;s<=3;s++){
+      var d=document.getElementById('d'+s+'-'+i);
+      if(d)d.classList.toggle('active',i===n);
+    }
+  });
+}
+
+// Touch swipe
+slides.addEventListener('touchstart',function(e){startX=e.touches[0].clientX;dragging=true;},{passive:true});
+slides.addEventListener('touchend',function(e){
+  if(!dragging)return;
+  var dx=e.changedTouches[0].clientX-startX;
+  if(dx<-50&&current<2)goToSlide(current+1);
+  else if(dx>50&&current>0)goToSlide(current-1);
+  dragging=false;
 },{passive:true});
-stage.addEventListener('click',function(e){if(e.target.tagName!=='BUTTON')next();});
-update();
+
+function beginRhythm(){
+  // Check if already logged in
+  var sess=localStorage.getItem('ir_session');
+  var onb=localStorage.getItem('ir_onboarded');
+  if(sess==='1'&&onb==='1'){
+    window.location.href='inner-rhythm.html';
+  }else{
+    window.location.href='inner-rhythm.html';
+  }
+}
+
+// Auto-advance hint on first load
+setTimeout(function(){
+  if(current===0){
+    slides.style.transform='translateX(-2px)';
+    setTimeout(function(){slides.style.transform='translateX(0)';},200);
+  }
+},2000);
 </script>
 </body>
 </html>
