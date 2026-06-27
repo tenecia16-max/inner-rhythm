@@ -8,7 +8,8 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Nunito:wght@400;600;700;800&display=swap">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-html,body{height:100%;overflow:hidden;font-family:'Nunito',sans-serif;}
+html,body{height:100%;overflow:hidden;font-family:'Nunito',sans-serif;touch-action:pan-y;}
+.slides-wrap{touch-action:pan-y;}
 
 .slides-wrap{
   display:flex;
@@ -366,6 +367,7 @@ makeStars('stars3',55);
 var current=0;
 var slides=document.getElementById('slides');
 var startX=0;
+var startY=0;
 var dragging=false;
 
 function goToSlide(n){
@@ -381,7 +383,19 @@ function goToSlide(n){
 }
 
 // Touch swipe
-slides.addEventListener('touchstart',function(e){startX=e.touches[0].clientX;dragging=true;},{passive:true});
+slides.addEventListener('touchstart',function(e){
+  startX=e.touches[0].clientX;
+  startY=e.touches[0].clientY;
+  dragging=true;
+},{passive:true});
+
+slides.addEventListener('touchmove',function(e){
+  if(!dragging)return;
+  var dx=Math.abs(e.touches[0].clientX-startX);
+  var dy=Math.abs(e.touches[0].clientY-startY);
+  // If horizontal swipe, prevent vertical scroll
+  if(dx>dy&&dx>10){e.preventDefault();}
+},{passive:false});
 slides.addEventListener('touchend',function(e){
   if(!dragging)return;
   var dx=e.changedTouches[0].clientX-startX;
@@ -391,14 +405,7 @@ slides.addEventListener('touchend',function(e){
 },{passive:true});
 
 function beginRhythm(){
-  // Check if already logged in
-  var sess=localStorage.getItem('ir_session');
-  var onb=localStorage.getItem('ir_onboarded');
-  if(sess==='1'&&onb==='1'){
-    window.location.href='inner-rhythm.html';
-  }else{
-    window.location.href='inner-rhythm.html';
-  }
+  window.location.href='inner-rhythm.html';
 }
 
 // Auto-advance hint on first load
