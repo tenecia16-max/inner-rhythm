@@ -19,9 +19,17 @@ html,body{width:100%;height:100%;font-family:'Nunito',sans-serif;background:#0D0
   display:flex;flex-direction:column;
   background:radial-gradient(ellipse at 50% 0%,#3A1060 0%,#1E0A38 45%,#0D0520 100%);
   opacity:0;pointer-events:none;
-  transition:opacity .4s ease;
+  transform:translateX(24px) scale(.98);
+  transition:opacity .5s cubic-bezier(.22,.61,.36,1),transform .5s cubic-bezier(.22,.61,.36,1);
+  will-change:opacity,transform;
 }
-.slide.active{opacity:1;pointer-events:all;}
+.slide.active{
+  opacity:1;pointer-events:all;
+  transform:translateX(0) scale(1);
+}
+.slide.prev{
+  transform:translateX(-24px) scale(.98);
+}
 
 /* Landscape illustration */
 .landscape{position:absolute;bottom:0;left:0;width:100%;pointer-events:none;z-index:0;}
@@ -147,7 +155,7 @@ html,body{width:100%;height:100%;font-family:'Nunito',sans-serif;background:#0D0
 
     <div class="content">
       <div class="topbar">
-        <div class="logo">Inner <em>+</em> Rhythm</div>
+        <div class="logo">Inner Rhythm</div>
         <div class="counter">1 / 3</div>
       </div>
       <div class="avatar">IR</div>
@@ -165,7 +173,7 @@ html,body{width:100%;height:100%;font-family:'Nunito',sans-serif;background:#0D0
         </div>
         <div class="feat-row">
           <div class="feat-icon" style="background:rgba(74,100,150,.25);">&#128274;</div>
-          <div><div class="feat-title">Private by default</div><div class="feat-sub">No cloud. No sharing. Just you.</div></div>
+          <div><div class="feat-title">Private by default</div><div class="feat-sub">Your data stays yours. Always.</div></div>
         </div>
       </div>
       <div class="spacer"></div>
@@ -181,7 +189,7 @@ html,body{width:100%;height:100%;font-family:'Nunito',sans-serif;background:#0D0
   <div class="slide" id="s1">
     <div class="content">
       <div class="topbar">
-        <div class="logo">Inner <em>+</em> Rhythm</div>
+        <div class="logo">Inner Rhythm</div>
         <div class="counter">2 / 3</div>
       </div>
       <div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;line-height:1.2;margin-bottom:7px;">Some versions of you make no sense...<span style="color:#E8A0C8;font-style:italic;display:block;">until you see the pattern.</span></div>
@@ -220,7 +228,7 @@ html,body{width:100%;height:100%;font-family:'Nunito',sans-serif;background:#0D0
   <div class="slide" id="s2">
     <div class="content">
       <div class="topbar">
-        <div class="logo">Inner <em>+</em> Rhythm</div>
+        <div class="logo">Inner Rhythm</div>
         <div class="counter">3 / 3</div>
       </div>
       <div style="font-family:'Playfair Display',serif;font-size:24px;font-weight:700;line-height:1.25;margin-bottom:16px;">This is what IR<br><span style="color:#E8A0C8;">would say to you.</span></div>
@@ -246,10 +254,6 @@ html,body{width:100%;height:100%;font-family:'Nunito',sans-serif;background:#0D0
         <div class="cs-info">Day 12 &middot; Follicular Phase &middot; Energy rising</div>
         <div class="cs-tag">Great day for: focus, plans, movement</div>
       </div>
-      <div class="proof">
-        <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-        Trusted by thousands who want to understand themselves on a deeper level.
-      </div>
       <div class="spacer"></div>
     </div>
     <div class="bottom">
@@ -265,8 +269,18 @@ html,body{width:100%;height:100%;font-family:'Nunito',sans-serif;background:#0D0
 var cur = 0;
 
 function show(n) {
-  document.getElementById('s'+cur).classList.remove('active');
-  document.getElementById('s'+n).classList.add('active');
+  if (n === cur) return;
+  var curEl = document.getElementById('s'+cur);
+  var nextEl = document.getElementById('s'+n);
+  
+  curEl.classList.remove('active');
+  curEl.classList.toggle('prev', n < cur);
+  
+  nextEl.classList.remove('prev');
+  // Force reflow so the transform-start state applies before animating
+  void nextEl.offsetWidth;
+  nextEl.classList.add('active');
+  
   cur = n;
 }
 
