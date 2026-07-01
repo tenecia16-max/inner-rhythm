@@ -2232,6 +2232,58 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
 
       <button class="msave" onclick="saveProfile()">Save changes</button>
 
+      <!-- ── PREMIUM SECTION ── -->
+      <div id="premium-section">
+
+        <!-- Trial status card -->
+        <div style="background:linear-gradient(135deg,#2A1248,#3D1A6A);border-radius:18px;padding:18px 18px 16px;margin-bottom:12px;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:rgba(232,160,200,.1);pointer-events:none;"></div>
+          <div style="font-size:10px;font-weight:800;color:rgba(232,160,200,.7);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;">Your trial</div>
+          <div style="font-family:'Playfair Display',serif;font-size:17px;color:white;font-weight:700;line-height:1.35;margin-bottom:10px;" id="trial-status-msg">Your rhythm is taking shape.</div>
+          <div style="height:4px;background:rgba(255,255,255,.12);border-radius:2px;margin-bottom:8px;">
+            <div id="trial-progress-bar" style="height:100%;border-radius:2px;background:linear-gradient(90deg,#C05080,#E8A840);width:0%;transition:width .6s ease;"></div>
+          </div>
+          <div style="font-size:11px;color:rgba(255,255,255,.4);" id="trial-days-text">Loading...</div>
+        </div>
+
+        <!-- What you get free -->
+        <div style="background:white;border-radius:16px;overflow:hidden;margin-bottom:8px;box-shadow:0 1px 8px rgba(0,0,0,.04);">
+          <div style="padding:13px 16px;border-bottom:0.5px solid #F0F4F8;">
+            <div style="font-size:10px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.6px;margin-bottom:2px;">Always free</div>
+            <div style="font-size:12px;color:#5A7A8A;">Track and reflect</div>
+          </div>
+          <div style="padding:10px 16px;display:flex;flex-direction:column;gap:7px;">
+            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#7C5C8A;font-size:13px;">&#10003;</span><span style="font-size:12px;color:#1A3A45;">Cycle tracking &amp; calendar</span></div>
+            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#7C5C8A;font-size:13px;">&#10003;</span><span style="font-size:12px;color:#1A3A45;">Emotional check-ins</span></div>
+            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#7C5C8A;font-size:13px;">&#10003;</span><span style="font-size:12px;color:#1A3A45;">Symptom &amp; body logging</span></div>
+            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#7C5C8A;font-size:13px;">&#10003;</span><span style="font-size:12px;color:#1A3A45;">Recent mood history</span></div>
+            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#7C5C8A;font-size:13px;">&#10003;</span><span style="font-size:12px;color:#1A3A45;">Basic reflections from IR</span></div>
+            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#7C5C8A;font-size:13px;">&#10003;</span><span style="font-size:12px;color:#1A3A45;">Your journals &amp; logs — always</span></div>
+          </div>
+        </div>
+
+        <!-- What premium unlocks -->
+        <div style="background:linear-gradient(135deg,#FAF6FB,#F5EEF8);border-radius:16px;overflow:hidden;margin-bottom:12px;border:1.5px solid #E2D4EC;box-shadow:0 1px 8px rgba(124,92,138,.08);">
+          <div style="padding:13px 16px;border-bottom:0.5px solid #EDE4F2;">
+            <div style="font-size:10px;font-weight:800;color:#7C5C8A;text-transform:uppercase;letter-spacing:.6px;margin-bottom:2px;">Inner Rhythm Plus</div>
+            <div style="font-size:12px;color:#5A3A8A;">Understand your patterns deeply</div>
+          </div>
+          <div style="padding:10px 16px;display:flex;flex-direction:column;gap:7px;">
+            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#E8A840;font-size:13px;">&#10022;</span><span style="font-size:12px;color:#2E1F3E;">Advanced emotional pattern recognition</span></div>
+            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#E8A840;font-size:13px;">&#10022;</span><span style="font-size:12px;color:#2E1F3E;">Recurring emotional trend analysis</span></div>
+            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#E8A840;font-size:13px;">&#10022;</span><span style="font-size:12px;color:#2E1F3E;">Emotional forecasting</span></div>
+            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#E8A840;font-size:13px;">&#10022;</span><span style="font-size:12px;color:#2E1F3E;">Deep journal &amp; mood analysis</span></div>
+            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#E8A840;font-size:13px;">&#10022;</span><span style="font-size:12px;color:#2E1F3E;">Adaptive AI reflections over time</span></div>
+            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#E8A840;font-size:13px;">&#10022;</span><span style="font-size:12px;color:#2E1F3E;">Partner sharing &amp; Soft Signal</span></div>
+          </div>
+          <div style="padding:12px 16px;border-top:0.5px solid #EDE4F2;display:flex;gap:8px;">
+            <button style="flex:1;background:none;border:1.5px solid #C0A8D4;border-radius:12px;padding:11px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;color:#7C5C8A;cursor:pointer;">Continue free</button>
+            <button style="flex:1;background:linear-gradient(135deg,#7C5C8A,#5E3D6E);border:none;border-radius:12px;padding:11px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;color:white;cursor:pointer;" onclick="explorePremium()">Explore Plus &#10022;</button>
+          </div>
+        </div>
+
+      </div>
+
       <!-- Divider -->
       <div style="display:flex;align-items:center;gap:10px;margin:24px 0 16px">
         <div style="flex:1;height:0.5px;background:var(--border)"></div>
@@ -2252,75 +2304,6 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
       </button>
     </div>
   </div>
-
-  <!-- DELETE ACCOUNT CONFIRM -->
-  <div class="mover" id="delete-modal">
-    <div class="msheet">
-      <div class="mhandle"></div>
-      <div style="text-align:center;margin-bottom:20px">
-        <div style="font-size:40px;margin-bottom:12px">🗑</div>
-        <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--text);margin-bottom:8px">Delete your account?</div>
-        <div style="font-size:14px;color:var(--text2);line-height:1.6">This will permanently delete everything — your check-ins, patterns, cycle data, and profile. It cannot be undone.</div>
-      </div>
-      <button onclick="deleteAccount()"
-        style="width:100%;background:#C62828;color:white;border:none;border-radius:16px;padding:16px;font-family:'Nunito',sans-serif;font-size:16px;font-weight:800;cursor:pointer;margin-bottom:10px">
-        Yes, delete everything
-      </button>
-      <button onclick="document.getElementById('delete-modal').classList.remove('show')"
-        style="width:100%;background:none;border:1.5px solid var(--border);border-radius:16px;padding:14px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;color:var(--text2);cursor:pointer">
-        Cancel, keep my account
-      </button>
-    </div>
-  </div>
-
-  <!-- DAY DETAIL MODAL -->
-  <div class="mover" id="modal">
-    <div class="msheet" style="padding-bottom:50px">
-      <div class="mhandle"></div>
-      <div style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:6px">My cycle details</div>
-      <div style="font-size:13px;color:var(--text2);margin-bottom:22px;line-height:1.6">Fill in what you know — even rough estimates help. The app will get more accurate the longer you use it.</div>
-
-      <div style="margin-bottom:16px">
-        <div style="font-size:11px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px">When did your last period start?</div>
-        <input type="date" class="minp" id="pdinp" style="margin-bottom:0">
-      </div>
-
-      <div style="margin-bottom:16px">
-        <div style="font-size:11px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px">When did it end? (optional)</div>
-        <input type="date" class="minp" id="pdend" style="margin-bottom:0">
-        <div style="font-size:11px;color:var(--text3);margin-top:5px">Helps calculate how long your period usually lasts</div>
-      </div>
-
-      <div style="margin-bottom:16px">
-        <div style="font-size:11px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px">How long is your cycle usually? <span style="font-weight:400;text-transform:none;letter-spacing:0" id="cycle-len-val">(28 days)</span></div>
-        <input type="range" min="20" max="40" value="28" id="cycle-len" style="width:100%" oninput="document.getElementById('cycle-len-val').textContent='('+this.value+' days)'">
-        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-top:4px"><span>20 days</span><span>40 days</span></div>
-        <div style="font-size:11px;color:var(--text3);margin-top:5px">Count from the first day of one period to the first day of the next. Not sure? 28 is the average — totally fine to leave it.</div>
-      </div>
-
-      <div style="margin-bottom:22px">
-        <div style="font-size:11px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px">How long does your period usually last? <span style="font-weight:400;text-transform:none;letter-spacing:0" id="period-dur-val">(5 days)</span></div>
-        <input type="range" min="1" max="10" value="5" id="period-dur" style="width:100%" oninput="document.getElementById('period-dur-val').textContent='('+this.value+' days)'">
-        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-top:4px"><span>1 day</span><span>10 days</span></div>
-      </div>
-
-      <button class="msave" onclick="savePD()">Save my cycle details</button>
-      <div style="text-align:center;font-size:12px;color:var(--text3);margin-top:10px;line-height:1.5">You can always update this as you track more cycles.</div>
-    </div>
-  </div>
-
-</div>
-  <nav class="nav" id="main-nav">
-    <button class="nb active" id="nav-home" onclick="nav('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</button>
-    <button class="nb" id="nav-checkin" onclick="nav('logchoice')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Check-in</button>
-    <button class="nb" id="nav-patterns" onclick="nav('patterns')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Patterns</button>
-    <button class="nb" id="nav-calendar" onclick="nav('calendar')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendar</button>
-    <button class="nb" id="nav-settings" onclick="nav('settings')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</button>
-  </nav>
 
 <script>
 const TODAY=new Date();TODAY.setHours(0,0,0,0);
@@ -3762,6 +3745,31 @@ function loadProfile(){
       shelf.appendChild(el);
     });
   }
+  try{loadPremiumSection();}catch(err){}
+}
+
+function loadPremiumSection(){
+  var t=getTrialStatus();
+  var msgEl=document.getElementById('trial-status-msg');
+  var barEl=document.getElementById('trial-progress-bar');
+  var daysEl=document.getElementById('trial-days-text');
+  if(msgEl)msgEl.textContent=getTrialMessage();
+  if(daysEl){
+    if(t.expired){
+      daysEl.textContent='Trial ended. Your logs and journals are always yours.';
+    }else{
+      daysEl.textContent=t.daysLeft+' days remaining in your trial';
+    }
+  }
+  if(barEl){
+    var pct=Math.min(100,Math.round((t.dayNum/60)*100));
+    setTimeout(function(){barEl.style.width=pct+'%';},200);
+  }
+}
+
+function explorePremium(){
+  // Placeholder — shows a calm info toast for now
+  toast('Plus features coming soon. Everything you have logged is yours to keep. \u2764');
 }
 
 function checkRewards(){
@@ -5079,6 +5087,21 @@ function initBodyLog(){
   updateTileStates();
   ['syms','sleep','intimacy','medication','water'].forEach(function(key){
     var panel=document.getElementById('panel-'+key);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     if(!panel)return;
     panel.querySelectorAll('.bl-chip').forEach(function(chip){
       chip.classList.toggle('sel',bodyLogData[key].indexOf(chip.textContent.trim())>-1);
