@@ -977,7 +977,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
 
     <!-- CTA -->
     <button onclick="doAuth()" style="width:100%;background:linear-gradient(135deg,#C05080 0%,#8B2070 60%,#6A1060 100%);color:white;border:none;border-radius:16px;padding:16px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 6px 28px rgba(192,60,120,.5);-webkit-tap-highlight-color:transparent;">Let's begin &#8594;</button>
-    <div style="text-align:center;font-size:11px;color:rgba(255,255,255,.22);margin-top:8px;">Free &middot; Private &middot; No card needed</div>
+    <div style="text-align:center;font-size:11px;color:rgba(255,255,255,.22);margin-top:8px;">Free for 60 days &middot; No card needed</div>
   </div>
 </div>
 
@@ -1023,6 +1023,12 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
     <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:13px 15px;display:flex;align-items:flex-start;gap:11px;margin-bottom:20px;">
       <div style="font-size:18px;flex-shrink:0;margin-top:1px;">&#10022;</div>
       <div style="font-size:12px;color:rgba(255,255,255,.6);line-height:1.7;">I'll notice patterns in your emotions, energy and needs — so you can feel more supported, every day.</div>
+    </div>
+
+    <!-- Soft trial mention -->
+    <div style="background:rgba(255,255,255,.04);border-radius:13px;padding:11px 14px;display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+      <div style="font-size:15px;">&#10024;</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.4);line-height:1.6;">You'll have full access for your first 60 days — enough time to experience your rhythms across multiple cycles.</div>
     </div>
 
     <!-- Section: Period date -->
@@ -2624,6 +2630,51 @@ function checkAutoLogin() {
   return false;
 }
 
+
+
+// ── TRIAL / MONETIZATION STATE ──────────────────────────────────────
+const TRIAL_DAYS = 60;
+
+function getTrialStatus(){
+  var acc=JSON.parse(localStorage.getItem('ir_account')||'{}');
+  if(!acc.createdAt){
+    return {active:true,dayNum:1,daysLeft:TRIAL_DAYS,cycleNum:1,expired:false,createdAt:Date.now()};
+  }
+  var elapsedMs=Date.now()-acc.createdAt;
+  var dayNum=Math.floor(elapsedMs/(1000*60*60*24))+1;
+  var daysLeft=Math.max(0,TRIAL_DAYS-dayNum+1);
+  var expired=dayNum>TRIAL_DAYS;
+  // Estimate which "cycle" they're in based on user's cycle length
+  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  var cycleLen=setup.cycleLength||28;
+  var cycleNum=Math.max(1,Math.ceil(dayNum/cycleLen));
+  return {
+    active:!expired,
+    dayNum:dayNum,
+    daysLeft:daysLeft,
+    cycleNum:cycleNum,
+    expired:expired,
+    createdAt:acc.createdAt
+  };
+}
+
+function getTrialMessage(){
+  var t=getTrialStatus();
+  if(t.expired)return 'Your trial has ended. Your history is always yours.';
+  if(t.cycleNum>=2)return 'You are entering your second cycle of insights.';
+  if(t.dayNum<=3)return 'Your rhythm is just beginning to take shape.';
+  if(t.dayNum<=14)return 'Your patterns are becoming clearer over time.';
+  if(t.daysLeft<=14)return 'Your rhythm is becoming clear. '+t.daysLeft+' days left in your trial.';
+  return 'Your rhythm is taking shape.';
+}
+
+// Returns true if a premium-gated feature should be accessible right now
+function hasPremiumAccess(){
+  var acc=JSON.parse(localStorage.getItem('ir_account')||'{}');
+  if(acc.isPremium)return true;
+  var t=getTrialStatus();
+  return t.active;
+}
 
 function nav(sc){
   var navBar=document.querySelector('nav.nav');
