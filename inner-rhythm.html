@@ -870,6 +870,21 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
   .bl-chip{border-radius:20px;padding:7px 13px;font-size:11px;font-weight:700;background:#FAF4F2;color:#7A5060;border:1.5px solid rgba(192,80,120,.12);cursor:pointer;-webkit-tap-highlight-color:transparent;}
   .bl-chip.sel{background:#C05080;color:white;border-color:#C05080;}
   .flow-opt.sel{box-shadow:0 0 0 2.5px #C05080,0 0 0 5px rgba(192,80,120,.15);}
+
+  .bl-tile{background:white;border-radius:14px;padding:12px 6px 11px;display:flex;flex-direction:column;align-items:center;gap:5px;border:1.5px solid rgba(0,0,0,.05);cursor:pointer;-webkit-tap-highlight-color:transparent;}
+  .bl-tile.logged{border-color:#C05080;background:#FFF5F8;}
+  .bl-tile.logged .bl-tile-label{color:#C05080;}
+  .bl-tile.active{border-color:#C05080;background:#FFF0F5;box-shadow:0 0 0 3px rgba(192,80,120,.12);}
+  .bl-tile-icon{font-size:24px;line-height:1;}
+  .bl-tile-label{font-size:9px;font-weight:700;color:#5A7A8A;text-align:center;line-height:1.3;}
+  .bl-panel{background:white;border-radius:16px;margin-bottom:10px;overflow:hidden;border:0.5px solid rgba(192,80,120,.12);}
+  .bl-panel-header{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:0.5px solid #F5EAE8;}
+  .bl-panel-title{font-size:13px;font-weight:800;color:#1A3A45;flex:1;}
+  .bl-panel-close{background:#FFF0F5;border:none;border-radius:8px;padding:5px 12px;font-family:Nunito,sans-serif;font-size:11px;font-weight:800;color:#C05080;cursor:pointer;}
+  .bl-panel-body{padding:12px 14px;display:flex;flex-wrap:wrap;gap:7px;}
+  .bl-chip{border-radius:20px;padding:7px 13px;font-size:11px;font-weight:700;background:#FAF4F2;color:#7A5060;border:1.5px solid rgba(192,80,120,.12);cursor:pointer;-webkit-tap-highlight-color:transparent;}
+  .bl-chip.sel{background:#C05080;color:white;border-color:#C05080;}
+  .flow-opt.sel{box-shadow:0 0 0 2.5px #C05080,0 0 0 5px rgba(192,80,120,.15);}
 </style>
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
 </head>
@@ -1054,6 +1069,8 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
           <div style="font-size:13px;color:#3A2A5A;line-height:1.75;" id="home-ir-msg">Loading your message...</div>
         </div>
       </div>
+
+      <div id="home-support-chips" style="display:flex;flex-wrap:wrap;gap:6px;margin:-4px 0 12px;padding:0 2px;"></div>
 
       <!-- Mood quick log -->
       <div id="home-mood-card" style="background:#F8F9FB;border-radius:16px;padding:14px 15px;margin-bottom:12px;">
@@ -1248,6 +1265,174 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
   </div>
 
   <!-- ======= CHECK-IN ======= -->
+  <div class="screen" id="screen-logchoice">
+    <div style="background:linear-gradient(160deg,#F5EEF8 0%,#D8ECF8 100%);padding:max(44px,env(safe-area-inset-top)) 20px 22px;">
+      <div style="font-family:'Playfair Display',serif;font-size:22px;color:#1A3A45;font-weight:700;margin-bottom:4px;">What do you want to log?</div>
+      <div style="font-size:12px;color:#7A9AAA;">You can do both — or just one.</div>
+    </div>
+    <div class="scroll" style="background:#F4F7FA;border-radius:26px 26px 0 0;margin-top:-16px;padding:18px 16px max(80px,calc(env(safe-area-inset-bottom)+70px));z-index:1;position:relative;display:flex;flex-direction:column;gap:12px;">
+      <div onclick="nav('checkin')" style="background:white;border-radius:18px;padding:18px;border:1.5px solid rgba(124,92,138,.2);cursor:pointer;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:linear-gradient(180deg,#7C5C8A,#5E3D6E);border-radius:4px 0 0 4px;"></div>
+        <div style="padding-left:10px;">
+          <div style="font-size:10px;font-weight:800;color:#7C5C8A;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Emotional check-in</div>
+          <div style="font-size:16px;font-weight:800;color:#1A3A45;margin-bottom:6px;">How are you feeling?</div>
+          <div style="font-size:12px;color:#8AAAB4;line-height:1.6;margin-bottom:14px;">A quick pulse or a deeper conversation. Purely emotional — no body tracking here.</div>
+          <div style="display:flex;gap:8px;">
+            <div style="flex:1;background:linear-gradient(135deg,#7C5C8A,#5E3D6E);border-radius:11px;padding:10px;text-align:center;font-size:11px;font-weight:800;color:white;">Quick &middot; 10 sec</div>
+            <div style="flex:1;background:#F5EEF8;border-radius:11px;padding:10px;text-align:center;font-size:11px;font-weight:800;color:#5E3D6E;">Deep &middot; 3 min</div>
+          </div>
+        </div>
+      </div>
+      <div onclick="nav('bodylog')" style="background:white;border-radius:18px;padding:18px;border:1.5px solid rgba(192,80,120,.15);cursor:pointer;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:linear-gradient(180deg,#C05080,#9B3060);border-radius:4px 0 0 4px;"></div>
+        <div style="padding-left:10px;">
+          <div style="font-size:10px;font-weight:800;color:#C05080;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Body log</div>
+          <div style="font-size:16px;font-weight:800;color:#1A3A45;margin-bottom:6px;">Track your body today</div>
+          <div style="font-size:12px;color:#8AAAB4;line-height:1.6;margin-bottom:14px;">Period, flow, energy, symptoms, sleep, intimacy. Nothing is required.</div>
+          <div style="background:linear-gradient(135deg,#C05080,#9B3060);border-radius:11px;padding:10px;text-align:center;font-size:11px;font-weight:800;color:white;">Open body log &rarr;</div>
+        </div>
+      </div>
+      <div style="text-align:center;font-size:11px;color:#B0C0C8;">They work together &mdash; IR reads both.</div>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-bodylog">
+    <div style="background:linear-gradient(160deg,#FFF0F5 0%,#F5EEF8 60%,#E8F4FC 100%);padding:max(44px,env(safe-area-inset-top)) 20px 20px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+        <button onclick="nav('logchoice')" style="background:rgba(192,80,120,.12);border:none;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#8592;</button>
+        <div>
+          <div style="font-family:'Playfair Display',serif;font-size:20px;color:#1A3A45;font-weight:700;">Body log</div>
+          <div style="font-size:11px;color:rgba(120,60,80,.55);margin-top:1px;" id="bodylog-date">Today</div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:rgba(100,40,60,.5);">Nothing is required. Log what feels relevant.</div>
+    </div>
+    <div class="scroll" style="background:#FAF4F2;border-radius:26px 26px 0 0;margin-top:-16px;padding:16px 16px max(80px,calc(env(safe-area-inset-bottom)+70px));z-index:1;position:relative;">
+      <div style="font-size:10px;font-weight:800;color:#C08090;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;padding-left:2px;">Period</div>
+      <div style="background:linear-gradient(135deg,#FFF0F5,#FFE4EE);border-radius:18px;margin-bottom:14px;border:1.5px solid rgba(192,80,120,.15);overflow:hidden;">
+        <div style="padding:14px 15px 10px;">
+          <div style="display:flex;gap:8px;margin-bottom:10px;">
+            <button onclick="logPeriodEvent('started')" id="btn-period-started" style="flex:1;background:white;border:1.5px solid rgba(192,80,120,.3);border-radius:12px;padding:11px;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;color:#C05080;cursor:pointer;">&#129768; Period started</button>
+            <button onclick="logPeriodEvent('ended')" id="btn-period-ended" style="flex:1;background:#C05080;border:none;border-radius:12px;padding:11px;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;color:white;cursor:pointer;">Period ended</button>
+          </div>
+          <div style="font-size:10px;font-weight:800;color:#C08090;text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px;">Flow</div>
+          <div style="display:flex;gap:5px;">
+            <div class="flow-opt" onclick="pickFlow(this,'Spotting')" style="flex:1;background:#FEF0F4;border-radius:9px;padding:8px 4px;text-align:center;font-size:10px;font-weight:700;color:#C05080;border:1.5px solid rgba(192,80,120,.15);cursor:pointer;">Spotting</div>
+            <div class="flow-opt" onclick="pickFlow(this,'Light')" style="flex:1;background:#FAD8E4;border-radius:9px;padding:8px 4px;text-align:center;font-size:10px;font-weight:700;color:#A03060;border:1.5px solid rgba(192,80,120,.25);cursor:pointer;">Light</div>
+            <div class="flow-opt" onclick="pickFlow(this,'Medium')" style="flex:1;background:#F090B0;border-radius:9px;padding:8px 4px;text-align:center;font-size:10px;font-weight:700;color:white;border:1.5px solid #D06090;cursor:pointer;">Medium</div>
+            <div class="flow-opt" onclick="pickFlow(this,'Heavy')" style="flex:1;background:#C04070;border-radius:9px;padding:8px 4px;text-align:center;font-size:10px;font-weight:700;color:white;border:1.5px solid #A02050;cursor:pointer;">Heavy</div>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:10px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;padding-left:2px;">Track today</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;" id="bodylog-tiles">
+        <div class="bl-tile" id="tile-energy" onclick="toggleBodyTile('energy')"><div class="bl-tile-icon">&#9889;</div><div class="bl-tile-label">Energy</div></div>
+        <div class="bl-tile" id="tile-symptoms" onclick="toggleBodyTile('symptoms')"><div class="bl-tile-icon">&#129705;</div><div class="bl-tile-label">Symptoms</div></div>
+        <div class="bl-tile" id="tile-sleep" onclick="toggleBodyTile('sleep')"><div class="bl-tile-icon">&#128564;</div><div class="bl-tile-label">Sleep</div></div>
+        <div class="bl-tile" id="tile-intimacy" onclick="toggleBodyTile('intimacy')"><div class="bl-tile-icon">&#129293;</div><div class="bl-tile-label">Intimacy</div></div>
+        <div class="bl-tile" id="tile-medication" onclick="toggleBodyTile('medication')"><div class="bl-tile-icon">&#128138;</div><div class="bl-tile-label">Medication</div></div>
+        <div class="bl-tile" id="tile-notes" onclick="toggleBodyTile('notes')"><div class="bl-tile-icon">&#9997;&#65039;</div><div class="bl-tile-label">Notes</div></div>
+        <div class="bl-tile" id="tile-cervical" onclick="toggleBodyTile('cervical')"><div class="bl-tile-icon">&#129714;</div><div class="bl-tile-label">Cervical mucus</div></div>
+        <div class="bl-tile" id="tile-ovulation" onclick="toggleBodyTile('ovulation')"><div class="bl-tile-icon">&#129381;</div><div class="bl-tile-label">Ovulation test</div></div>
+      </div>
+      <div id="panel-energy" class="bl-panel" style="display:none;">
+        <div class="bl-panel-header"><span style="font-size:16px;">&#9889;</span><span class="bl-panel-title">Energy today</span><button class="bl-panel-close" onclick="closeBodyTile('energy')">Done</button></div>
+        <div class="bl-panel-body">
+          <div class="bl-chip" onclick="toggleBodyChip(this,'energy','Full energy')">Full energy</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'energy','Good')">Good</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'energy','Okay')">Okay</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'energy','Foggy')">Foggy</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'energy','Low')">Low</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'energy','Wired but tired')">Wired but tired</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'energy','Running on empty')">Running on empty</div>
+        </div>
+      </div>
+      <div id="panel-symptoms" class="bl-panel" style="display:none;">
+        <div class="bl-panel-header"><span style="font-size:16px;">&#129705;</span><span class="bl-panel-title">Symptoms</span><button class="bl-panel-close" onclick="closeBodyTile('symptoms')">Done</button></div>
+        <div class="bl-panel-body">
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Cramps')">Cramps</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Bloating')">Bloating</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Headache')">Headache</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Fatigue')">Fatigue</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Lower back pain')">Lower back pain</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Pelvic pain')">Pelvic pain</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Nausea')">Nausea</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Tender breasts')">Tender breasts</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Cravings')">Cravings</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Acne')">Acne</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Hot flashes')">Hot flashes</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Night sweats')">Night sweats</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Chills')">Chills</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Constipation')">Constipation</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Diarrhea')">Diarrhea</div>
+        </div>
+      </div>
+      <div id="panel-sleep" class="bl-panel" style="display:none;">
+        <div class="bl-panel-header"><span style="font-size:16px;">&#128564;</span><span class="bl-panel-title">Sleep last night</span><button class="bl-panel-close" onclick="closeBodyTile('sleep')">Done</button></div>
+        <div class="bl-panel-body">
+          <div class="bl-chip" onclick="toggleBodyChip(this,'sleep','Less than 5 hrs')">Less than 5 hrs</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'sleep','5-6 hrs')">5&#8211;6 hrs</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'sleep','6-7 hrs')">6&#8211;7 hrs</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'sleep','7-8 hrs')">7&#8211;8 hrs</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'sleep','8+ hrs')">8+ hrs</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'sleep','Restless')">Restless</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'sleep','Trouble falling asleep')">Trouble falling asleep</div>
+        </div>
+      </div>
+      <div id="panel-intimacy" class="bl-panel" style="display:none;">
+        <div class="bl-panel-header"><span style="font-size:16px;">&#129293;</span><span class="bl-panel-title">Intimacy</span><button class="bl-panel-close" onclick="closeBodyTile('intimacy')">Done</button></div>
+        <div class="bl-panel-body">
+          <div class="bl-chip" onclick="toggleBodyChip(this,'intimacy','Protected sex')">Protected sex</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'intimacy','Unprotected sex')">Unprotected sex</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'intimacy','High desire')">High desire</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'intimacy','Low desire')">Low desire</div>
+        </div>
+      </div>
+      <div id="panel-medication" class="bl-panel" style="display:none;">
+        <div class="bl-panel-header"><span style="font-size:16px;">&#128138;</span><span class="bl-panel-title">Medication</span><button class="bl-panel-close" onclick="closeBodyTile('medication')">Done</button></div>
+        <div class="bl-panel-body">
+          <div class="bl-chip" onclick="toggleBodyChip(this,'medication','Pill taken')">Pill taken</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'medication','Painkiller')">Painkiller</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'medication','Iron supplement')">Iron supplement</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'medication','Other')">Other</div>
+        </div>
+      </div>
+      <div id="panel-water" class="bl-panel" style="display:none;">
+        <div class="bl-panel-header"><span style="font-size:16px;">&#128167;</span><span class="bl-panel-title">Water intake</span><button class="bl-panel-close" onclick="closeBodyTile('water')">Done</button></div>
+        <div class="bl-panel-body">
+          <div class="bl-chip" onclick="toggleBodyChip(this,'water','Very little')">Very little</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'water','Some')">Some</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'water','Good amount')">Good amount</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'water','Well hydrated')">Well hydrated</div>
+        </div>
+      </div>
+      <div id="panel-cervical" class="bl-panel" style="display:none;">
+        <div class="bl-panel-header"><span style="font-size:16px;">&#129714;</span><span class="bl-panel-title">Cervical mucus</span><button class="bl-panel-close" onclick="closeBodyTile('cervical')">Done</button></div>
+        <div class="bl-panel-body">
+          <div class="bl-chip" onclick="toggleBodyChip(this,'cervical','Egg white')">Egg white</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'cervical','Watery')">Watery</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'cervical','Creamy')">Creamy</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'cervical','Sticky')">Sticky</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'cervical','No mucus')">No mucus</div>
+        </div>
+      </div>
+      <div id="panel-ovulation" class="bl-panel" style="display:none;">
+        <div class="bl-panel-header"><span style="font-size:16px;">&#129381;</span><span class="bl-panel-title">Ovulation test</span><button class="bl-panel-close" onclick="closeBodyTile('ovulation')">Done</button></div>
+        <div class="bl-panel-body">
+          <div class="bl-chip" onclick="toggleBodyChip(this,'ovulation','Positive')">Positive</div>
+          <div class="bl-chip" onclick="toggleBodyChip(this,'ovulation','Negative')">Negative</div>
+        </div>
+      </div>
+      <div id="panel-notes" class="bl-panel" style="display:none;">
+        <div class="bl-panel-header"><span style="font-size:16px;">&#9997;&#65039;</span><span class="bl-panel-title">Notes</span><button class="bl-panel-close" onclick="closeBodyTile('notes')">Done</button></div>
+        <div style="padding:10px 14px 12px;">
+          <textarea id="bodylog-note" placeholder="Anything else worth noting today..." style="width:100%;background:#FAF4F2;border:1.5px solid rgba(192,80,120,.15);border-radius:12px;padding:12px 14px;font-family:Nunito,sans-serif;font-size:13px;color:#1A3A45;resize:none;height:90px;outline:none;line-height:1.6;"></textarea>
+        </div>
+      </div>
+      <button onclick="saveBodyLog()" style="width:100%;background:linear-gradient(135deg,#C05080,#9B3060);color:white;border:none;border-radius:16px;padding:15px;font-family:Nunito,sans-serif;font-size:15px;font-weight:800;cursor:pointer;margin-top:4px;box-shadow:0 4px 16px rgba(192,80,120,.25);">Save body log</button>
+    </div>
+  </div>
+
   <div class="screen" id="screen-checkin">
 
     <!-- Phase-tinted header -->
@@ -1967,6 +2152,49 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
 
       <button class="msave" onclick="saveProfile()">Save changes</button>
 
+      <!-- ── PREMIUM SECTION ── -->
+      <div id="premium-section">
+        <div style="background:linear-gradient(135deg,#2A1248,#3D1A6A);border-radius:18px;padding:18px 18px 16px;margin-bottom:12px;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:rgba(232,160,200,.1);pointer-events:none;"></div>
+          <div style="font-size:10px;font-weight:800;color:rgba(232,160,200,.7);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;">Your trial</div>
+          <div style="font-family:'Playfair Display',serif;font-size:17px;color:white;font-weight:700;line-height:1.35;margin-bottom:10px;" id="trial-status-msg">Your rhythm is taking shape.</div>
+          <div style="height:4px;background:rgba(255,255,255,.12);border-radius:2px;margin-bottom:8px;">
+            <div id="trial-progress-bar" style="height:100%;border-radius:2px;background:linear-gradient(90deg,#C05080,#E8A840);width:0%;transition:width .6s ease;"></div>
+          </div>
+          <div style="font-size:11px;color:rgba(255,255,255,.4);" id="trial-days-text">Loading...</div>
+        </div>
+        <div style="background:white;border-radius:16px;overflow:hidden;margin-bottom:8px;box-shadow:0 1px 8px rgba(0,0,0,.04);">
+          <div style="padding:13px 16px;border-bottom:0.5px solid #F0F4F8;">
+            <div style="font-size:10px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.6px;margin-bottom:2px;">Always free</div>
+            <div style="font-size:12px;color:#5A7A8A;">Track and reflect</div>
+          </div>
+          <div style="padding:10px 16px;display:flex;flex-direction:column;gap:7px;">
+            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#7C5C8A;font-size:13px;">&#10003;</span><span style="font-size:12px;color:#1A3A45;">Cycle tracking &amp; calendar</span></div>
+            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#7C5C8A;font-size:13px;">&#10003;</span><span style="font-size:12px;color:#1A3A45;">Emotional check-ins</span></div>
+            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#7C5C8A;font-size:13px;">&#10003;</span><span style="font-size:12px;color:#1A3A45;">Symptom &amp; body logging</span></div>
+            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#7C5C8A;font-size:13px;">&#10003;</span><span style="font-size:12px;color:#1A3A45;">Recent mood history</span></div>
+            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#7C5C8A;font-size:13px;">&#10003;</span><span style="font-size:12px;color:#1A3A45;">Your journals &amp; logs — always</span></div>
+          </div>
+        </div>
+        <div style="background:linear-gradient(135deg,#FAF6FB,#F5EEF8);border-radius:16px;overflow:hidden;margin-bottom:12px;border:1.5px solid #E2D4EC;box-shadow:0 1px 8px rgba(124,92,138,.08);">
+          <div style="padding:13px 16px;border-bottom:0.5px solid #EDE4F2;">
+            <div style="font-size:10px;font-weight:800;color:#7C5C8A;text-transform:uppercase;letter-spacing:.6px;margin-bottom:2px;">Inner Rhythm Plus</div>
+            <div style="font-size:12px;color:#5A3A8A;">Understand your patterns deeply</div>
+          </div>
+          <div style="padding:10px 16px;display:flex;flex-direction:column;gap:7px;">
+            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#E8A840;font-size:13px;">&#10022;</span><span style="font-size:12px;color:#2E1F3E;">Advanced pattern recognition</span></div>
+            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#E8A840;font-size:13px;">&#10022;</span><span style="font-size:12px;color:#2E1F3E;">Recurring emotional trends</span></div>
+            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#E8A840;font-size:13px;">&#10022;</span><span style="font-size:12px;color:#2E1F3E;">Emotional forecasting</span></div>
+            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#E8A840;font-size:13px;">&#10022;</span><span style="font-size:12px;color:#2E1F3E;">Deep journal &amp; mood analysis</span></div>
+            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#E8A840;font-size:13px;">&#10022;</span><span style="font-size:12px;color:#2E1F3E;">Partner sharing &amp; Soft Signal</span></div>
+          </div>
+          <div style="padding:12px 16px;border-top:0.5px solid #EDE4F2;display:flex;gap:8px;">
+            <button style="flex:1;background:none;border:1.5px solid #C0A8D4;border-radius:12px;padding:11px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;color:#7C5C8A;cursor:pointer;">Continue free</button>
+            <button style="flex:1;background:linear-gradient(135deg,#7C5C8A,#5E3D6E);border:none;border-radius:12px;padding:11px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;color:white;cursor:pointer;" onclick="explorePremium()">Explore Plus &#10022;</button>
+          </div>
+        </div>
+      </div>
+
       <!-- Divider -->
       <div style="display:flex;align-items:center;gap:10px;margin:24px 0 16px">
         <div style="flex:1;height:0.5px;background:var(--border)"></div>
@@ -2355,6 +2583,8 @@ function checkAutoLogin() {
 
 
 function nav(sc){
+  var navBar=document.getElementById('main-nav')||document.querySelector('nav.nav');
+  if(navBar){navBar.style.display=(sc==='auth'||sc==='welcome')?'none':'flex';}
   document.querySelectorAll('.mover').forEach(function(m){m.classList.remove('show');});
   document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');s.style.display='none';});
   document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
@@ -2362,18 +2592,198 @@ function nav(sc){
   if(target){target.classList.add('active');target.style.display='flex';}
   const nb=document.getElementById('nav-'+sc);if(nb)nb.classList.add('active');
   if(sc==='home'){try{initHome();buildCycleCircle();buildTomorrowCard();}catch(e){}}
-  if(sc==='home'){try{initHome();buildCycleCircle();buildTomorrowCard();}catch(e){}}
   if(sc==='settings'){try{loadProfile();}catch(e){}}
-  if(sc==='patterns'){learnCycleFromLogs();buildPatterns();}
-  if(sc==='calendar')renderCal();
-  if(sc==='settings'){try{loadProfile();}catch(e){}}
-  if(sc==='patterns'){learnCycleFromLogs();buildPatterns();applyPlusGating();}
-  if(sc==='sharing'){updatePartnerPreview();const lnkEl=document.getElementById('companion-link-display');if(lnkEl){const pr=JSON.parse(localStorage.getItem('ir_profile')||'{}');lnkEl.textContent=pr.name?'innerrhythm.app/companion/'+pr.name.toLowerCase().replace(/\s+/g,'-'):'Set your name in Profile first';}}
-  if(sc==='ttc')updateTTCScreen();
-  if(sc==='checkin'){initCheckin();}
+  if(sc==='patterns'){try{learnCycleFromLogs();buildPatterns();applyPlusGating();}catch(e){}}
+  if(sc==='calendar'){try{renderCal();}catch(e){}}
+  if(sc==='checkin'){try{initCheckin();}catch(e){}}
+  if(sc==='logchoice'){try{initLogChoice();}catch(e){}}
+  if(sc==='bodylog'){try{initBodyLog();}catch(e){}}
   if(sc==='notifs'){try{loadNotifSettings();}catch(e){}}
   if(sc==='partner'){try{loadPartnerScreen();}catch(e){}}
-  if(sc==='about'||sc==='privacy'){}
+}
+
+// ── TRIAL / MONETIZATION ────────────────────────────────────────────
+const TRIAL_DAYS = 60;
+
+function getTrialStatus(){
+  var acc=JSON.parse(localStorage.getItem('ir_account')||'{}');
+  if(!acc.createdAt)return {active:true,dayNum:1,daysLeft:TRIAL_DAYS,cycleNum:1,expired:false};
+  var elapsedMs=Date.now()-acc.createdAt;
+  var dayNum=Math.floor(elapsedMs/(1000*60*60*24))+1;
+  var daysLeft=Math.max(0,TRIAL_DAYS-dayNum+1);
+  var expired=dayNum>TRIAL_DAYS;
+  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  var cycleLen=setup.cycleLen||28;
+  var cycleNum=Math.max(1,Math.ceil(dayNum/cycleLen));
+  return {active:!expired,dayNum:dayNum,daysLeft:daysLeft,cycleNum:cycleNum,expired:expired};
+}
+
+function getTrialMessage(){
+  var t=getTrialStatus();
+  if(t.expired)return 'Your trial has ended. Your history is always yours.';
+  if(t.cycleNum>=2)return 'You are entering your second cycle of insights.';
+  if(t.dayNum<=3)return 'Your rhythm is just beginning to take shape.';
+  if(t.dayNum<=14)return 'Your patterns are becoming clearer over time.';
+  if(t.daysLeft<=14)return 'Your rhythm is becoming clear. '+t.daysLeft+' days left in your trial.';
+  return 'Your rhythm is taking shape.';
+}
+
+function hasPremiumAccess(){
+  var acc=JSON.parse(localStorage.getItem('ir_account')||'{}');
+  if(acc.isPremium)return true;
+  return getTrialStatus().active;
+}
+
+function loadPremiumSection(){
+  var t=getTrialStatus();
+  var msgEl=document.getElementById('trial-status-msg');
+  var barEl=document.getElementById('trial-progress-bar');
+  var daysEl=document.getElementById('trial-days-text');
+  if(msgEl)msgEl.textContent=getTrialMessage();
+  if(daysEl)daysEl.textContent=t.expired?'Trial ended. Your logs and journals are always yours.':(t.daysLeft+' days remaining in your trial');
+  if(barEl){var pct=Math.min(100,Math.round((t.dayNum/60)*100));setTimeout(function(){barEl.style.width=pct+'%';},200);}
+}
+
+function explorePremium(){
+  toast('Plus features coming soon. Everything you have logged is yours to keep. \u2764');
+}
+
+function applyPlusGating(){
+  // Soft gating placeholder — during trial everything is unlocked
+  // After trial, premium-only insights would be gated here
+}
+
+// ── LOG CHOICE + BODY LOG ───────────────────────────────────────────
+var bodyLogData={syms:[],sleep:[],intimacy:[],medication:[],water:[],notes:'',cervical:[],ovulation:[]};
+var activeTile=null;
+
+function initLogChoice(){}
+
+function initBodyLog(){
+  logs=JSON.parse(localStorage.getItem('ir4')||'{}');
+  var k=TODAY.getFullYear()+'-'+String(TODAY.getMonth()+1).padStart(2,'0')+'-'+String(TODAY.getDate()).padStart(2,'0');
+  var ex=logs[k]||{};
+  var dl=document.getElementById('bodylog-date');
+  if(dl)dl.textContent=TODAY.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  bodyLogData={syms:ex.syms||[],sleep:ex.sleep||[],intimacy:ex.intimacy||[],
+               medication:ex.medication||[],water:ex.water||[],notes:ex.bodyNote||'',
+               cervical:ex.cervical||[],ovulation:ex.ovulation||[]};
+  if(ex.flow){document.querySelectorAll('.flow-opt').forEach(function(el){el.classList.toggle('sel',el.textContent.trim()===ex.flow);});selectedFlow=ex.flow;}
+  updateTileStates();
+  ['syms','sleep','intimacy','medication','water','cervical','ovulation'].forEach(function(key){
+    var panel=document.getElementById('panel-'+key);
+    if(!panel)return;
+    panel.querySelectorAll('.bl-chip').forEach(function(chip){chip.classList.toggle('sel',bodyLogData[key].indexOf(chip.textContent.trim())>-1);});
+  });
+  var noteEl=document.getElementById('bodylog-note');
+  if(noteEl)noteEl.value=bodyLogData.notes||'';
+  if(activeTile){closeBodyTile(activeTile);activeTile=null;}
+}
+
+function updateTileStates(){
+  var keys={energy:'energy',symptoms:'syms',sleep:'sleep',intimacy:'intimacy',medication:'medication',water:'water',notes:'notes',cervical:'cervical',ovulation:'ovulation'};
+  Object.keys(keys).forEach(function(t){
+    var tile=document.getElementById('tile-'+t);
+    if(!tile)return;
+    var k=keys[t];
+    var has=k==='notes'?(bodyLogData.notes&&bodyLogData.notes.length>0):(bodyLogData[k]&&bodyLogData[k].length>0);
+    tile.classList.toggle('logged',!!has);
+  });
+}
+
+function toggleBodyTile(name){
+  if(activeTile&&activeTile!==name){closeBodyTile(activeTile);}
+  var panel=document.getElementById('panel-'+name);
+  var tile=document.getElementById('tile-'+name);
+  if(!panel)return;
+  if(panel.style.display==='none'||!panel.style.display){
+    panel.style.display='block';
+    if(tile)tile.classList.add('active');
+    activeTile=name;
+    setTimeout(function(){panel.scrollIntoView({behavior:'smooth',block:'nearest'});},100);
+  }else{closeBodyTile(name);}
+}
+
+function closeBodyTile(name){
+  var panel=document.getElementById('panel-'+name);
+  var tile=document.getElementById('tile-'+name);
+  if(panel)panel.style.display='none';
+  if(tile)tile.classList.remove('active');
+  if(activeTile===name)activeTile=null;
+  if(name==='notes'){var n=document.getElementById('bodylog-note');if(n)bodyLogData.notes=n.value.trim();}
+  updateTileStates();
+}
+
+function toggleBodyChip(el,key,val){
+  el.classList.toggle('sel');
+  if(!bodyLogData[key])bodyLogData[key]=[];
+  var idx=bodyLogData[key].indexOf(val);
+  if(el.classList.contains('sel')){if(idx===-1)bodyLogData[key].push(val);}
+  else{if(idx>-1)bodyLogData[key].splice(idx,1);}
+}
+
+function logPeriodEvent(type){
+  var k=TODAY.getFullYear()+'-'+String(TODAY.getMonth()+1).padStart(2,'0')+'-'+String(TODAY.getDate()).padStart(2,'0');
+  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
+  if(type==='started'){
+    setup.start=k;setup._manualDate=true;
+    userLP=new Date(TODAY.getFullYear(),TODAY.getMonth(),TODAY.getDate(),12,0,0);
+    var sb=document.getElementById('btn-period-started');
+    if(sb){sb.style.background='#FFD8E8';sb.innerHTML='&#129768; Period started &#10003;';}
+    toast('Period start logged');
+  }else{
+    setup.periodEnd=k;
+    var eb=document.getElementById('btn-period-ended');
+    if(eb){eb.style.background='#7B3060';eb.textContent='Period ended \u2713';}
+    toast('Period end logged');
+  }
+  localStorage.setItem('ir_cycle_setup',JSON.stringify(setup));
+  var ex=logs[k]||{};ex['period_'+type]=k;
+  if(type==='started'&&!ex.flow)ex.flow='Medium';
+  logs[k]=ex;localStorage.setItem('ir4',JSON.stringify(logs));
+}
+
+function saveBodyLog(){
+  var k=TODAY.getFullYear()+'-'+String(TODAY.getMonth()+1).padStart(2,'0')+'-'+String(TODAY.getDate()).padStart(2,'0');
+  if(activeTile)closeBodyTile(activeTile);
+  var noteEl=document.getElementById('bodylog-note');
+  if(noteEl)bodyLogData.notes=noteEl.value.trim();
+  var ex=logs[k]||{};
+  if(bodyLogData.syms.length)ex.syms=bodyLogData.syms;
+  if(bodyLogData.sleep.length)ex.sleep=bodyLogData.sleep;
+  if(bodyLogData.intimacy.length)ex.intimacy=bodyLogData.intimacy;
+  if(bodyLogData.medication.length)ex.medication=bodyLogData.medication;
+  if(bodyLogData.water.length)ex.water=bodyLogData.water;
+  if(bodyLogData.notes)ex.bodyNote=bodyLogData.notes;
+  if(bodyLogData.cervical.length)ex.cervical=bodyLogData.cervical;
+  if(bodyLogData.ovulation.length)ex.ovulation=bodyLogData.ovulation;
+  if(selectedFlow)ex.flow=selectedFlow;
+  ex.ts=Date.now();
+  logs[k]=ex;localStorage.setItem('ir4',JSON.stringify(logs));
+  logs=JSON.parse(localStorage.getItem('ir4')||'{}');
+  toast('Body log saved \u2713');
+  setTimeout(function(){nav('home');},600);
+}
+
+function buildHomeSupportChips(setup){
+  var el=document.getElementById('home-support-chips');
+  if(!el)return;
+  if(!setup||!setup.start){el.style.display='none';return;}
+  var day=cd(TODAY),phase=ph(day);
+  var suggestions={
+    period:[['Rest without guilt','Extra warmth','Slow the pace'],['Gentle plans only','Extra gentleness','Permission to cancel']],
+    follicular:[['Start something new','Social energy','Creative work'],['Make that plan','Clear thinking','Good energy window']],
+    ovulation:[['Connect with people','High energy day','Bold moves okay'],['Say the hard thing','Social presence','Enjoy the spark']],
+    luteal:[['Solitude','Comfort','Gentle plans'],['Lower expectations','Extra patience','Quiet environment'],['Rest is productive','Fewer commitments','Reassurance okay']]
+  };
+  var arr=suggestions[phase]||suggestions.luteal;
+  var chips=arr[day%arr.length];
+  el.style.display='flex';el.innerHTML='';
+  chips.forEach(function(chip){
+    var d=document.createElement('div');
+    d.style.cssText='display:inline-block;background:#F5EEF8;border:1px solid #E2D4EC;border-radius:20px;padding:5px 13px;font-size:11px;font-weight:700;color:#7C5C8A;white-space:nowrap;';
+    d.textContent=chip;el.appendChild(d);
+  });
 }
 
 
@@ -2749,6 +3159,7 @@ function initHome(){
     if(todayLog&&todayLog.mood)moodLabel.textContent='Logged today: '+todayLog.mood+' — tap to update';
     else moodLabel.textContent='How are you feeling today?';
   }
+  try{var _s=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');buildHomeSupportChips(_s);}catch(e){}
 }
 
 function buildWeek(){
@@ -3427,6 +3838,7 @@ function loadProfile(){
       shelf.appendChild(el);
     });
   }
+  try{loadPremiumSection();}catch(e){}
 }
 
 function checkRewards(){
