@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 <title>Inner Rhythm</title>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#7C5C8A">
+<meta name="theme-color" content="#9B7EC8">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Inner Rhythm">
@@ -29,7 +29,6 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
 .screen.active{display:flex;animation:fu .25s ease forwards}
 @keyframes fu{from{opacity:0}to{opacity:1}}
 #screen-auth{overflow-y:auto;}
-}
 .status{padding:14px 22px 0;display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--text2)}
 .scroll{overflow-y:auto;flex:1;padding:0 20px 140px}
 .nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:390px;background:rgba(255,255,255,0.97);border-top:0.5px solid var(--border);display:flex;justify-content:space-around;padding:10px 0 22px;z-index:9999}
@@ -259,7 +258,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
 .ccell{aspect-ratio:unset;height:46px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:10px;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;transition:all .15s;position:relative;padding:2px 0}
 .ccell.ctoday{background:var(--sky);color:white}
 .ccell.cperiod{background:#FFF0F6;color:#C05080;font-weight:500;border:0.5px solid #F4C0D1;}
-.ccell.cluteal{background:#FAF6FB;color:var(--text);border:0.5px solid #DDD0F5;}
+.ccell.cluteal{background:#F8F4FF;color:var(--text);border:0.5px solid #DDD0F5;}
 .ccell.cfollicular{background:#F0F8FF;color:var(--text);border:0.5px solid #C8E4F0;}
 .ccell.covulation{background:#FFFAF0;color:#A06800;border:0.5px solid #F5DFA0;}
 .ccell.cother{opacity:.3}
@@ -481,7 +480,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
 .day-detail-chips{display:flex;flex-wrap:wrap;gap:6px}
 .day-detail-chip{font-size:13px;font-weight:600;padding:6px 12px;border-radius:20px}
 .day-detail-chip.mood{background:var(--sky-soft);color:var(--steel)}
-.day-detail-chip.feel{background:var(--plum-soft,#F5EEF8);color:#7A5CA0}
+.day-detail-chip.feel{background:var(--plum-soft,#F0EAF8);color:#7A5CA0}
 .day-detail-chip.sym{background:var(--sage-soft);color:var(--sage)}
 .day-detail-chip.flow{background:#FFEBEE;color:#C62828}
 .day-detail-chip.energy{background:var(--steel-soft);color:var(--steel)}
@@ -535,7 +534,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
 .cal-log-chip{font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;background:var(--bg);color:var(--text2)}
 .cal-log-chip.mood{background:var(--sky-soft);color:var(--steel)}
 .cal-log-chip.flow{background:#FFEBEE;color:#C62828}
-.cal-log-chip.feel{background:var(--plum-soft,#F5EEF8);color:#7A5CA0}
+.cal-log-chip.feel{background:var(--plum-soft,#F0EAF8);color:#7A5CA0}
 .cal-log-chip.sym{background:var(--sage-soft);color:var(--sage)}
 .cal-log-note{font-size:13px;color:var(--text2);font-style:italic;line-height:1.55;margin-top:6px;border-top:0.5px solid var(--border);padding-top:8px}
 .cal-log-edit{font-size:11px;font-weight:700;color:var(--sky);margin-top:8px;text-align:right}
@@ -668,7 +667,6 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
 }
 
 /* Screen entry animation — refined */
-}
 
 /* Onboarding next button pulse */
 .onb-next-btn{
@@ -737,7 +735,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
 .icon-tile{display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 6px 10px;border-radius:14px;border:1px solid var(--border);background:var(--card);cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent;user-select:none;position:relative}
 .icon-tile:active{transform:scale(.92)}
 .icon-tile.selp{border:2px solid #4AAAC4;background:#EEF8FC}
-.icon-tile.sels{border:2px solid #7C5C8A;background:#F5EEFF}
+.icon-tile.sels{border:2px solid #9B7EC8;background:#F5EEFF}
 .icon-tile i{font-size:26px;color:#7AAAC4;line-height:1;display:block}
 .icon-tile.selp i{color:#1A7A9A}
 .icon-tile.sels i{color:#7054A8}
@@ -763,7 +761,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
 .cycle-wave-wrap{height:90px;border-radius:14px;overflow:hidden;border:0.5px solid rgba(168,200,220,.2);margin-bottom:14px}
 /* TOMORROW CARD */
 .tomorrow-card{background:linear-gradient(135deg,#F5EEFF,#EEF8FC);border-radius:20px;padding:16px 18px;margin-bottom:14px;border:0.5px solid rgba(125,200,224,.2)}
-.tomorrow-card-eyebrow{font-size:10px;font-weight:800;color:#7C5C8A;text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px}
+.tomorrow-card-eyebrow{font-size:10px;font-weight:800;color:#9B7EC8;text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px}
 .tomorrow-card-title{font-size:15px;font-weight:800;color:#1A3A45;margin-bottom:6px;line-height:1.3;font-family:'Playfair Display',serif}
 .tomorrow-card-body{font-size:12px;color:#4A6A75;line-height:1.65;margin-bottom:10px}
 .tomorrow-card-phase{display:inline-block;font-size:10px;font-weight:700;border-radius:20px;padding:4px 12px}
@@ -814,8 +812,8 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
 
 .auth-cpill{border-radius:20px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid #D6EFF7;color:#7AAAC4;background:white;font-family:'Nunito',sans-serif;-webkit-tap-highlight-color:transparent;user-select:none;}
 .auth-cpill.picked{border-color:#4AAAC4;color:#1A7A9A;background:#EEF8FC;}
-.bi-chip{border-radius:20px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid #E2D4EC;color:#5E3D6E;background:white;font-family:'Nunito',sans-serif;-webkit-tap-highlight-color:transparent;transition:all .15s;}
-.bi-chip.sel{background:#7C5C8A;border-color:#7C5C8A;color:white;}
+.bi-chip{border-radius:20px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid #E4D8F4;color:#7B5EA8;background:white;font-family:'Nunito',sans-serif;-webkit-tap-highlight-color:transparent;transition:all .15s;}
+.bi-chip.sel{background:#9B7EC8;border-color:#9B7EC8;color:white;}
 .ccell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:11px;font-weight:700;cursor:pointer;position:relative;font-family:'Nunito',sans-serif;-webkit-tap-highlight-color:transparent;transition:transform .15s;}
 .ccell:active{transform:scale(.9);}
 .cdname{font-size:10px;font-weight:800;color:#A8C0CC;text-align:center;padding:4px 0;}
@@ -843,11 +841,11 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
 .card-ci{background:white;border-radius:16px;padding:15px 16px;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 10px rgba(0,0,0,.04);}
 .ci-sec{font-size:11px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;}
 .ci-mood-btn{flex:1;text-align:center;cursor:pointer;padding:8px 2px;border-radius:12px;-webkit-tap-highlight-color:transparent;}
-.ci-mood-btn.sel{background:#F5EEF8;border:1.5px solid #7C5C8A;}
+.ci-mood-btn.sel{background:#F0EAF8;border:1.5px solid #9B7EC8;}
 .ci-extra-chip{display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:12px;cursor:pointer;background:#F8F9FB;font-size:12px;font-weight:700;color:#5A7A8A;-webkit-tap-highlight-color:transparent;}
-.ci-extra-chip.sel{background:#7C5C8A;color:white;}
+.ci-extra-chip.sel{background:#9B7EC8;color:white;}
 .ci-chip{border-radius:20px;padding:7px 13px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid #E0EAF0;color:#5A7A8A;background:white;display:inline-block;margin:3px;-webkit-tap-highlight-color:transparent;}
-.ci-chip.sel{background:#7C5C8A;border-color:#7C5C8A;color:white;}.ci-chip.sel .ci-chip-del{color:rgba(255,255,255,.7);}
+.ci-chip.sel{background:#9B7EC8;border-color:#9B7EC8;color:white;}.ci-chip.sel .ci-chip-del{color:rgba(255,255,255,.7);}
 
 
 .ci-chip{position:relative;}
@@ -880,219 +878,113 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
   <div class="status" id="statusbar"><span id="clock">9:41</span><span style="letter-spacing:2px">●●●</span></div>
 
   <!-- ======= SIGN IN / SIGN UP ======= -->
-  <div class="screen" id="screen-auth" style="overflow-y:auto;background:radial-gradient(ellipse at 50% 0%,#3A1060 0%,#1E0A38 40%,#0D0520 100%);">
+  <div class="screen" id="screen-auth" style="overflow-y:auto;background:linear-gradient(160deg,#060B18 0%,#0D1535 25%,#1A0A3A 50%,#3D1060 75%,#8B2070 100%);">
 
-  <!-- Stars layer -->
-  <svg style="position:fixed;top:0;left:0;width:100%;height:55%;z-index:1;pointer-events:none;" viewBox="0 0 390 300" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="36" cy="30" r="1.3" fill="white" opacity=".5"/>
-    <circle cx="95" cy="22" r=".9" fill="white" opacity=".35"/>
-    <circle cx="200" cy="14" r="1.5" fill="white" opacity=".6"/>
-    <circle cx="290" cy="32" r=".9" fill="white" opacity=".45"/>
-    <circle cx="348" cy="18" r="1.2" fill="white" opacity=".5"/>
-    <circle cx="55" cy="68" r=".7" fill="white" opacity=".3"/>
-    <circle cx="240" cy="55" r=".9" fill="white" opacity=".4"/>
-    <circle cx="320" cy="72" r=".8" fill="white" opacity=".3"/>
-    <circle cx="145" cy="44" r=".9" fill="white" opacity=".35"/>
-    <circle cx="165" cy="80" r=".7" fill="white" opacity=".28"/>
-    <circle cx="22" cy="95" r=".6" fill="white" opacity=".25"/>
-    <circle cx="370" cy="58" r=".7" fill="white" opacity=".3"/>
-    <circle cx="125" cy="55" r="2" fill="rgba(232,160,200,.75)"/>
-    <circle cx="265" cy="26" r="1.5" fill="rgba(232,180,80,.65)"/>
-    <circle cx="340" cy="55" r="1.3" fill="rgba(180,120,240,.55)"/>
-  </svg>
+  <!-- Orbs + stars -->
+  <div style="position:absolute;top:5%;left:10%;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(155,70,200,.28),transparent 70%);pointer-events:none;"></div>
+  <div style="position:absolute;top:20%;right:5%;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(74,170,196,.18),transparent 70%);pointer-events:none;"></div>
+  <div style="position:absolute;top:3%;left:45%;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(192,80,128,.14),transparent 70%);pointer-events:none;"></div>
+  <div style="position:absolute;top:6%;left:20%;width:2px;height:2px;border-radius:50%;background:white;opacity:.8;"></div>
+  <div style="position:absolute;top:10%;left:75%;width:1px;height:1px;border-radius:50%;background:white;opacity:.6;"></div>
+  <div style="position:absolute;top:15%;left:50%;width:2px;height:2px;border-radius:50%;background:rgba(210,170,255,.8);opacity:.7;"></div>
+  <div style="position:absolute;top:4%;left:88%;width:1px;height:1px;border-radius:50%;background:white;opacity:.5;"></div>
+  <div style="position:absolute;top:22%;left:30%;width:1px;height:1px;border-radius:50%;background:white;opacity:.4;"></div>
 
-  <!-- Landscape scene -->
-  <svg style="position:fixed;bottom:0;left:0;width:100%;height:50%;z-index:1;pointer-events:none;" viewBox="0 0 390 280" fill="none" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
-    <path d="M0 280 L0 140 Q50 90 100 115 Q155 142 210 105 Q260 68 320 96 Q358 112 390 85 L390 280 Z" fill="url(#bhill)"/>
-    <path d="M0 280 L0 180 Q65 148 130 168 Q195 188 260 158 Q320 132 390 155 L390 280 Z" fill="url(#mhill)"/>
-    <path d="M0 280 L0 220 Q95 200 195 212 Q290 224 390 205 L390 280 Z" fill="url(#fhill)"/>
-    <path d="M195 280 Q192 248 182 222 Q168 190 148 165 Q130 143 135 118" stroke="rgba(232,160,80,.3)" stroke-width="5" fill="none" stroke-linecap="round"/>
-    <path d="M195 280 Q192 248 182 222 Q168 190 148 165 Q130 143 135 118" stroke="rgba(255,200,100,.12)" stroke-width="14" fill="none" stroke-linecap="round"/>
-    <circle cx="32" cy="198" r="5" fill="rgba(192,80,160,.5)"/>
-    <circle cx="19" cy="208" r="3" fill="rgba(232,100,160,.4)"/>
-    <circle cx="48" cy="205" r="2.5" fill="rgba(160,60,200,.35)"/>
-    <circle cx="340" cy="188" r="4.5" fill="rgba(192,80,160,.45)"/>
-    <circle cx="358" cy="198" r="3" fill="rgba(232,100,140,.4)"/>
-    <circle cx="325" cy="200" r="2" fill="rgba(160,60,200,.3)"/>
-    <circle cx="235" cy="128" r="2" fill="rgba(232,160,80,.6)"/>
-    <circle cx="78" cy="155" r="1.5" fill="rgba(232,140,180,.5)"/>
-    <defs>
-      <linearGradient id="bhill" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#2A0A50" stop-opacity=".9"/>
-        <stop offset="100%" stop-color="#120520"/>
-      </linearGradient>
-      <linearGradient id="mhill" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#1E0840" stop-opacity=".95"/>
-        <stop offset="100%" stop-color="#0D0520"/>
-      </linearGradient>
-      <linearGradient id="fhill" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#150630"/>
-        <stop offset="100%" stop-color="#060210"/>
-      </linearGradient>
-    </defs>
-  </svg>
+  <div style="min-height:100%;display:flex;flex-direction:column;justify-content:flex-start;gap:20px;padding:max(44px,env(safe-area-inset-top)) 24px max(32px,env(safe-area-inset-bottom));position:relative;z-index:2;">
 
-  <!-- Avatar glow -->
-  <div style="position:fixed;top:24px;left:50%;transform:translateX(-50%);width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(210,80,160,.3) 0%,rgba(160,50,120,.12) 50%,transparent 70%);z-index:2;pointer-events:none;"></div>
+    <!-- IR introduces itself -->
+    <div style="display:flex;flex-direction:column;align-items:center;text-align:center;">
 
-  <!-- Main content -->
-  <div style="position:relative;z-index:3;display:flex;flex-direction:column;align-items:center;min-height:100%;padding:max(44px,env(safe-area-inset-top)) 24px max(max(90px,calc(env(safe-area-inset-bottom)+70px)));">
-
-    <!-- Skip -->
-    <div style="position:absolute;top:max(44px,env(safe-area-inset-top));right:24px;background:rgba(255,255,255,.12);border-radius:20px;padding:5px 16px;font-size:12px;font-weight:700;color:rgba(255,255,255,.6);cursor:pointer;" onclick="nav('home')">Skip</div>
-
-    <!-- IR Avatar with glow ring -->
-    <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(160deg,#3A1060,#5A1890,#2A0A45);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:26px;color:white;font-weight:700;position:relative;margin-bottom:18px;flex-shrink:0;box-shadow:0 0 0 2.5px rgba(232,160,200,.3),0 0 32px rgba(192,60,180,.45);">
-      IR
-      <div style="position:absolute;inset:-6px;border-radius:50%;border:1.5px solid rgba(232,160,200,.4);box-shadow:0 0 16px rgba(232,120,180,.35);"></div>
-    </div>
-
-    <!-- Headline -->
-    <div style="font-family:'Playfair Display',serif;font-size:28px;color:white;font-weight:700;text-align:center;line-height:1.2;margin-bottom:6px;">Your emotions<br>have rhythms.</div>
-    <div style="font-family:'Playfair Display',serif;font-size:28px;color:#E8A0C8;font-style:italic;text-align:center;line-height:1.2;margin-bottom:10px;">Let's uncover them,<br>together.</div>
-    <div style="font-size:13px;color:rgba(255,255,255,.45);text-align:center;line-height:1.65;margin-bottom:6px;max-width:280px;">The more you check in, the more your patterns become clear — so you can understand yourself in a deeper way.</div>
-    <div style="text-align:center;font-size:14px;color:rgba(232,160,200,.45);margin-bottom:16px;letter-spacing:5px;">✦</div>
-
-    <!-- Feature rows -->
-    <div style="width:100%;background:rgba(20,8,40,.55);border:1px solid rgba(255,255,255,.08);border-radius:18px;overflow:hidden;margin-bottom:16px;backdrop-filter:blur(8px);">
-      <div style="display:flex;align-items:center;gap:13px;padding:12px 16px;border-bottom:0.5px solid rgba(255,255,255,.05);">
-        <div style="width:36px;height:36px;border-radius:11px;background:rgba(192,80,120,.25);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;">&#129505;</div>
-        <div><div style="font-size:13px;font-weight:800;color:white;margin-bottom:2px;">Emotionally aware</div><div style="font-size:11px;color:rgba(255,255,255,.38);">Built with empathy, not judgment.</div></div>
+      <!-- IR avatar — animated pulse ring -->
+      <div style="position:relative;margin-bottom:18px;">
+        <div style="position:absolute;inset:-8px;border-radius:50%;background:rgba(155,126,200,.2);animation:pulse 2.5s ease-in-out infinite;"></div>
+        <div style="position:absolute;inset:-16px;border-radius:50%;background:rgba(155,126,200,.1);animation:pulse 2.5s ease-in-out infinite .4s;"></div>
+        <div style="width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:white;font-family:Playfair Display,serif;position:relative;z-index:1;box-shadow:0 8px 32px rgba(155,126,200,.4);">IR</div>
       </div>
-      <div style="display:flex;align-items:center;gap:13px;padding:12px 16px;border-bottom:0.5px solid rgba(255,255,255,.05);">
-        <div style="width:36px;height:36px;border-radius:11px;background:rgba(94,61,110,.35);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;">&#127769;</div>
-        <div><div style="font-size:13px;font-weight:800;color:white;margin-bottom:2px;">Learns your patterns</div><div style="font-size:11px;color:rgba(255,255,255,.38);">Not just your cycle, but your rhythm.</div></div>
-      </div>
-      <div style="display:flex;align-items:center;gap:13px;padding:12px 16px;">
-        <div style="width:36px;height:36px;border-radius:11px;background:rgba(74,100,150,.25);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;">&#128274;</div>
-        <div><div style="font-size:13px;font-weight:800;color:white;margin-bottom:2px;">Private by default</div><div style="font-size:11px;color:rgba(255,255,255,.38);">Your data stays yours. Always.</div></div>
+
+      <!-- Playful intro -->
+      <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;">Hi, I am Inner Rhythm</div>
+
+      <div style="font-family:Playfair Display,serif;font-size:26px;color:white;font-weight:700;line-height:1.3;margin-bottom:12px;">I am going to get<br>to know you<br><span style="font-style:italic;color:#E8A0C0;">really</span> well.</div>
+
+      <div style="font-size:13px;color:rgba(255,255,255,.55);line-height:1.75;max-width:280px;margin-bottom:18px;">Most people only realise their emotions were cycle-related after the hard day has passed. I help you notice it while you are still inside it.</div>
+
+      <!-- Three little personality chips -->
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:0;">
+        <div style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;color:rgba(255,255,255,.7);">&#129504; Honest</div>
+        <div style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;color:rgba(255,255,255,.7);">&#129293; Warm</div>
+        <div style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;color:rgba(255,255,255,.7);">&#128270; Curious</div>
       </div>
     </div>
 
-    <!-- Name input -->
-    <div style="width:100%;margin-bottom:14px;">
-      <div style="font-size:10px;font-weight:800;color:rgba(232,160,200,.7);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;">What should I call you?</div>
-      <input id="inp-name" type="text" placeholder="Your first name..." autocomplete="given-name" style="width:100%;background:rgba(20,8,40,.5);border:1.5px solid rgba(232,160,200,.25);border-radius:14px;padding:14px 18px;font-family:'Nunito',sans-serif;font-size:15px;color:white;outline:none;" onfocus="this.style.borderColor='rgba(232,160,200,.6)'" onblur="this.style.borderColor='rgba(232,160,200,.25)'" onkeydown="if(event.key==='Enter')doAuth()">
+    <!-- Name input section -->
+    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:24px 22px;">
+
+      <div style="font-family:Playfair Display,serif;font-size:18px;color:white;font-weight:700;margin-bottom:6px;text-align:center;">So — what should I call you?</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.45);text-align:center;margin-bottom:18px;">Just your first name is perfect.</div>
+
+      <input
+        id="inp-name"
+        type="text"
+        placeholder="Your name..."
+        autocomplete="given-name"
+        onkeydown="if(event.key==='Enter')doAuth()"
+        style="width:100%;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.15);border-radius:14px;padding:15px 18px;font-family:Nunito,sans-serif;font-size:16px;color:white;outline:none;margin-bottom:12px;transition:border .2s;"
+        onfocus="this.style.borderColor='rgba(155,126,200,.8)'"
+        onblur="this.style.borderColor='rgba(255,255,255,.15)'"
+      >
+
+      <button onclick="doAuth()" style="width:100%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);border:none;border-radius:14px;padding:16px;font-family:Nunito,sans-serif;font-size:16px;font-weight:800;color:white;cursor:pointer;box-shadow:0 4px 20px rgba(155,126,200,.4);">Nice to meet you &#8594;</button>
     </div>
 
-    <!-- CTA -->
-    <button onclick="doAuth()" style="width:100%;background:linear-gradient(135deg,#C05080 0%,#8B2070 60%,#6A1060 100%);color:white;border:none;border-radius:16px;padding:16px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 6px 28px rgba(192,60,120,.5);-webkit-tap-highlight-color:transparent;">Let's begin &#8594;</button>
-    <div style="text-align:center;font-size:11px;color:rgba(255,255,255,.22);margin-top:8px;">Free for 60 days &middot; No card needed</div>
   </div>
+
+  <style>
+    @keyframes pulse{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.12);opacity:.7;}}
+    #inp-name::placeholder{color:rgba(255,255,255,.3);}
+  </style>
 </div>
 
-<div class="screen" id="screen-welcome" style="overflow:hidden;background:radial-gradient(ellipse at 50% 0%,#2A0A45 0%,#1A0830 50%,#0D0520 100%);">
+  
 
-  <!-- Stars -->
-  <svg style="position:absolute;top:0;left:0;width:100%;height:40%;z-index:1;pointer-events:none;" viewBox="0 0 390 220" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="30" cy="28" r="1.1" fill="white" opacity=".4"/>
-    <circle cx="88" cy="18" r=".8" fill="white" opacity=".3"/>
-    <circle cx="195" cy="12" r="1.3" fill="white" opacity=".5"/>
-    <circle cx="280" cy="30" r=".9" fill="white" opacity=".4"/>
-    <circle cx="355" cy="20" r="1" fill="white" opacity=".45"/>
-    <circle cx="140" cy="42" r=".7" fill="white" opacity=".28"/>
-    <circle cx="320" cy="50" r=".8" fill="white" opacity=".3"/>
-    <circle cx="118" cy="52" r="1.8" fill="rgba(232,160,200,.7)"/>
-    <circle cx="258" cy="24" r="1.3" fill="rgba(232,180,80,.6)"/>
-  </svg>
-
-  <!-- Subtle landscape at bottom -->
-  <svg style="position:absolute;bottom:0;left:0;width:100%;height:22%;z-index:1;pointer-events:none;opacity:.4;" viewBox="0 0 390 100" fill="none" preserveAspectRatio="xMidYMax slice">
-    <path d="M0 100 L0 50 Q80 25 195 42 Q310 58 390 30 L390 100 Z" fill="#2A0A45"/>
-    <circle cx="25" cy="52" r="3.5" fill="rgba(192,80,160,.5)"/>
-    <circle cx="358" cy="36" r="3" fill="rgba(232,100,140,.4)"/>
-    <circle cx="225" cy="46" r="2" fill="rgba(160,60,200,.35)"/>
-  </svg>
-
-  <!-- Scrollable content -->
-  <div style="position:absolute;inset:0;z-index:3;overflow-y:auto;padding:max(48px,env(safe-area-inset-top)) 22px max(max(90px,calc(env(safe-area-inset-bottom)+80px))) 22px;">
-
-    <!-- Back button -->
-    <button onclick="nav('auth')" style="position:absolute;top:max(48px,env(safe-area-inset-top));left:22px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.1);border:none;font-size:16px;color:rgba(255,255,255,.6);cursor:pointer;display:flex;align-items:center;justify-content:center;">&#8249;</button>
-
-    <!-- IR avatar small -->
-    <div style="display:flex;justify-content:center;margin-bottom:14px;margin-top:8px;">
-      <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(160deg,#3A1060,#5A1890);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:16px;color:white;font-weight:700;box-shadow:0 0 0 2px rgba(232,160,200,.25),0 0 20px rgba(192,80,180,.35);">IR</div>
-    </div>
-
-    <!-- Greeting -->
-    <div style="font-family:'Playfair Display',serif;font-size:24px;color:white;font-weight:700;text-align:center;line-height:1.3;margin-bottom:5px;">Nice to meet you, <span style="color:#E8A840;font-style:italic;" class="welcome-name" id="greet-name">there</span>. &#127769;</div>
-    <div style="font-size:12px;color:rgba(255,255,255,.4);text-align:center;line-height:1.6;margin-bottom:16px;">A few quick things so I can personalise your experience.</div>
-
-    <!-- IR Promise card -->
-    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:13px 15px;display:flex;align-items:flex-start;gap:11px;margin-bottom:20px;">
-      <div style="font-size:18px;flex-shrink:0;margin-top:1px;">&#10022;</div>
-      <div style="font-size:12px;color:rgba(255,255,255,.6);line-height:1.7;">I'll notice patterns in your emotions, energy and needs — so you can feel more supported, every day.</div>
-    </div>
-
-    <!-- Soft trial mention -->
-    <div style="background:rgba(255,255,255,.04);border-radius:13px;padding:11px 14px;display:flex;align-items:center;gap:10px;margin-bottom:20px;">
-      <div style="font-size:15px;">&#10024;</div>
-      <div style="font-size:11px;color:rgba(255,255,255,.4);line-height:1.6;">You'll have full access for your first 60 days — enough time to experience your rhythms across multiple cycles.</div>
-    </div>
-
-    <!-- Section: Period date -->
-    <div style="display:flex;align-items:center;gap:7px;margin-bottom:5px;">
-      <div style="font-size:13px;">&#127807;</div>
-      <div style="font-size:10px;font-weight:800;color:#E8A0C8;text-transform:uppercase;letter-spacing:.5px;">Where are you in your rhythm?</div>
-    </div>
-    <div style="font-size:11px;color:rgba(255,255,255,.32);margin-bottom:12px;padding-left:20px;">This helps me personalise your insights.</div>
-
-    <!-- Date row — tappable -->
-    <div onclick="document.getElementById('welcome-period').showPicker&&document.getElementById('welcome-period').showPicker();document.getElementById('welcome-period').focus();" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:13px;margin-bottom:6px;cursor:pointer;">
-      <div style="width:36px;height:36px;border-radius:11px;background:rgba(192,80,120,.25);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;">&#128197;</div>
-      <div style="flex:1;">
-        <div style="font-size:13px;font-weight:700;color:white;margin-bottom:2px;">When did your last period start?</div>
-        <div style="font-size:11px;color:rgba(255,255,255,.35);" id="welcome-date-display">Select the date</div>
+  <!-- ======= WELCOME + SETUP ======= -->
+  <div class="screen" id="screen-welcome" style="background:#F8F5FA;overflow:hidden;">
+    <div class="scroll" style="padding-bottom:32px;">
+      <div style="background:linear-gradient(135deg,#4AAAC4,#7DC8E0);border-radius:20px;padding:20px 22px;display:flex;align-items:center;gap:14px;margin-bottom:18px;">
+        <div style="width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:white;flex-shrink:0;">IR</div>
+        <div><div style="font-family:Playfair Display,serif;font-size:17px;color:white;font-weight:700;margin-bottom:4px;" id="welcome-name-msg">Nice to meet you &#10024;</div><div style="font-size:12px;color:rgba(255,255,255,.85);line-height:1.5;">I am already paying attention.</div></div>
       </div>
-      <div style="font-size:16px;color:rgba(255,255,255,.3);">&#8250;</div>
-    </div>
-    <input type="date" id="welcome-period" style="opacity:0;height:0;width:0;position:absolute;" onchange="var d=this.value;if(d){var parts=d.split('-');document.getElementById('welcome-date-display').textContent=parts[2]+'/'+parts[1]+'/'+parts[0];document.getElementById('welcome-date-display').style.color='rgba(255,255,255,.7)';}">
-
-    <div style="text-align:center;font-size:11px;color:rgba(255,255,255,.22);margin:10px 0 16px;">or</div>
-
-    <!-- Section: Cycle length -->
-    <div style="display:flex;align-items:center;gap:7px;margin-bottom:5px;">
-      <div style="font-size:13px;">&#127807;</div>
-      <div style="font-size:10px;font-weight:800;color:#E8A0C8;text-transform:uppercase;letter-spacing:.5px;">What's your usual cycle length?</div>
-    </div>
-    <div style="font-size:11px;color:rgba(255,255,255,.32);margin-bottom:12px;padding-left:20px;">This helps estimate your phases.</div>
-
-    <div style="display:flex;gap:8px;margin-bottom:6px;" id="welcome-cycle-pills">
-      <div class="auth-cpill" onclick="pickWelcomeCycle(this,25)" style="flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:22px;padding:10px 4px;text-align:center;cursor:pointer;">
-        <div style="font-size:13px;font-weight:800;color:white;">25</div>
-        <div style="font-size:9px;color:rgba(255,255,255,.35);margin-top:1px;">days</div>
+      <div style="font-size:11px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;">How it works</div>
+      <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:20px;">
+        <div style="background:white;border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px;border:0.5px solid rgba(0,0,0,.06);"><div style="font-size:24px;flex-shrink:0;">&#128522;</div><div><div style="font-size:13px;font-weight:800;color:#1A3A45;">Log how you feel each day</div><div style="font-size:11px;color:#8AAAB4;margin-top:2px;">Mood, energy, symptoms. Under a minute.</div></div></div>
+        <div style="background:white;border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px;border:0.5px solid rgba(0,0,0,.06);"><div style="font-size:24px;flex-shrink:0;">&#127769;</div><div><div style="font-size:13px;font-weight:800;color:#1A3A45;">I connect it to your cycle</div><div style="font-size:11px;color:#8AAAB4;margin-top:2px;">Patterns show up within a week.</div></div></div>
+        <div style="background:white;border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px;border:0.5px solid rgba(0,0,0,.06);"><div style="font-size:24px;flex-shrink:0;">&#128140;</div><div><div style="font-size:13px;font-weight:800;color:#1A3A45;">I talk to you specifically</div><div style="font-size:11px;color:#8AAAB4;margin-top:2px;">Not generic. Written for where you are.</div></div></div>
       </div>
-      <div class="auth-cpill picked" onclick="pickWelcomeCycle(this,28)" style="flex:1;background:transparent;border:1.5px solid #C05080;border-radius:22px;padding:10px 4px;text-align:center;cursor:pointer;box-shadow:0 0 0 1px #C05080;">
-        <div style="font-size:13px;font-weight:800;color:white;">28</div>
-        <div style="font-size:9px;color:#E8A0C8;margin-top:1px;">Typical</div>
+      <div style="font-size:11px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;">When did your last period start?</div>
+      <input type="date" id="welcome-period" style="width:100%;background:#F0F8FC;border:1.5px solid #B8DCF0;border-radius:13px;padding:13px 15px;font-family:Nunito,sans-serif;font-size:15px;color:#1A3A45;outline:none;margin-bottom:5px;">
+      <div style="font-size:11px;color:#B8C8D4;margin-bottom:18px;">Optional &#8212; set this later in Profile.</div>
+      <div style="font-size:11px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;">Usual cycle length</div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:24px;" id="welcome-cycle-pills">
+        <div class="auth-cpill" onclick="pickWelcomeCycle(this,25)">25 days</div>
+        <div class="auth-cpill picked" onclick="pickWelcomeCycle(this,28)">28 days</div>
+        <div class="auth-cpill" onclick="pickWelcomeCycle(this,30)">30 days</div>
+        <div class="auth-cpill" onclick="pickWelcomeCycle(this,32)">32 days</div>
+        <div class="auth-cpill" onclick="pickWelcomeCycle(this,35)">35 days</div>
       </div>
-      <div class="auth-cpill" onclick="pickWelcomeCycle(this,30)" style="flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:22px;padding:10px 4px;text-align:center;cursor:pointer;">
-        <div style="font-size:13px;font-weight:800;color:white;">30</div>
-        <div style="font-size:9px;color:rgba(255,255,255,.35);margin-top:1px;">days</div>
-      </div>
-      <div class="auth-cpill" onclick="pickWelcomeCycle(this,32)" style="flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:22px;padding:10px 4px;text-align:center;cursor:pointer;">
-        <div style="font-size:13px;font-weight:800;color:white;">32+</div>
-        <div style="font-size:9px;color:rgba(255,255,255,.35);margin-top:1px;">days</div>
-      </div>
+      <button onclick="finishWelcome()" style="width:100%;background:linear-gradient(135deg,#4AAAC4,#7DC8E0);color:white;border:none;border-radius:14px;padding:16px;font-family:Nunito,sans-serif;font-size:16px;font-weight:800;cursor:pointer;-webkit-tap-highlight-color:transparent;">Take me to my rhythm &#8594;</button>
     </div>
-
-    <!-- Reassurance card -->
-    <div style="background:rgba(255,255,255,.04);border-radius:13px;padding:11px 14px;display:flex;align-items:center;gap:10px;margin:14px 0 16px;">
-      <div style="font-size:16px;">&#129760;</div>
-      <div style="font-size:11px;color:rgba(255,255,255,.35);line-height:1.6;">You can change or update these anytime in your profile settings.</div>
-    </div>
-
-    <!-- CTA -->
-    <button onclick="finishWelcome()" style="width:100%;background:linear-gradient(135deg,#C05080,#8B2070,#6A1060);color:white;border:none;border-radius:16px;padding:15px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 6px 24px rgba(192,60,120,.45);-webkit-tap-highlight-color:transparent;margin-bottom:12px;">Continue &#8594;</button>
-    <div style="text-align:center;font-size:13px;color:rgba(255,255,255,.3);cursor:pointer;padding-bottom:8px;" onclick="finishWelcome()">Skip for now</div>
   </div>
-</div>
+  <!-- ======= HOME ======= -->
 
-<div class="screen" id="screen-home">
+  
+  
+  
+  
+
+  <div class="screen" id="screen-home">
 
     <!-- Phase-tinted header (variant 3 — watercolour) -->
-    <div id="home-hero" style="background:linear-gradient(160deg,#F8EEF9 0%,#F2E6F5 50%,#EDD8F0 100%);padding:max(44px,env(safe-area-inset-top)) 20px 32px;flex-shrink:0;position:relative;overflow:hidden;transition:background .6s;">
+    <div id="home-hero" style="background:linear-gradient(160deg,#F8F0FF 0%,#F2E8FC 50%,#EDE0F8 100%);padding:max(44px,env(safe-area-inset-top)) 20px 32px;flex-shrink:0;position:relative;overflow:hidden;transition:background .6s;">
       <!-- Soft orbs -->
       <div style="position:absolute;top:-30px;right:-20px;width:140px;height:140px;border-radius:50%;background:rgba(155,126,200,.08);pointer-events:none;"></div>
       <div style="position:absolute;bottom:-20px;left:-20px;width:110px;height:110px;border-radius:50%;background:rgba(192,80,128,.06);pointer-events:none;"></div>
@@ -1101,7 +993,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;position:relative;z-index:1;">
         <div>
           <div style="font-size:12px;font-weight:700;color:rgba(100,60,160,.55);margin-bottom:3px;" id="home-phase-label">Luteal · Day 19</div>
-          <div style="font-family:Playfair Display,serif;font-size:22px;color:#211535;font-weight:700;line-height:1.2;" id="greet">Good morning</div>
+          <div style="font-family:Playfair Display,serif;font-size:22px;color:#2A1A4A;font-weight:700;line-height:1.2;" id="greet">Good morning</div>
         </div>
         <div style="display:flex;gap:10px;align-items:center;">
           <div id="home-streak-pill" style="background:rgba(255,255,255,.7);border:1.5px solid #FFD060;border-radius:20px;padding:5px 10px;display:none;align-items:center;gap:5px;cursor:pointer;-webkit-tap-highlight-color:transparent;" onclick="openBadgeSheet()">
@@ -1119,10 +1011,10 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
           <div style="font-family:Playfair Display,serif;font-size:20px;color:#1A3A45;font-weight:700;margin-bottom:4px;">Your badges</div>
           <div style="font-size:12px;color:#8AAAB4;margin-bottom:18px;" id="sheet-badge-count">Keep logging to earn badges</div>
           <div id="sheet-badge-grid" style="display:flex;flex-wrap:wrap;gap:14px;justify-content:flex-start;margin-bottom:20px;"></div>
-          <div style="background:linear-gradient(135deg,#FAF6FB,#EEE4F2);border-radius:14px;padding:12px 14px;border:1.5px solid #E2D4EC;">
+          <div style="background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-radius:14px;padding:12px 14px;border:1.5px solid #E4D8F4;">
             <div style="display:flex;gap:8px;align-items:flex-start;">
-              <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#7C5C8A,#5E3D6E);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:white;flex-shrink:0;">IR</div>
-              <div style="font-size:12px;color:#2E1F3E;line-height:1.65;" id="sheet-ir-note">Each badge unlocks when I genuinely learn something about your cycle.</div>
+              <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:white;flex-shrink:0;">IR</div>
+              <div style="font-size:12px;color:#3A2A5A;line-height:1.65;" id="sheet-ir-note">Each badge unlocks when I genuinely learn something about your cycle.</div>
             </div>
           </div>
         </div>
@@ -1133,9 +1025,9 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
         <div id="ring-wrap" style="display:inline-block;position:relative;">
           <svg id="ring-svg" width="130" height="130" viewBox="0 0 160 160">
             <circle cx="80" cy="80" r="68" fill="rgba(255,255,255,.45)" stroke="rgba(155,126,200,.2)" stroke-width="7"/>
-            <circle id="ring-progress" cx="80" cy="80" r="68" fill="none" stroke="#7C5C8A" stroke-width="7" stroke-linecap="round" stroke-dasharray="427" stroke-dashoffset="214" transform="rotate(-90 80 80)" style="transition:stroke-dashoffset .8s ease,stroke .5s;"/>
-            <text id="ring-day" x="80" y="70" text-anchor="middle" fill="#211535" font-size="34" font-weight="800" font-family="Nunito">--</text>
-            <text id="ring-phase" x="80" y="90" text-anchor="middle" fill="#7C5C8A" font-size="9" font-weight="800" font-family="Nunito" letter-spacing="1.5">LOADING</text>
+            <circle id="ring-progress" cx="80" cy="80" r="68" fill="none" stroke="#9B7EC8" stroke-width="7" stroke-linecap="round" stroke-dasharray="427" stroke-dashoffset="214" transform="rotate(-90 80 80)" style="transition:stroke-dashoffset .8s ease,stroke .5s;"/>
+            <text id="ring-day" x="80" y="70" text-anchor="middle" fill="#2A1A4A" font-size="34" font-weight="800" font-family="Nunito">--</text>
+            <text id="ring-phase" x="80" y="90" text-anchor="middle" fill="#9B7EC8" font-size="9" font-weight="800" font-family="Nunito" letter-spacing="1.5">LOADING</text>
           </svg>
         </div>
         <div style="font-size:12px;font-weight:600;color:rgba(100,60,160,.6);margin-top:6px;" id="home-next-period">Period info loading...</div>
@@ -1156,11 +1048,10 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
       </div>
 
       <!-- IR message -->
-      <div id="home-ir-card" style="background:linear-gradient(135deg,#FAF6FB,#EEE4F2);border-radius:16px;padding:14px 15px;border:1.5px solid #E2D4EC;margin-bottom:12px;">
+      <div id="home-ir-card" style="background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-radius:16px;padding:14px 15px;border:1.5px solid #E4D8F4;margin-bottom:12px;">
         <div style="display:flex;gap:9px;align-items:flex-start;">
-          <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#7C5C8A,#5E3D6E);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;">IR</div>
-          <div style="font-size:13px;color:#2E1F3E;line-height:1.75;" id="home-ir-msg">Loading your message...</div>
-          <div id="home-support-chips" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;"></div>
+          <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;">IR</div>
+          <div style="font-size:13px;color:#3A2A5A;line-height:1.75;" id="home-ir-msg">Loading your message...</div>
         </div>
       </div>
 
@@ -1189,8 +1080,8 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
       </div>
 
       <!-- Day one welcome — shows until first log -->
-      <div id="home-day-one" style="display:none;background:linear-gradient(135deg,#FAF6FB,#EEE4F2);border-radius:16px;padding:16px;border:1.5px solid #E2D4EC;margin-bottom:12px;">
-        <div style="font-size:12px;font-weight:800;color:#7C5C8A;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px;">Getting started</div>
+      <div id="home-day-one" style="display:none;background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-radius:16px;padding:16px;border:1.5px solid #E4D8F4;margin-bottom:12px;">
+        <div style="font-size:12px;font-weight:800;color:#9B7EC8;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px;">Getting started</div>
         <div style="display:flex;flex-direction:column;gap:10px;">
           <div style="display:flex;align-items:center;gap:12px;background:white;border-radius:12px;padding:11px 13px;cursor:pointer;" onclick="nav('checkin')">
             <div style="font-size:22px;flex-shrink:0;">&#9997;&#65039;</div>
@@ -1223,7 +1114,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
       <div id="home-patterns-tease" style="display:none;background:white;border-radius:16px;padding:14px 15px;border:0.5px solid #E8EEF2;margin-bottom:12px;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 8px rgba(0,0,0,.04);">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
           <div style="font-size:11px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.5px;">Your patterns</div>
-          <div style="font-size:12px;font-weight:700;color:#7C5C8A;cursor:pointer;" onclick="nav('patterns')">See all &#8250;</div>
+          <div style="font-size:12px;font-weight:700;color:#9B7EC8;cursor:pointer;" onclick="nav('patterns')">See all &#8250;</div>
         </div>
         <div style="font-size:13px;color:#3A4A5A;line-height:1.7;" id="home-pattern-preview">Keep logging and I will start seeing your patterns.</div>
       </div>
@@ -1292,7 +1183,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
       <div style="background:white;border-radius:16px;margin-bottom:12px;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,.04),0 2px 8px rgba(0,0,0,.04);">
         <div style="padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
           <div style="display:flex;align-items:center;gap:12px;">
-            <div style="width:36px;height:36px;border-radius:10px;background:#F5EEF8;display:flex;align-items:center;justify-content:center;font-size:17px;">&#127769;</div>
+            <div style="width:36px;height:36px;border-radius:10px;background:#F0EAF8;display:flex;align-items:center;justify-content:center;font-size:17px;">&#127769;</div>
             <div>
               <div style="font-size:13px;font-weight:700;color:#1A3A45;">Phase change</div>
               <div style="font-size:11px;color:#A8C0CC;margin-top:2px;">When you enter a new phase</div>
@@ -1349,185 +1240,15 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
       </div>
 
       <!-- Privacy note -->
-      <div style="background:linear-gradient(135deg,#FAF6FB,#EEE4F2);border-radius:14px;padding:13px 15px;border:1.5px solid #E2D4EC;">
-        <div style="font-size:12px;color:#5E3D6E;line-height:1.7;">&#128274; Inner Rhythm reminders appear inside the app only. No push notifications leave your device &#8212; your data stays completely private.</div>
+      <div style="background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-radius:14px;padding:13px 15px;border:1.5px solid #E4D8F4;">
+        <div style="font-size:12px;color:#7B5EA8;line-height:1.7;">&#128274; Inner Rhythm reminders appear inside the app only. No push notifications leave your device &#8212; your data stays completely private.</div>
       </div>
 
     </div>
   </div>
 
   <!-- ======= CHECK-IN ======= -->
-  <div class="screen" id="screen-logchoice">
-    <div style="background:linear-gradient(160deg,#F5EEF8 0%,#D8ECF8 100%);padding:max(44px,env(safe-area-inset-top)) 20px 22px;">
-      <div style="font-family:'Playfair Display',serif;font-size:22px;color:#1A3A45;font-weight:700;margin-bottom:4px;">What do you want to log?</div>
-      <div style="font-size:12px;color:#7A9AAA;">You can do both — or just one.</div>
-    </div>
-    <div class="scroll" style="background:#F4F7FA;border-radius:26px 26px 0 0;margin-top:-16px;padding:18px 16px max(80px,calc(env(safe-area-inset-bottom)+70px));z-index:1;position:relative;display:flex;flex-direction:column;gap:12px;">
-      <div onclick="nav('checkin')" style="background:white;border-radius:18px;padding:18px;border:1.5px solid rgba(155,126,200,.2);cursor:pointer;position:relative;overflow:hidden;">
-        <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:linear-gradient(180deg,#7C5C8A,#5E3D6E);border-radius:4px 0 0 4px;"></div>
-        <div style="padding-left:10px;">
-          <div style="font-size:10px;font-weight:800;color:#7C5C8A;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Emotional check-in</div>
-          <div style="font-size:16px;font-weight:800;color:#1A3A45;margin-bottom:6px;">How are you feeling?</div>
-          <div style="font-size:12px;color:#8AAAB4;line-height:1.6;margin-bottom:14px;">A quick pulse or a deeper conversation. Purely emotional — no body tracking here.</div>
-          <div style="display:flex;gap:8px;">
-            <div style="flex:1;background:linear-gradient(135deg,#7C5C8A,#5E3D6E);border-radius:11px;padding:10px;text-align:center;font-size:11px;font-weight:800;color:white;">Quick &middot; 10 sec</div>
-            <div style="flex:1;background:#F5EEF8;border-radius:11px;padding:10px;text-align:center;font-size:11px;font-weight:800;color:#5E3D6E;">Deep &middot; 3 min</div>
-          </div>
-        </div>
-      </div>
-      <div onclick="nav('bodylog')" style="background:white;border-radius:18px;padding:18px;border:1.5px solid rgba(192,80,120,.15);cursor:pointer;position:relative;overflow:hidden;">
-        <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:linear-gradient(180deg,#C05080,#9B3060);border-radius:4px 0 0 4px;"></div>
-        <div style="padding-left:10px;">
-          <div style="font-size:10px;font-weight:800;color:#C05080;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Body log</div>
-          <div style="font-size:16px;font-weight:800;color:#1A3A45;margin-bottom:6px;">Track your body today</div>
-          <div style="font-size:12px;color:#8AAAB4;line-height:1.6;margin-bottom:14px;">Period, flow, energy, symptoms, sleep, intimacy. Nothing is required.</div>
-          <div style="background:linear-gradient(135deg,#C05080,#9B3060);border-radius:11px;padding:10px;text-align:center;font-size:11px;font-weight:800;color:white;">Open body log &rarr;</div>
-        </div>
-      </div>
-      <div style="text-align:center;font-size:11px;color:#B0C0C8;">They work together &mdash; IR reads both.</div>
-    </div>
-  </div>
-
-  <div class="screen" id="screen-bodylog">
-    <div style="background:linear-gradient(160deg,#FFF0F5 0%,#F5EEF8 60%,#E8F4FC 100%);padding:max(44px,env(safe-area-inset-top)) 20px 20px;">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
-        <button onclick="nav('logchoice')" style="background:rgba(192,80,120,.12);border:none;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#8592;</button>
-        <div>
-          <div style="font-family:'Playfair Display',serif;font-size:20px;color:#1A3A45;font-weight:700;">Body log</div>
-          <div style="font-size:11px;color:rgba(120,60,80,.55);margin-top:1px;" id="bodylog-date">Today</div>
-        </div>
-      </div>
-      <div style="font-size:12px;color:rgba(100,40,60,.5);">Nothing is required. Log what feels relevant.</div>
-    </div>
-    <div class="scroll" style="background:#FAF4F2;border-radius:26px 26px 0 0;margin-top:-16px;padding:16px 16px max(80px,calc(env(safe-area-inset-bottom)+70px));z-index:1;position:relative;">
-      <div style="font-size:10px;font-weight:800;color:#C08090;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;padding-left:2px;">Period</div>
-      <div style="background:linear-gradient(135deg,#FFF0F5,#FFE4EE);border-radius:18px;margin-bottom:14px;border:1.5px solid rgba(192,80,120,.15);overflow:hidden;">
-        <div style="padding:14px 15px 10px;">
-          <div style="display:flex;gap:8px;margin-bottom:10px;">
-            <button onclick="logPeriodEvent('started')" id="btn-period-started" style="flex:1;background:white;border:1.5px solid rgba(192,80,120,.3);border-radius:12px;padding:11px;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;color:#C05080;cursor:pointer;">&#129768; Period started</button>
-            <button onclick="logPeriodEvent('ended')" id="btn-period-ended" style="flex:1;background:#C05080;border:none;border-radius:12px;padding:11px;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;color:white;cursor:pointer;">Period ended</button>
-          </div>
-          <div style="font-size:10px;font-weight:800;color:#C08090;text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px;">Flow</div>
-          <div style="display:flex;gap:5px;">
-            <div class="flow-opt" onclick="pickFlow(this,'Spotting')" style="flex:1;background:#FEF0F4;border-radius:9px;padding:8px 4px;text-align:center;font-size:10px;font-weight:700;color:#C05080;border:1.5px solid rgba(192,80,120,.15);cursor:pointer;">Spotting</div>
-            <div class="flow-opt" onclick="pickFlow(this,'Light')" style="flex:1;background:#FAD8E4;border-radius:9px;padding:8px 4px;text-align:center;font-size:10px;font-weight:700;color:#A03060;border:1.5px solid rgba(192,80,120,.25);cursor:pointer;">Light</div>
-            <div class="flow-opt" onclick="pickFlow(this,'Medium')" style="flex:1;background:#F090B0;border-radius:9px;padding:8px 4px;text-align:center;font-size:10px;font-weight:700;color:white;border:1.5px solid #D06090;cursor:pointer;">Medium</div>
-            <div class="flow-opt" onclick="pickFlow(this,'Heavy')" style="flex:1;background:#C04070;border-radius:9px;padding:8px 4px;text-align:center;font-size:10px;font-weight:700;color:white;border:1.5px solid #A02050;cursor:pointer;">Heavy</div>
-          </div>
-        </div>
-      </div>
-      <div style="font-size:10px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;padding-left:2px;">Track today</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;" id="bodylog-tiles">
-        <div class="bl-tile" id="tile-energy" onclick="toggleBodyTile('energy')"><div class="bl-tile-icon">&#9889;</div><div class="bl-tile-label">Energy</div></div>
-        <div class="bl-tile" id="tile-symptoms" onclick="toggleBodyTile('symptoms')"><div class="bl-tile-icon">&#129705;</div><div class="bl-tile-label">Symptoms</div></div>
-        <div class="bl-tile" id="tile-sleep" onclick="toggleBodyTile('sleep')"><div class="bl-tile-icon">&#128564;</div><div class="bl-tile-label">Sleep</div></div>
-        <div class="bl-tile" id="tile-intimacy" onclick="toggleBodyTile('intimacy')"><div class="bl-tile-icon">&#129293;</div><div class="bl-tile-label">Intimacy</div></div>
-        <div class="bl-tile" id="tile-medication" onclick="toggleBodyTile('medication')"><div class="bl-tile-icon">&#128138;</div><div class="bl-tile-label">Medication</div></div>
-        <div class="bl-tile" id="tile-notes" onclick="toggleBodyTile('notes')"><div class="bl-tile-icon">&#9997;&#65039;</div><div class="bl-tile-label">Notes</div></div>
-        <div class="bl-tile" id="tile-cervical" onclick="toggleBodyTile('cervical')"><div class="bl-tile-icon">&#129714;</div><div class="bl-tile-label">Cervical mucus</div></div>
-        <div class="bl-tile" id="tile-ovulation" onclick="toggleBodyTile('ovulation')"><div class="bl-tile-icon">&#129381;</div><div class="bl-tile-label">Ovulation test</div></div>
-      </div>
-      <div id="panel-energy" class="bl-panel" style="display:none;">
-        <div class="bl-panel-header"><span style="font-size:16px;">&#9889;</span><span class="bl-panel-title">Energy today</span><button class="bl-panel-close" onclick="closeBodyTile('energy')">Done</button></div>
-        <div class="bl-panel-body">
-          <div class="bl-chip" onclick="toggleBodyChip(this,'energy','Full energy')">Full energy</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'energy','Good')">Good</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'energy','Okay')">Okay</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'energy','Foggy')">Foggy</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'energy','Low')">Low</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'energy','Wired but tired')">Wired but tired</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'energy','Running on empty')">Running on empty</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'energy','Cozy low')">Cozy low</div>
-        </div>
-      </div>
-      <div id="panel-symptoms" class="bl-panel" style="display:none;">
-        <div class="bl-panel-header"><span style="font-size:16px;">&#129705;</span><span class="bl-panel-title">Symptoms</span><button class="bl-panel-close" onclick="closeBodyTile('symptoms')">Done</button></div>
-        <div class="bl-panel-body">
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Cramps')">Cramps</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Bloating')">Bloating</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Headache')">Headache</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Fatigue')">Fatigue</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Lower back pain')">Lower back pain</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Pelvic pain')">Pelvic pain</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Nausea')">Nausea</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Tender breasts')">Tender breasts</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Insomnia')">Insomnia</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Cravings')">Cravings</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Acne')">Acne</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Hot flashes')">Hot flashes</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Night sweats')">Night sweats</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Chills')">Chills</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Dry skin')">Dry skin</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Constipation')">Constipation</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Diarrhea')">Diarrhea</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Abdominal swelling')">Abdominal swelling</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'syms','Dizziness')">Dizziness</div>
-        </div>
-      </div>
-
-      <div id="panel-cervical" class="bl-panel" style="display:none;">
-        <div class="bl-panel-header"><span style="font-size:16px;">&#129714;</span><span class="bl-panel-title">Cervical mucus</span><button class="bl-panel-close" onclick="closeBodyTile('cervical')">Done</button></div>
-        <div class="bl-panel-body">
-          <div class="bl-chip" onclick="toggleBodyChip(this,'cervical','Egg white')">Egg white</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'cervical','Watery')">Watery</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'cervical','Creamy')">Creamy</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'cervical','Sticky')">Sticky</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'cervical','No mucus')">No mucus</div>
-        </div>
-      </div>
-
-      <div id="panel-ovulation" class="bl-panel" style="display:none;">
-        <div class="bl-panel-header"><span style="font-size:16px;">&#129381;</span><span class="bl-panel-title">Ovulation test</span><button class="bl-panel-close" onclick="closeBodyTile('ovulation')">Done</button></div>
-        <div class="bl-panel-body">
-          <div class="bl-chip" onclick="toggleBodyChip(this,'ovulation','Positive')">Positive</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'ovulation','Negative')">Negative</div>
-        </div>
-      </div>
-      <div id="panel-sleep" class="bl-panel" style="display:none;">
-        <div class="bl-panel-header"><span style="font-size:16px;">&#128564;</span><span class="bl-panel-title">Sleep last night</span><button class="bl-panel-close" onclick="closeBodyTile('sleep')">Done</button></div>
-        <div class="bl-panel-body">
-          <div class="bl-chip" onclick="toggleBodyChip(this,'sleep','Less than 5 hrs')">Less than 5 hrs</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'sleep','5-6 hrs')">5&#8211;6 hrs</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'sleep','6-7 hrs')">6&#8211;7 hrs</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'sleep','7-8 hrs')">7&#8211;8 hrs</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'sleep','8+ hrs')">8+ hrs</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'sleep','Restless')">Restless</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'sleep','Vivid dreams')">Vivid dreams</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'sleep','Trouble falling asleep')">Trouble falling asleep</div>
-        </div>
-      </div>
-      <div id="panel-intimacy" class="bl-panel" style="display:none;">
-        <div class="bl-panel-header"><span style="font-size:16px;">&#129293;</span><span class="bl-panel-title">Intimacy</span><button class="bl-panel-close" onclick="closeBodyTile('intimacy')">Done</button></div>
-        <div class="bl-panel-body">
-          <div class="bl-chip" onclick="toggleBodyChip(this,'intimacy','Protected sex')">Protected sex</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'intimacy','Unprotected sex')">Unprotected sex</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'intimacy','High desire')">High desire</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'intimacy','Low desire')">Low desire</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'intimacy','Masturbation')">Masturbation</div>
-        </div>
-      </div>
-      <div id="panel-medication" class="bl-panel" style="display:none;">
-        <div class="bl-panel-header"><span style="font-size:16px;">&#128138;</span><span class="bl-panel-title">Medication</span><button class="bl-panel-close" onclick="closeBodyTile('medication')">Done</button></div>
-        <div class="bl-panel-body">
-          <div class="bl-chip" onclick="toggleBodyChip(this,'medication','Pill taken')">Pill taken</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'medication','Painkiller')">Painkiller</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'medication','Iron supplement')">Iron supplement</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'medication','Antihistamine')">Antihistamine</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'medication','Antidepressant')">Antidepressant</div>
-          <div class="bl-chip" onclick="toggleBodyChip(this,'medication','Other')">Other</div>
-        </div>
-      </div>
-      <div id="panel-notes" class="bl-panel" style="display:none;">
-        <div class="bl-panel-header"><span style="font-size:16px;">&#9997;&#65039;</span><span class="bl-panel-title">Notes</span><button class="bl-panel-close" onclick="closeBodyTile('notes')">Done</button></div>
-        <div style="padding:10px 14px 12px;">
-          <textarea id="bodylog-note" placeholder="Anything else worth noting today..." style="width:100%;background:#FAF4F2;border:1.5px solid rgba(192,80,120,.15);border-radius:12px;padding:12px 14px;font-family:Nunito,sans-serif;font-size:13px;color:#1A3A45;resize:none;height:90px;outline:none;line-height:1.6;" onfocus="this.style.borderColor='#C05080'" onblur="this.style.borderColor='rgba(192,80,120,.15)'"></textarea>
-        </div>
-      </div>
-      <button onclick="saveBodyLog()" style="width:100%;background:linear-gradient(135deg,#C05080,#9B3060);color:white;border:none;border-radius:16px;padding:15px;font-family:Nunito,sans-serif;font-size:15px;font-weight:800;cursor:pointer;margin-top:4px;box-shadow:0 4px 16px rgba(192,80,120,.25);">Save body log</button>
-    </div>
-  </div>
-
-<div class="screen" id="screen-checkin">
+  <div class="screen" id="screen-checkin">
 
     <!-- Phase-tinted header -->
     <div id="ci-header" style="background:linear-gradient(160deg,#E8D8F8,#DEC8F0);padding:max(44px,env(safe-area-inset-top)) 18px 20px;flex-shrink:0;transition:background .4s;">
@@ -1539,7 +1260,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
       <!-- Mode toggle -->
       <div id="ci-mode-toggle" style="background:rgba(0,0,0,.08);border-radius:12px;padding:3px;display:flex;margin-bottom:14px;">
         <div id="toggle-quick" onclick="setCiMode('quick')" style="flex:1;background:white;border-radius:9px;padding:7px;text-align:center;cursor:pointer;transition:all .2s;">
-          <div style="font-size:11px;font-weight:800;color:#7C5C8A;">&#9889; Quick</div>
+          <div style="font-size:11px;font-weight:800;color:#9B7EC8;">&#9889; Quick</div>
           <div style="font-size:9px;color:#A8C0CC;margin-top:1px;">~30 seconds</div>
         </div>
         <div id="toggle-deep" onclick="setCiMode('deep')" style="flex:1;border-radius:9px;padding:7px;text-align:center;cursor:pointer;transition:all .2s;">
@@ -1551,15 +1272,15 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
       <div id="ci-header-content">
         <!-- Quick: IR personal question -->
         <div id="ci-quick-header" style="display:flex;gap:9px;align-items:flex-start;">
-          <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#7C5C8A,#5E3D6E);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;margin-top:2px;" id="ci-ir-av">IR</div>
+          <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;margin-top:2px;" id="ci-ir-av">IR</div>
           <div>
             <div style="font-size:11px;font-weight:800;color:rgba(80,40,120,.55);margin-bottom:4px;" id="ci-q-sublabel">How are you doing?</div>
-            <div style="font-family:Playfair Display,serif;font-size:17px;color:#211535;font-weight:700;line-height:1.35;" id="ci-ir-question">Loading your question...</div>
+            <div style="font-family:Playfair Display,serif;font-size:17px;color:#2A1A4A;font-weight:700;line-height:1.35;" id="ci-ir-question">Loading your question...</div>
           </div>
         </div>
         <!-- Deep: standard title -->
         <div id="ci-deep-header" style="display:none;">
-          <div style="font-family:Playfair Display,serif;font-size:20px;color:#211535;font-weight:700;line-height:1.3;" id="ci-title-label">I want to really know how you are.</div>
+          <div style="font-family:Playfair Display,serif;font-size:20px;color:#2A1A4A;font-weight:700;line-height:1.3;" id="ci-title-label">I want to really know how you are.</div>
         </div>
       </div>
       <!-- Day picker -->
@@ -1583,7 +1304,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
         <!-- Open text — escape hatch -->
         <div style="margin-top:4px;">
           <div style="margin-top:4px;position:relative;">
-          <textarea id="quick-open-text" placeholder="Add your own — what&#39;s actually going on today..." style="width:100%;background:#F8F9FB;border:1.5px solid #E8EEF2;border-radius:14px;padding:12px 14px 12px 14px;font-family:Nunito,sans-serif;font-size:13px;color:#1A3A45;resize:none;height:76px;outline:none;line-height:1.6;transition:border .2s;" onfocus="this.style.borderColor='#7C5C8A'" onblur="this.style.borderColor='#E8EEF2'"></textarea>
+          <textarea id="quick-open-text" placeholder="Add your own — what&#39;s actually going on today..." style="width:100%;background:#F8F9FB;border:1.5px solid #E8EEF2;border-radius:14px;padding:12px 14px 12px 14px;font-family:Nunito,sans-serif;font-size:13px;color:#1A3A45;resize:none;height:76px;outline:none;line-height:1.6;transition:border .2s;" onfocus="this.style.borderColor='#9B7EC8'" onblur="this.style.borderColor='#E8EEF2'"></textarea>
           <div style="font-size:10px;color:#B0C0CC;margin-top:4px;font-style:italic;">Saved with your log &#8212; IR reads this too</div>
         </div>
         </div>
@@ -1603,7 +1324,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
 
       <!-- ═══ DEEP PROGRESS BAR ═══ -->
       <div id="deep-progress-bar" style="display:none;gap:5px;margin-bottom:4px;">
-        <div id="deep-pd0" style="height:3px;border-radius:2px;background:#7C5C8A;flex:1;transition:all .3s;"></div>
+        <div id="deep-pd0" style="height:3px;border-radius:2px;background:#9B7EC8;flex:1;transition:all .3s;"></div>
         <div id="deep-pd1" style="height:3px;border-radius:2px;background:rgba(155,126,200,.3);flex:1;transition:all .3s;"></div>
         <div id="deep-pd2" style="height:3px;border-radius:2px;background:rgba(155,126,200,.3);flex:1;transition:all .3s;"></div>
         <div id="deep-pd3" style="height:3px;border-radius:2px;background:rgba(155,126,200,.3);flex:1;transition:all .3s;"></div>
@@ -1616,7 +1337,17 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
           <div style="display:flex;flex-direction:column;gap:0;" id="deep-s0-answers">
             <!-- populated by buildIRQuestion in deep context -->
           </div>
-          <textarea id="deep-open-text" placeholder="Or say it in your own words..." style="width:100%;background:#F8F9FB;border:1.5px solid #E8EEF2;border-radius:12px;padding:12px 14px;font-family:Nunito,sans-serif;font-size:13px;color:#1A3A45;resize:none;height:72px;outline:none;line-height:1.6;margin-top:4px;transition:border .2s;" onfocus="this.style.borderColor='#7C5C8A'" onblur="this.style.borderColor='#E8EEF2'"></textarea>
+          <textarea id="deep-open-text" placeholder="Or say it in your own words..." style="width:100%;background:#F8F9FB;border:1.5px solid #E8EEF2;border-radius:12px;padding:12px 14px;font-family:Nunito,sans-serif;font-size:13px;color:#1A3A45;resize:none;height:72px;outline:none;line-height:1.6;margin-top:4px;transition:border .2s;" onfocus="this.style.borderColor='#9B7EC8'" onblur="this.style.borderColor='#E8EEF2'"></textarea>
+        </div>
+        <div class="card-ci">
+          <div class="ci-sec">Period flow</div>
+          <div class="flow-row" id="flow-row-deep">
+            <div class="flow-opt" onclick="pickFlow(this,'None')"><span class="flbl">None</span></div>
+            <div class="flow-opt" onclick="pickFlow(this,'Spotting')"><span style="font-size:9px;color:#D4709A;display:block;line-height:1.2;">&#9679;</span><span class="flbl">Spotting</span></div>
+            <div class="flow-opt" onclick="pickFlow(this,'Light')"><span style="font-size:9px;color:#C05080;display:block;line-height:1.2;">&#9679;&#9679;</span><span class="flbl">Light</span></div>
+            <div class="flow-opt" onclick="pickFlow(this,'Medium')"><span style="font-size:9px;color:#A03060;display:block;line-height:1.2;">&#9679;&#9679;&#9679;</span><span class="flbl">Medium</span></div>
+            <div class="flow-opt" onclick="pickFlow(this,'Heavy')"><span style="font-size:9px;color:#80204A;display:block;line-height:1.2;">&#9679;&#9679;&#9679;&#9679;</span><span class="flbl">Heavy</span></div>
+          </div>
         </div>
       </div>
 
@@ -1645,21 +1376,78 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
         </div>
       </div>
 
-      <!-- ═══ DEEP STEP 2: IR combined moment ═══ -->
+      <!-- ═══ DEEP STEP 2: Energy + Body ═══ -->
       <div id="deep-step-2" class="ci-deep-step" style="display:none;">
-        <div style="background:linear-gradient(135deg,#FAF6FB,#EEE4F2);border-radius:16px;padding:15px 16px;border:1.5px solid #E2D4EC;margin-bottom:10px;">
-          <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px;">
-            <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#7C5C8A,#5E3D6E);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;">IR</div>
-            <div style="font-size:11px;font-weight:800;color:#5E3D6E;" id="deep-q-label">Something I always wonder</div>
+        <div class="card-ci">
+          <div class="ci-sec">Energy today</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:4px;" id="energy-row">
+            <div class="eopt" onclick="pe(this,'Full energy')" style="display:flex;align-items:center;gap:8px;border-radius:12px;padding:10px 12px;"><span class="ei">&#128267;</span>Full energy</div>
+            <div class="eopt" onclick="pe(this,'Foggy')" style="display:flex;align-items:center;gap:8px;border-radius:12px;padding:10px 12px;"><span class="ei">&#128164;</span>Foggy</div>
+            <div class="eopt" onclick="pe(this,'Wired but tired')" style="display:flex;align-items:center;gap:8px;border-radius:12px;padding:10px 12px;"><span class="ei">&#129760;</span>Wired but tired</div>
+            <div class="eopt" onclick="pe(this,'Running on empty')" style="display:flex;align-items:center;gap:8px;border-radius:12px;padding:10px 12px;"><span class="ei">&#128251;</span>Running on empty</div>
+            <div class="eopt" onclick="pe(this,'Cozy low')" style="display:flex;align-items:center;gap:8px;border-radius:12px;padding:10px 12px;"><span class="ei">&#128524;</span>Cozy low</div>
+            <div class="eopt" onclick="pe(this,'Just okay')" style="display:flex;align-items:center;gap:8px;border-radius:12px;padding:10px 12px;"><span class="ei">&#128262;</span>Just okay</div>
           </div>
-          <div style="font-size:13px;color:#2E1F3E;line-height:1.75;margin-bottom:11px;font-style:italic;" id="deep-q-text">What is sitting with you most today — even if you can not fully name it?</div>
-          <div style="display:flex;flex-wrap:wrap;gap:0;margin:-3px;" id="deep-q-chips"></div>
+          <div class="add-custom" style="margin-top:8px;"><input class="custom-inp" id="energy-custom" placeholder="Add your own..." onkeydown="if(event.key==='Enter'){addCustomEnergy()}"><button class="add-btn" onclick="addCustomEnergy()">+ Add</button></div>
         </div>
-
+        <div class="card-ci">
+          <div class="ci-sec">Body &#8212; anything showing up?</div>
+          <div id="sym-chips" style="display:flex;flex-wrap:wrap;gap:0;margin:-3px;">
+            <div class="ci-chip" onclick="tfi(this,'Cramps','s')">&#129768; Cramps</div>
+            <div class="ci-chip" onclick="tfi(this,'Headache','s')">&#129314; Headache</div>
+            <div class="ci-chip" onclick="tfi(this,'Bloating','s')">&#128534; Bloating</div>
+            <div class="ci-chip" onclick="tfi(this,'Tired','s')">&#128164; Tired</div>
+            <div class="ci-chip" onclick="tfi(this,'Acne','s')">&#128142; Acne</div>
+            <div class="ci-chip" onclick="tfi(this,'Tense','s')">&#128245; Tense</div>
+            <div class="ci-chip" onclick="tfi(this,'Backache','s')">&#129463; Backache</div>
+            <div class="ci-chip" onclick="tfi(this,'Nausea','s')">&#129314; Nausea</div>
+            <div class="ci-chip" onclick="tfi(this,'Tender chest','s')">&#129293; Tender chest</div>
+            <div class="ci-chip" onclick="tfi(this,'Cravings','s')">&#127860; Cravings</div>
+            <div class="ci-chip" onclick="tfi(this,'Insomnia','s')">&#128336; Insomnia</div>
+            <div class="ci-chip" onclick="tfi(this,'Hot flashes','s')">&#127798; Hot flashes</div>
+          </div>
+          <div class="add-custom" style="margin-top:8px;"><input class="custom-inp" id="sym-custom" placeholder="Add your own..." onkeydown="if(event.key==='Enter'){addCustomSym()}"><button class="add-btn" onclick="addCustomSym()">+ Add</button></div>
+        </div>
       </div>
 
-      <!-- ═══ DEEP STEP 3: Unsent letter ═══ -->
+      <!-- ═══ DEEP STEP 3: IR combined moment ═══ -->
       <div id="deep-step-3" class="ci-deep-step" style="display:none;">
+        <div style="background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-radius:16px;padding:15px 16px;border:1.5px solid #E4D8F4;margin-bottom:10px;">
+          <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px;">
+            <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;">IR</div>
+            <div style="font-size:11px;font-weight:800;color:#7B5EA8;" id="deep-q-label">Something I always wonder</div>
+          </div>
+          <div style="font-size:13px;color:#3A2A5A;line-height:1.75;margin-bottom:11px;font-style:italic;" id="deep-q-text">What is sitting with you most today — even if you can not fully name it?</div>
+          <div style="display:flex;flex-wrap:wrap;gap:0;margin:-3px;" id="deep-q-chips"></div>
+        </div>
+        <div style="background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-radius:16px;padding:15px 16px;border:1.5px solid #E4D8F4;">
+          <div style="display:flex;align-items:center;gap:9px;margin-bottom:11px;">
+            <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;">IR</div>
+            <div style="font-size:11px;font-weight:800;color:#7B5EA8;" id="body-intuition-q">What would actually help you right now?</div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px;" id="body-intuition-chips">
+            <div class="bi-chip" onclick="pickBI(this,'A good cry')">&#128557; A good cry</div>
+            <div class="bi-chip" onclick="pickBI(this,'To be left alone')">&#129335; To be left alone</div>
+            <div class="bi-chip" onclick="pickBI(this,'Someone to talk to')">&#129309; Someone to talk to</div>
+            <div class="bi-chip" onclick="pickBI(this,'Comfort food')">&#127857; Comfort food</div>
+            <div class="bi-chip" onclick="pickBI(this,'Fresh air')">&#127807; Fresh air</div>
+            <div class="bi-chip" onclick="pickBI(this,'To move my body')">&#127939; To move my body</div>
+            <div class="bi-chip" onclick="pickBI(this,'Music')">&#127925; Music</div>
+            <div class="bi-chip" onclick="pickBI(this,'Sleep')">&#128564; Sleep</div>
+            <div class="bi-chip" onclick="pickBI(this,'A distraction')">&#127916; A distraction</div>
+            <div class="bi-chip" onclick="pickBI(this,'Permission to rest')">&#10024; Permission to rest</div>
+            <div class="bi-chip" onclick="pickBI(this,'To do nothing')">&#129393; To do nothing</div>
+            <div class="bi-chip" onclick="pickBI(this,'I honestly don&#39;t know')">&#129300; I honestly don&#39;t know</div>
+          </div>
+          <div class="add-custom" style="margin-top:2px;">
+            <input class="custom-inp" id="bi-custom" placeholder="Something else..." onkeydown="if(event.key===&#39;Enter&#39;){addCustomBI()}">
+            <button class="add-btn" onclick="addCustomBI()">+ Add</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ DEEP STEP 4: Unsent letter ═══ -->
+      <div id="deep-step-4" class="ci-deep-step" style="display:none;">
         <div class="card-ci">
           <div style="font-size:14px;font-weight:700;color:#1A3A45;margin-bottom:5px;">Unsent letter</div>
           <div style="font-size:12px;color:#A8C0CC;font-style:italic;margin-bottom:12px;">Say what you cannot say out loud. Just us.</div>
@@ -1670,7 +1458,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
       <!-- ═══ DEEP NAV BUTTONS ═══ -->
       <div style="display:flex;gap:10px;margin-top:4px;">
         <button id="deep-skip-btn" style="display:none;flex:1;background:#F0F4F8;border:none;border-radius:12px;padding:13px;font-family:Nunito,sans-serif;font-size:13px;font-weight:700;color:#8AAAB4;cursor:pointer;" onclick="deepNextStep()">Skip</button>
-        <button id="deep-next-btn" style="display:none;flex:2;background:linear-gradient(135deg,#7C5C8A,#5E3D6E);border:none;border-radius:12px;padding:13px;font-family:Nunito,sans-serif;font-size:14px;font-weight:800;color:white;cursor:pointer;" onclick="deepNextStep()">Next &#8594;</button>
+        <button id="deep-next-btn" style="display:none;flex:2;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);border:none;border-radius:12px;padding:13px;font-family:Nunito,sans-serif;font-size:14px;font-weight:800;color:white;cursor:pointer;" onclick="deepNextStep()">Next &#8594;</button>
       </div>
 
       <button class="savebtn" onclick="saveCI()" id="ci-save-btn">Save &#8594;</button>
@@ -1681,12 +1469,12 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
   <div class="screen" id="screen-patterns">
 
     <!-- Watercolour phase hero — matches home/checkin -->
-    <div id="pat-hero" style="background:linear-gradient(160deg,#F8EEF9 0%,#F2E6F5 50%,#EDD8F0 100%);padding:max(44px,env(safe-area-inset-top)) 20px 26px;flex-shrink:0;position:relative;overflow:hidden;transition:background .5s;">
+    <div id="pat-hero" style="background:linear-gradient(160deg,#F8F0FF 0%,#F2E8FC 50%,#EDE0F8 100%);padding:max(44px,env(safe-area-inset-top)) 20px 26px;flex-shrink:0;position:relative;overflow:hidden;transition:background .5s;">
       <div style="position:absolute;top:-20px;right:-20px;width:140px;height:140px;border-radius:50%;background:rgba(155,126,200,.08);pointer-events:none;"></div>
       <div style="position:absolute;bottom:-15px;left:-15px;width:100px;height:100px;border-radius:50%;background:rgba(192,80,128,.06);pointer-events:none;"></div>
 
       <div style="font-size:12px;font-weight:700;color:rgba(100,60,160,.55);margin-bottom:5px;" id="pat-hero-sub">Loading...</div>
-      <div style="font-family:Playfair Display,serif;font-size:24px;color:#211535;font-weight:700;margin-bottom:16px;">Your patterns</div>
+      <div style="font-family:Playfair Display,serif;font-size:24px;color:#2A1A4A;font-weight:700;margin-bottom:16px;">Your patterns</div>
 
       <!-- Cycle progress bar -->
       <div style="background:rgba(155,126,200,.15);border-radius:4px;height:5px;overflow:hidden;margin-bottom:6px;">
@@ -1702,10 +1490,10 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
     <div class="scroll" style="background:#F7F5FA;border-radius:26px 26px 0 0;margin-top:-18px;padding:16px 16px 28px;position:relative;z-index:1;">
 
       <!-- IR note -->
-      <div style="background:linear-gradient(135deg,#FAF6FB,#EEE4F2);border-radius:16px;padding:14px 16px;border:1.5px solid #E2D4EC;margin-bottom:16px;">
+      <div style="background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-radius:16px;padding:14px 16px;border:1.5px solid #E4D8F4;margin-bottom:16px;">
         <div style="display:flex;gap:9px;align-items:flex-start;">
-          <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#7C5C8A,#5E3D6E);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;margin-top:1px;">IR</div>
-          <div style="font-size:13px;color:#2E1F3E;line-height:1.7;font-style:italic;" id="pat-ir-note">Keep logging and I will start seeing your patterns clearly.</div>
+          <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;margin-top:1px;">IR</div>
+          <div style="font-size:13px;color:#3A2A5A;line-height:1.7;font-style:italic;" id="pat-ir-note">Keep logging and I will start seeing your patterns clearly.</div>
         </div>
       </div>
 
@@ -1728,8 +1516,8 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
         </div>
         <div id="ptab-luteal" onclick="patTab('luteal')" style="flex:1;padding:8px 2px;text-align:center;border-radius:12px;cursor:pointer;border:1.5px solid transparent;-webkit-tap-highlight-color:transparent;transition:all .2s;">
           <span style="font-size:15px;display:block;margin-bottom:2px;">&#127769;</span>
-          <span style="font-size:9px;font-weight:800;display:block;color:#7C5C8A;">Luteal</span>
-          <span style="font-size:8px;font-weight:700;display:block;margin-top:1px;color:#7C5C8A;" id="pscore-luteal">--</span>
+          <span style="font-size:9px;font-weight:800;display:block;color:#9B7EC8;">Luteal</span>
+          <span style="font-size:8px;font-weight:700;display:block;margin-top:1px;color:#9B7EC8;" id="pscore-luteal">--</span>
         </div>
       </div>
 
@@ -1770,9 +1558,9 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
         <div style="display:flex;align-items:center;gap:3px;"><div style="width:8px;height:8px;border-radius:50%;background:#D8C8F0;"></div><div style="font-size:10px;color:#A8C0CC;font-weight:700;">Luteal</div></div>
       </div>
       <!-- Today summary strip -->
-      <div id="today-cal-strip" style="background:linear-gradient(135deg,#FAF6FB,#EEE4F2);border-radius:14px;padding:12px 14px;margin-bottom:12px;border:1.5px solid #E2D4EC;display:none;">
-        <div style="font-size:10px;font-weight:800;color:#7C5C8A;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;" id="today-strip-label">Today</div>
-        <div id="today-strip-content" style="font-size:13px;color:#2E1F3E;line-height:1.65;"></div>
+      <div id="today-cal-strip" style="background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-radius:14px;padding:12px 14px;margin-bottom:12px;border:1.5px solid #E4D8F4;display:none;">
+        <div style="font-size:10px;font-weight:800;color:#9B7EC8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;" id="today-strip-label">Today</div>
+        <div id="today-strip-content" style="font-size:13px;color:#3A2A5A;line-height:1.65;"></div>
       </div>
 
       <div id="cgrid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:14px;"></div>
@@ -1782,72 +1570,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
 
 
   <!-- ======= ABOUT / PRIVACY ======= -->
-    <div class="screen" id="screen-partner">
-    <div style="background:linear-gradient(160deg,#F5EEF8 0%,#EDE4F2 50%,#E2D4EC 100%);padding:max(44px,env(safe-area-inset-top)) 20px 20px;flex-shrink:0;">
-      <div style="display:flex;align-items:center;gap:12px;">
-        <button onclick="nav('settings')" style="background:rgba(124,92,138,.15);border:none;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#8592;</button>
-        <div>
-          <div style="font-family:'Playfair Display',serif;font-size:20px;color:#2E1F3E;font-weight:700;">Partner sharing</div>
-          <div style="font-size:11px;color:rgba(94,61,110,.55);margin-top:2px;">What your partner will see</div>
-        </div>
-      </div>
-    </div>
-    <div class="scroll" style="background:#FAF6FB;border-radius:26px 26px 0 0;margin-top:-16px;padding:16px 16px max(80px,calc(env(safe-area-inset-bottom)+70px));z-index:1;position:relative;">
-
-      <div style="font-size:10px;font-weight:800;color:#B0A0BC;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;padding-left:2px;">What they can see</div>
-      <div style="background:white;border-radius:16px;overflow:hidden;margin-bottom:16px;box-shadow:0 1px 8px rgba(94,61,110,.06);">
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:0.5px solid #F0EAF4;" onclick="toggleShare('phase');updatePartnerPreview();">
-          <div style="display:flex;align-items:center;gap:12px;">
-            <div style="width:34px;height:34px;border-radius:10px;background:#F5EEF8;display:flex;align-items:center;justify-content:center;font-size:16px;">&#127769;</div>
-            <div><div style="font-size:13px;font-weight:700;color:#2E1F3E;">Phase &amp; cycle day</div><div style="font-size:11px;color:#B0A0BC;margin-top:1px;">Where she is in her cycle</div></div>
-          </div>
-          <div id="stog-phase" style="width:40px;height:24px;border-radius:12px;background:#7C5C8A;position:relative;flex-shrink:0;pointer-events:none;"><div style="position:absolute;top:3px;left:19px;width:18px;height:18px;border-radius:50%;background:white;box-shadow:0 1px 3px rgba(0,0,0,.2);"></div></div>
-        </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:0.5px solid #F0EAF4;" onclick="toggleShare('mood');updatePartnerPreview();">
-          <div style="display:flex;align-items:center;gap:12px;">
-            <div style="width:34px;height:34px;border-radius:10px;background:#F5EEF8;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128149;</div>
-            <div><div style="font-size:13px;font-weight:700;color:#2E1F3E;">How she is feeling</div><div style="font-size:11px;color:#B0A0BC;margin-top:1px;">General mood only</div></div>
-          </div>
-          <div id="stog-mood" style="width:40px;height:24px;border-radius:12px;background:#7C5C8A;position:relative;flex-shrink:0;pointer-events:none;"><div style="position:absolute;top:3px;left:19px;width:18px;height:18px;border-radius:50%;background:white;box-shadow:0 1px 3px rgba(0,0,0,.2);"></div></div>
-        </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:0.5px solid #F0EAF4;" onclick="toggleShare('needs');updatePartnerPreview();">
-          <div style="display:flex;align-items:center;gap:12px;">
-            <div style="width:34px;height:34px;border-radius:10px;background:#F5EEF8;display:flex;align-items:center;justify-content:center;font-size:16px;">&#10024;</div>
-            <div><div style="font-size:13px;font-weight:700;color:#2E1F3E;">What she needs</div><div style="font-size:11px;color:#B0A0BC;margin-top:1px;">Rest, space, comfort etc.</div></div>
-          </div>
-          <div id="stog-needs" style="width:40px;height:24px;border-radius:12px;background:#7C5C8A;position:relative;flex-shrink:0;pointer-events:none;"><div style="position:absolute;top:3px;left:19px;width:18px;height:18px;border-radius:50%;background:white;box-shadow:0 1px 3px rgba(0,0,0,.2);"></div></div>
-        </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:0.5px solid #F0EAF4;" onclick="toggleShare('syms');updatePartnerPreview();">
-          <div style="display:flex;align-items:center;gap:12px;">
-            <div style="width:34px;height:34px;border-radius:10px;background:#FFF8F5;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128137;</div>
-            <div><div style="font-size:13px;font-weight:700;color:#2E1F3E;">Physical symptoms</div><div style="font-size:11px;color:#B0A0BC;margin-top:1px;">Cramps, fatigue, headaches</div></div>
-          </div>
-          <div id="stog-syms" style="width:40px;height:24px;border-radius:12px;background:#D0C0D8;position:relative;flex-shrink:0;pointer-events:none;"><div style="position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:white;box-shadow:0 1px 3px rgba(0,0,0,.2);"></div></div>
-        </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px;" onclick="toggleShare('notes');updatePartnerPreview();">
-          <div style="display:flex;align-items:center;gap:12px;">
-            <div style="width:34px;height:34px;border-radius:10px;background:#F5EEF8;display:flex;align-items:center;justify-content:center;font-size:16px;">&#128221;</div>
-            <div><div style="font-size:13px;font-weight:700;color:#2E1F3E;">Personal notes</div><div style="font-size:11px;color:#B0A0BC;margin-top:1px;">Her private journal entries</div></div>
-          </div>
-          <div id="stog-notes" style="width:40px;height:24px;border-radius:12px;background:#D0C0D8;position:relative;flex-shrink:0;pointer-events:none;"><div style="position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:white;box-shadow:0 1px 3px rgba(0,0,0,.2);"></div></div>
-        </div>
-      </div>
-
-      <div style="font-size:10px;font-weight:800;color:#B0A0BC;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;padding-left:2px;">Partner sees this</div>
-      <div id="partner-content" style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;">
-        <div style="text-align:center;padding:28px 20px;background:white;border-radius:16px;"><div style="font-size:13px;color:#B0A0BC;">Loading...</div></div>
-      </div>
-
-      <div style="background:linear-gradient(135deg,#F5EEF8,#EDE4F2);border-radius:16px;padding:14px 15px;border:1.5px solid #E2D4EC;">
-        <div style="font-size:10px;font-weight:800;color:#7C5C8A;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;">For your partner</div>
-        <div style="font-size:13px;color:#2E1F3E;line-height:1.75;" id="partner-ir-tip">Share this with your partner so they know where you are in your cycle.</div>
-      </div>
-
-      <button onclick="generatePartnerLink()" style="width:100%;background:linear-gradient(135deg,#7C5C8A,#5E3D6E);border:none;border-radius:16px;padding:15px;font-family:Nunito,sans-serif;font-size:15px;font-weight:800;color:white;cursor:pointer;margin-top:14px;box-shadow:0 4px 16px rgba(94,61,110,.25);">Share link with partner &#8594;</button>
-    </div>
-  </div>
-
-<div class="screen" id="screen-about">
+  <div class="screen" id="screen-about">
     <div class="scroll">
       <div style="padding:20px 0 18px">
         <button class="back-btn" onclick="nav('settings')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>Back</button>
@@ -1915,7 +1638,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
   <div class="scroll" style="padding-bottom:32px;">
 
     <!-- ── WATERCOLOUR HERO ── -->
-    <div id="prof-hero" style="background:linear-gradient(160deg,#F8EEF9 0%,#F2E6F5 50%,#EDD8F0 100%);padding:max(44px,env(safe-area-inset-top)) 20px 28px;position:relative;flex-shrink:0;overflow:hidden;transition:background .5s;">
+    <div id="prof-hero" style="background:linear-gradient(160deg,#F8F0FF 0%,#F2E8FC 50%,#EDE0F8 100%);padding:max(44px,env(safe-area-inset-top)) 20px 28px;position:relative;flex-shrink:0;overflow:hidden;transition:background .5s;">
       <div style="position:absolute;top:-20px;right:-20px;width:130px;height:130px;border-radius:50%;background:rgba(155,126,200,.08);pointer-events:none;"></div>
       <div style="position:absolute;bottom:-10px;left:-10px;width:90px;height:90px;border-radius:50%;background:rgba(192,80,128,.06);pointer-events:none;"></div>
 
@@ -1926,27 +1649,27 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
 
       <!-- Avatar + name -->
       <div style="text-align:center;margin-bottom:20px;">
-        <div id="prof-av" style="width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,#7C5C8A,#5E3D6E);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;color:white;margin:0 auto 12px;box-shadow:0 4px 16px rgba(155,126,200,.35);">?</div>
-        <div style="font-family:Playfair Display,serif;font-size:24px;color:#211535;font-weight:700;margin-bottom:4px;" id="prof-name">Your name</div>
+        <div id="prof-av" style="width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;color:white;margin:0 auto 12px;box-shadow:0 4px 16px rgba(155,126,200,.35);">?</div>
+        <div style="font-family:Playfair Display,serif;font-size:24px;color:#2A1A4A;font-weight:700;margin-bottom:4px;" id="prof-name">Your name</div>
         <div style="font-size:12px;color:rgba(100,60,160,.55);font-weight:600;" id="prof-contact">Tap Edit to add your email</div>
       </div>
 
       <!-- Stats row -->
       <div style="display:flex;gap:8px;">
         <div style="background:rgba(255,255,255,.6);border-radius:14px;padding:10px 0;text-align:center;flex:1;border:1px solid rgba(155,126,200,.15);">
-          <div style="font-size:22px;font-weight:800;color:#211535;font-family:Nunito,sans-serif;" id="prof-logs">0</div>
+          <div style="font-size:22px;font-weight:800;color:#2A1A4A;font-family:Nunito,sans-serif;" id="prof-logs">0</div>
           <div style="font-size:9px;font-weight:700;color:rgba(100,60,160,.6);text-transform:uppercase;letter-spacing:.4px;">Logs</div>
         </div>
         <div style="background:rgba(255,255,255,.6);border-radius:14px;padding:10px 0;text-align:center;flex:1;border:1px solid rgba(155,126,200,.15);">
-          <div style="font-size:22px;font-weight:800;color:#211535;font-family:Nunito,sans-serif;" id="prof-streak-num">0</div>
+          <div style="font-size:22px;font-weight:800;color:#2A1A4A;font-family:Nunito,sans-serif;" id="prof-streak-num">0</div>
           <div style="font-size:9px;font-weight:700;color:rgba(100,60,160,.6);text-transform:uppercase;letter-spacing:.4px;">🔥 Streak</div>
         </div>
         <div style="background:rgba(255,255,255,.6);border-radius:14px;padding:10px 0;text-align:center;flex:1;border:1px solid rgba(155,126,200,.15);">
-          <div style="font-size:22px;font-weight:800;color:#211535;font-family:Nunito,sans-serif;" id="prof-cycles">0</div>
+          <div style="font-size:22px;font-weight:800;color:#2A1A4A;font-family:Nunito,sans-serif;" id="prof-cycles">0</div>
           <div style="font-size:9px;font-weight:700;color:rgba(100,60,160,.6);text-transform:uppercase;letter-spacing:.4px;">Cycles</div>
         </div>
         <div style="background:rgba(255,255,255,.6);border-radius:14px;padding:10px 0;text-align:center;flex:1;border:1px solid rgba(155,126,200,.15);">
-          <div style="font-size:14px;font-weight:800;color:#211535;font-family:Nunito,sans-serif;" id="prof-since">--</div>
+          <div style="font-size:14px;font-weight:800;color:#2A1A4A;font-family:Nunito,sans-serif;" id="prof-since">--</div>
           <div style="font-size:9px;font-weight:700;color:rgba(100,60,160,.6);text-transform:uppercase;letter-spacing:.4px;">Since</div>
         </div>
       </div>
@@ -1956,10 +1679,10 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
     <div style="background:#F7F5FA;border-radius:26px 26px 0 0;margin-top:-18px;padding:18px 16px;position:relative;z-index:1;display:flex;flex-direction:column;gap:14px;">
 
       <!-- IR note -->
-      <div style="background:linear-gradient(135deg,#FAF6FB,#EEE4F2);border-radius:16px;padding:13px 15px;border:1.5px solid #E2D4EC;">
+      <div style="background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-radius:16px;padding:13px 15px;border:1.5px solid #E4D8F4;">
         <div style="display:flex;gap:9px;align-items:flex-start;">
-          <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#7C5C8A,#5E3D6E);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:white;flex-shrink:0;">IR</div>
-          <div style="font-size:12px;color:#2E1F3E;line-height:1.7;font-style:italic;" id="prof-ir-note">Keep logging and I will start knowing you better every day.</div>
+          <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:white;flex-shrink:0;">IR</div>
+          <div style="font-size:12px;color:#3A2A5A;line-height:1.7;font-style:italic;" id="prof-ir-note">Keep logging and I will start knowing you better every day.</div>
         </div>
       </div>
 
@@ -1980,19 +1703,19 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
             <div style="flex:1;">
               <div style="font-size:13px;font-weight:700;color:#1A3A45;">Last period started</div>
             </div>
-            <div style="font-size:13px;font-weight:700;color:#7C5C8A;" id="prof-last-period">Set up</div>
+            <div style="font-size:13px;font-weight:700;color:#9B7EC8;" id="prof-last-period">Set up</div>
             <div style="color:#C0CDD6;font-size:14px;">›</div>
           </div>
           <div onclick="openM()" style="display:flex;align-items:center;gap:13px;padding:14px 16px;border-bottom:0.5px solid #F0F4F8;cursor:pointer;-webkit-tap-highlight-color:transparent;">
             <div style="font-size:20px;flex-shrink:0;">🔄</div>
             <div style="flex:1;"><div style="font-size:13px;font-weight:700;color:#1A3A45;">Cycle length</div></div>
-            <div style="font-size:13px;font-weight:700;color:#7C5C8A;" id="prof-cycle-len">28 days</div>
+            <div style="font-size:13px;font-weight:700;color:#9B7EC8;" id="prof-cycle-len">28 days</div>
             <div style="color:#C0CDD6;font-size:14px;">›</div>
           </div>
           <div onclick="openM()" style="display:flex;align-items:center;gap:13px;padding:14px 16px;cursor:pointer;-webkit-tap-highlight-color:transparent;">
             <div style="font-size:20px;flex-shrink:0;">🩸</div>
             <div style="flex:1;"><div style="font-size:13px;font-weight:700;color:#1A3A45;">Period duration</div></div>
-            <div style="font-size:13px;font-weight:700;color:#7C5C8A;" id="prof-period-dur">5 days</div>
+            <div style="font-size:13px;font-weight:700;color:#9B7EC8;" id="prof-period-dur">5 days</div>
             <div style="color:#C0CDD6;font-size:14px;">›</div>
           </div>
         </div>
@@ -2101,36 +1824,23 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
       <div style="display:flex;flex-direction:column;gap:12px;">
         <div>
           <div style="font-size:11px;font-weight:700;color:#A8C0CC;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;">Name</div>
-          <input id="edit-name" type="text" placeholder="Your first name" style="width:100%;background:#F8F9FB;border:1.5px solid #E8EEF2;border-radius:12px;padding:12px 14px;font-family:Nunito,sans-serif;font-size:14px;color:#1A3A45;outline:none;" onfocus="this.style.borderColor='#7C5C8A'" onblur="this.style.borderColor='#E8EEF2'">
+          <input id="edit-name" type="text" placeholder="Your first name" style="width:100%;background:#F8F9FB;border:1.5px solid #E8EEF2;border-radius:12px;padding:12px 14px;font-family:Nunito,sans-serif;font-size:14px;color:#1A3A45;outline:none;" onfocus="this.style.borderColor='#9B7EC8'" onblur="this.style.borderColor='#E8EEF2'">
         </div>
         <div>
           <div style="font-size:11px;font-weight:700;color:#A8C0CC;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;">Email</div>
-          <input id="edit-email" type="email" placeholder="your@email.com" style="width:100%;background:#F8F9FB;border:1.5px solid #E8EEF2;border-radius:12px;padding:12px 14px;font-family:Nunito,sans-serif;font-size:14px;color:#1A3A45;outline:none;" onfocus="this.style.borderColor='#7C5C8A'" onblur="this.style.borderColor='#E8EEF2'">
+          <input id="edit-email" type="email" placeholder="your@email.com" style="width:100%;background:#F8F9FB;border:1.5px solid #E8EEF2;border-radius:12px;padding:12px 14px;font-family:Nunito,sans-serif;font-size:14px;color:#1A3A45;outline:none;" onfocus="this.style.borderColor='#9B7EC8'" onblur="this.style.borderColor='#E8EEF2'">
         </div>
         <div>
           <div style="font-size:11px;font-weight:700;color:#A8C0CC;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;">Phone (optional)</div>
-          <input id="edit-phone" type="tel" placeholder="+1 234 567 8900" style="width:100%;background:#F8F9FB;border:1.5px solid #E8EEF2;border-radius:12px;padding:12px 14px;font-family:Nunito,sans-serif;font-size:14px;color:#1A3A45;outline:none;" onfocus="this.style.borderColor='#7C5C8A'" onblur="this.style.borderColor='#E8EEF2'">
+          <input id="edit-phone" type="tel" placeholder="+1 234 567 8900" style="width:100%;background:#F8F9FB;border:1.5px solid #E8EEF2;border-radius:12px;padding:12px 14px;font-family:Nunito,sans-serif;font-size:14px;color:#1A3A45;outline:none;" onfocus="this.style.borderColor='#9B7EC8'" onblur="this.style.borderColor='#E8EEF2'">
         </div>
-        <button onclick="saveProfileEdit()" style="width:100%;background:linear-gradient(135deg,#7C5C8A,#5E3D6E);border:none;border-radius:14px;padding:15px;font-family:Nunito,sans-serif;font-size:15px;font-weight:800;color:white;cursor:pointer;margin-top:4px;">Save changes</button>
+        <button onclick="saveProfileEdit()" style="width:100%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);border:none;border-radius:14px;padding:15px;font-family:Nunito,sans-serif;font-size:15px;font-weight:800;color:white;cursor:pointer;margin-top:4px;">Save changes</button>
       </div>
     </div>
   </div>
 </div>
 
   <!-- NAV -->
-  <nav class="nav" id="main-nav" style="display:none;">
-    <button class="nb" id="nav-home" onclick="nav('home')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</button>
-    <button class="nb" id="nav-checkin" onclick="nav('logchoice')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Log</button>
-    <button class="nb" id="nav-patterns" onclick="nav('patterns')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Patterns</button>
-    <button class="nb" id="nav-calendar" onclick="nav('calendar')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendar</button>
-    <button class="nb" id="nav-settings" onclick="nav('settings')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</button>
-  </nav>
-
 
 
   <!-- OFFLINE INDICATOR -->
@@ -2245,53 +1955,87 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#EEF2F7 0
 
       <button class="msave" onclick="saveProfile()">Save changes</button>
 
-      <!-- ── PREMIUM SECTION ── -->
-      <div id="premium-section">
+      <!-- Divider -->
+      <div style="display:flex;align-items:center;gap:10px;margin:24px 0 16px">
+        <div style="flex:1;height:0.5px;background:var(--border)"></div>
+        <span style="font-size:11px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.6px">Danger zone</span>
+        <div style="flex:1;height:0.5px;background:var(--border)"></div>
+      </div>
 
-        <!-- Trial status card -->
-        <div style="background:linear-gradient(135deg,#2A1248,#3D1A6A);border-radius:18px;padding:18px 18px 16px;margin-bottom:12px;position:relative;overflow:hidden;">
-          <div style="position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:rgba(232,160,200,.1);pointer-events:none;"></div>
-          <div style="font-size:10px;font-weight:800;color:rgba(232,160,200,.7);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;">Your trial</div>
-          <div style="font-family:'Playfair Display',serif;font-size:17px;color:white;font-weight:700;line-height:1.35;margin-bottom:10px;" id="trial-status-msg">Your rhythm is taking shape.</div>
-          <div style="height:4px;background:rgba(255,255,255,.12);border-radius:2px;margin-bottom:8px;">
-            <div id="trial-progress-bar" style="height:100%;border-radius:2px;background:linear-gradient(90deg,#C05080,#E8A840);width:0%;transition:width .6s ease;"></div>
-          </div>
-          <div style="font-size:11px;color:rgba(255,255,255,.4);" id="trial-days-text">Loading...</div>
-        </div>
+      <button onclick="confirmDeleteAccount()"
+        style="width:100%;background:none;border:1.5px solid #FFCDD2;border-radius:16px;padding:14px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;color:#C62828;cursor:pointer;transition:all .2s"
+        onmouseover="this.background='#FFEBEE'" onmouseout="this.style.background='none'">
+        Delete my account
+      </button>
+      <div style="font-size:11px;color:var(--text3);text-align:center;margin-top:8px;line-height:1.5">This removes all your data from this device permanently. It cannot be undone.</div>
 
-        <!-- What you get free -->
-        <div style="background:white;border-radius:16px;overflow:hidden;margin-bottom:8px;box-shadow:0 1px 8px rgba(0,0,0,.04);">
-          <div style="padding:13px 16px;border-bottom:0.5px solid #F0F4F8;">
-            <div style="font-size:10px;font-weight:800;color:#A8C0CC;text-transform:uppercase;letter-spacing:.6px;margin-bottom:2px;">Always free</div>
-            <div style="font-size:12px;color:#5A7A8A;">Track and reflect</div>
-          </div>
-          <div style="padding:10px 16px;display:flex;flex-direction:column;gap:7px;">
-            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#7C5C8A;font-size:13px;">&#10003;</span><span style="font-size:12px;color:#1A3A45;">Cycle tracking &amp; calendar</span></div>
-            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#7C5C8A;font-size:13px;">&#10003;</span><span style="font-size:12px;color:#1A3A45;">Emotional check-ins</span></div>
-            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#7C5C8A;font-size:13px;">&#10003;</span><span style="font-size:12px;color:#1A3A45;">Symptom &amp; body logging</span></div>
-            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#7C5C8A;font-size:13px;">&#10003;</span><span style="font-size:12px;color:#1A3A45;">Recent mood history</span></div>
-            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#7C5C8A;font-size:13px;">&#10003;</span><span style="font-size:12px;color:#1A3A45;">Basic reflections from IR</span></div>
-            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#7C5C8A;font-size:13px;">&#10003;</span><span style="font-size:12px;color:#1A3A45;">Your journals &amp; logs — always</span></div>
-          </div>
-        </div>
+      <button onclick="document.getElementById('profile-modal').classList.remove('show')"
+        style="width:100%;background:none;border:none;font-family:'Nunito',sans-serif;font-size:13px;color:var(--text3);cursor:pointer;padding:12px 0;margin-top:6px">
+        Cancel
+      </button>
+    </div>
+  </div>
 
-        <!-- What premium unlocks -->
-        <div style="background:linear-gradient(135deg,#FAF6FB,#F5EEF8);border-radius:16px;overflow:hidden;margin-bottom:12px;border:1.5px solid #E2D4EC;box-shadow:0 1px 8px rgba(124,92,138,.08);">
-          <div style="padding:13px 16px;border-bottom:0.5px solid #EDE4F2;">
-            <div style="font-size:10px;font-weight:800;color:#7C5C8A;text-transform:uppercase;letter-spacing:.6px;margin-bottom:2px;">Inner Rhythm Plus</div>
-            <div style="font-size:12px;color:#5A3A8A;">Understand your patterns deeply</div>
-          </div>
-          <div style="padding:10px 16px;display:flex;flex-direction:column;gap:7px;">
-            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#E8A840;font-size:13px;">&#10022;</span><span style="font-size:12px;color:#2E1F3E;">Advanced emotional pattern recognition</span></div>
-            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#E8A840;font-size:13px;">&#10022;</span><span style="font-size:12px;color:#2E1F3E;">Recurring emotional trend analysis</span></div>
-            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#E8A840;font-size:13px;">&#10022;</span><span style="font-size:12px;color:#2E1F3E;">Emotional forecasting</span></div>
-            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#E8A840;font-size:13px;">&#10022;</span><span style="font-size:12px;color:#2E1F3E;">Deep journal &amp; mood analysis</span></div>
-            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#E8A840;font-size:13px;">&#10022;</span><span style="font-size:12px;color:#2E1F3E;">Adaptive AI reflections over time</span></div>
-            <div style="display:flex;align-items:center;gap:8px;"><span style="color:#E8A840;font-size:13px;">&#10022;</span><span style="font-size:12px;color:#2E1F3E;">Partner sharing &amp; Soft Signal</span></div>
-          </div>
-          <div style="padding:12px 16px;border-top:0.5px solid #EDE4F2;display:flex;gap:8px;">
-            <button style="flex:1;background:none;border:1.5px solid #C0A8D4;border-radius:12px;padding:11px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;color:#7C5C8A;cursor:pointer;">Continue free</button>
-            <button style="flex:1;background:linear-gradient(135deg,#7C5C8A,#5E3D6E);border:none;border-radius:12px;padding:11px;font
+  <!-- DELETE ACCOUNT CONFIRM -->
+  <div class="mover" id="delete-modal">
+    <div class="msheet">
+      <div class="mhandle"></div>
+      <div style="text-align:center;margin-bottom:20px">
+        <div style="font-size:40px;margin-bottom:12px">🗑</div>
+        <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--text);margin-bottom:8px">Delete your account?</div>
+        <div style="font-size:14px;color:var(--text2);line-height:1.6">This will permanently delete everything — your check-ins, patterns, cycle data, and profile. It cannot be undone.</div>
+      </div>
+      <button onclick="deleteAccount()"
+        style="width:100%;background:#C62828;color:white;border:none;border-radius:16px;padding:16px;font-family:'Nunito',sans-serif;font-size:16px;font-weight:800;cursor:pointer;margin-bottom:10px">
+        Yes, delete everything
+      </button>
+      <button onclick="document.getElementById('delete-modal').classList.remove('show')"
+        style="width:100%;background:none;border:1.5px solid var(--border);border-radius:16px;padding:14px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;color:var(--text2);cursor:pointer">
+        Cancel, keep my account
+      </button>
+    </div>
+  </div>
+
+  <!-- DAY DETAIL MODAL -->
+  <div class="mover" id="modal">
+    <div class="msheet" style="padding-bottom:50px">
+      <div class="mhandle"></div>
+      <div style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:6px">My cycle details</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:22px;line-height:1.6">Fill in what you know — even rough estimates help. The app will get more accurate the longer you use it.</div>
+
+      <div style="margin-bottom:16px">
+        <div style="font-size:11px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px">When did your last period start?</div>
+        <input type="date" class="minp" id="pdinp" style="margin-bottom:0">
+      </div>
+
+      <div style="margin-bottom:16px">
+        <div style="font-size:11px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px">When did it end? (optional)</div>
+        <input type="date" class="minp" id="pdend" style="margin-bottom:0">
+        <div style="font-size:11px;color:var(--text3);margin-top:5px">Helps calculate how long your period usually lasts</div>
+      </div>
+
+      <div style="margin-bottom:16px">
+        <div style="font-size:11px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px">How long is your cycle usually? <span style="font-weight:400;text-transform:none;letter-spacing:0" id="cycle-len-val">(28 days)</span></div>
+        <input type="range" min="20" max="40" value="28" id="cycle-len" style="width:100%" oninput="document.getElementById('cycle-len-val').textContent='('+this.value+' days)'">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-top:4px"><span>20 days</span><span>40 days</span></div>
+        <div style="font-size:11px;color:var(--text3);margin-top:5px">Count from the first day of one period to the first day of the next. Not sure? 28 is the average — totally fine to leave it.</div>
+      </div>
+
+      <div style="margin-bottom:22px">
+        <div style="font-size:11px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px">How long does your period usually last? <span style="font-weight:400;text-transform:none;letter-spacing:0" id="period-dur-val">(5 days)</span></div>
+        <input type="range" min="1" max="10" value="5" id="period-dur" style="width:100%" oninput="document.getElementById('period-dur-val').textContent='('+this.value+' days)'">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-top:4px"><span>1 day</span><span>10 days</span></div>
+      </div>
+
+      <button class="msave" onclick="savePD()">Save my cycle details</button>
+      <div style="text-align:center;font-size:12px;color:var(--text3);margin-top:10px;line-height:1.5">You can always update this as you track more cycles.</div>
+    </div>
+  </div>
+
+</div>
+  
+
+<script>
 const TODAY=new Date();TODAY.setHours(0,0,0,0);
 // User cycle settings — loaded from storage or defaults
 var savedSetup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
@@ -2304,12 +2048,13 @@ let usePw=false,authMethod='email',authTab='up';
 // ── Missing globals fixed ─────────────────────────────────────────────
 var checkInDate=null,selectedFlow='',bodyIntuition='',ciMode='quick',ciDriver='';
 var curPatPhase='luteal',calYear=TODAY.getFullYear(),calMonth=TODAY.getMonth();
-var deepStep=0,deepTotal=4,quickAnswer='';
+var deepStep=0,deepTotal=5,quickAnswer='';
 var deepHeaders=[
   {sub:'How are you doing today',q:'How are you actually feeling right now? Be as honest as you want.'},
-  {sub:'Vibe check',q:'How are you feeling today? Pick everything that fits.'},
-  {sub:'Going deeper',q:'What is sitting with you most today — even if you cannot fully name it?'},
-  {sub:'Just between us',q:'Anything you need to say that you have not been able to say out loud.'}
+  {sub:'Vibe check',q:'How are you actually feeling today? Pick everything that fits.'},
+  {sub:'Your body',q:'How is your energy landing — and is your body saying anything today?'},
+  {sub:'Going a little deeper',q:'Two things I want to ask you about today.'},
+  {sub:'Just between us',q:'Anything you need to say that you have not been able to.'}
 ];
 let shareToggles={mood:true,phase:true,day:true,needs:true,syms:false,notes:false};
 let shareLevel=2;
@@ -2585,9 +2330,6 @@ function toggleRemember() {
 
 
 function checkAutoLogin() {
-  // Hide nav bar initially — shown after auth
-  var navBar=document.getElementById('main-nav')||document.querySelector('nav.nav');
-  if(navBar){navBar.style.display='none';}
   // If remembered session exists, skip auth
   if (localStorage.getItem('ir_session') === '1') {
     const account = JSON.parse(localStorage.getItem('ir_account') || '{}');
@@ -2600,54 +2342,7 @@ function checkAutoLogin() {
 }
 
 
-
-// ── TRIAL / MONETIZATION STATE ──────────────────────────────────────
-const TRIAL_DAYS = 60;
-
-function getTrialStatus(){
-  var acc=JSON.parse(localStorage.getItem('ir_account')||'{}');
-  if(!acc.createdAt){
-    return {active:true,dayNum:1,daysLeft:TRIAL_DAYS,cycleNum:1,expired:false,createdAt:Date.now()};
-  }
-  var elapsedMs=Date.now()-acc.createdAt;
-  var dayNum=Math.floor(elapsedMs/(1000*60*60*24))+1;
-  var daysLeft=Math.max(0,TRIAL_DAYS-dayNum+1);
-  var expired=dayNum>TRIAL_DAYS;
-  // Estimate which "cycle" they're in based on user's cycle length
-  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
-  var cycleLen=setup.cycleLength||28;
-  var cycleNum=Math.max(1,Math.ceil(dayNum/cycleLen));
-  return {
-    active:!expired,
-    dayNum:dayNum,
-    daysLeft:daysLeft,
-    cycleNum:cycleNum,
-    expired:expired,
-    createdAt:acc.createdAt
-  };
-}
-
-function getTrialMessage(){
-  var t=getTrialStatus();
-  if(t.expired)return 'Your trial has ended. Your history is always yours.';
-  if(t.cycleNum>=2)return 'You are entering your second cycle of insights.';
-  if(t.dayNum<=3)return 'Your rhythm is just beginning to take shape.';
-  if(t.dayNum<=14)return 'Your patterns are becoming clearer over time.';
-  if(t.daysLeft<=14)return 'Your rhythm is becoming clear. '+t.daysLeft+' days left in your trial.';
-  return 'Your rhythm is taking shape.';
-}
-
-// Returns true if a premium-gated feature should be accessible right now
-function hasPremiumAccess(){
-  var acc=JSON.parse(localStorage.getItem('ir_account')||'{}');
-  if(acc.isPremium)return true;
-  var t=getTrialStatus();
-  return t.active;
-}
-
 function nav(sc){
-  var navBar=document.getElementById('main-nav')||document.querySelector('nav.nav');
-  if(navBar){navBar.style.display=(sc==='auth'||sc==='welcome')?'none':'flex';}
   document.querySelectorAll('.mover').forEach(function(m){m.classList.remove('show');});
   document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');s.style.display='none';});
   document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
@@ -2655,41 +2350,32 @@ function nav(sc){
   if(target){target.classList.add('active');target.style.display='flex';}
   const nb=document.getElementById('nav-'+sc);if(nb)nb.classList.add('active');
   if(sc==='home'){try{initHome();buildCycleCircle();buildTomorrowCard();}catch(e){}}
+  if(sc==='home'){try{initHome();buildCycleCircle();buildTomorrowCard();}catch(e){}}
   if(sc==='settings'){try{loadProfile();}catch(e){}}
-  if(sc==='patterns'){try{learnCycleFromLogs();buildPatterns();applyPlusGating();}catch(e){}}
-  if(sc==='calendar'){try{renderCal();}catch(e){}}
-  if(sc==='checkin'){try{initCheckin();}catch(e){}}
-  if(sc==='logchoice'){try{initLogChoice();}catch(e){}}
-  if(sc==='bodylog'){try{initBodyLog();}catch(e){}}
+  if(sc==='patterns'){learnCycleFromLogs();buildPatterns();}
+  if(sc==='calendar')renderCal();
+  if(sc==='settings'){try{loadProfile();}catch(e){}}
+  if(sc==='patterns'){learnCycleFromLogs();buildPatterns();applyPlusGating();}
+  if(sc==='sharing'){updatePartnerPreview();const lnkEl=document.getElementById('companion-link-display');if(lnkEl){const pr=JSON.parse(localStorage.getItem('ir_profile')||'{}');lnkEl.textContent=pr.name?'innerrhythm.app/companion/'+pr.name.toLowerCase().replace(/\s+/g,'-'):'Set your name in Profile first';}}
+  if(sc==='ttc')updateTTCScreen();
+  if(sc==='checkin'){initCheckin();}
   if(sc==='notifs'){try{loadNotifSettings();}catch(e){}}
   if(sc==='partner'){try{loadPartnerScreen();}catch(e){}}
+  if(sc==='about'||sc==='privacy'){}
 }
 
 
 var welcomeCycleLen=28;
 
 function pickWelcomeCycle(el,len){
-  document.querySelectorAll('#welcome-cycle-pills .auth-cpill').forEach(function(p){
-    p.classList.remove('picked');
-    p.style.background='rgba(255,255,255,.07)';
-    p.style.border='1px solid rgba(255,255,255,.12)';
-    p.style.boxShadow='none';
-    var lbl=p.querySelector('div:last-child');
-    if(lbl){lbl.style.color='rgba(255,255,255,.35)';}
-  });
-  el.classList.add('picked');
-  el.style.background='transparent';
-  el.style.border='1.5px solid #C05080';
-  el.style.boxShadow='0 0 0 1px #C05080';
-  var lbl2=el.querySelector('div:last-child');
-  if(lbl2){lbl2.style.color='#E8A0C8';}
-  welcomeCycleLen=len;
+  document.querySelectorAll('#welcome-cycle-pills .auth-cpill').forEach(function(p){p.classList.remove('picked');});
+  el.classList.add('picked');welcomeCycleLen=len;
 }
 
 function goHome(){
   document.querySelectorAll('.mover').forEach(function(m){m.classList.remove('show');});
   document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');s.style.display='none';});
-  var navEl=document.querySelector('nav.nav');if(navEl)navEl.style.display='flex';
+  var navEl=document.getElementById('main-nav');if(navEl)navEl.style.display='flex';
   var homeEl=document.getElementById('screen-home');
   if(homeEl){homeEl.style.display='flex';homeEl.classList.add('active');}
   document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('active');});
@@ -2817,10 +2503,10 @@ function buildCycleCircle(){
   if(!dayEl)return;
   if(!setup.start){dayEl.textContent='--';if(phaseEl)phaseEl.textContent='SET UP';if(nextEl)nextEl.textContent='Tap to set up your cycle';if(progEl)progEl.setAttribute('stroke-dashoffset','427');return;}
   var day=cd(TODAY),phase=ph(day),daysLeft=userCycleLen-day;
-  var phaseColors={period:'#D4709A',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#7C5C8A'};
+  var phaseColors={period:'#D4709A',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#9B7EC8'};
   var phaseTracks={period:'#FBE0EC',follicular:'#E0F2FA',ovulation:'#FBEFD4',luteal:'#EDE6F8'};
   var names={period:'PERIOD',follicular:'FOLLICULAR',ovulation:'OVULATION',luteal:'LUTEAL'};
-  var col=phaseColors[phase]||'#7C5C8A';
+  var col=phaseColors[phase]||'#9B7EC8';
   dayEl.textContent=day;
   if(phaseEl){phaseEl.textContent=names[phase]||phase.toUpperCase();phaseEl.setAttribute('fill',col);}
   if(progEl)progEl.setAttribute('stroke',col);
@@ -2873,7 +2559,7 @@ function showCalDay(date,d,c,p,k,log,isPred){
   var dd=document.getElementById('cal-day-detail');if(!dd)return;
   var moodEmoji={'Amazing':'\ud83e\udd29','Good':'\ud83d\ude0a','Meh':'\ud83d\ude10','Off':'\ud83d\ude14','Rough':'\ud83d\ude23'};
   var phaseNames={period:'Period',follicular:'Follicular',ovulation:'Ovulation',luteal:'Luteal'};
-  var phaseColors={period:'#C05080',follicular:'#4AAAC4',ovulation:'#A06800',luteal:'#7C5C8A'};
+  var phaseColors={period:'#C05080',follicular:'#4AAAC4',ovulation:'#A06800',luteal:'#9B7EC8'};
   var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   var col=phaseColors[p]||'#4AAAC4';
   var isT=date.toDateString()===TODAY.toDateString();
@@ -2894,13 +2580,13 @@ function showCalDay(date,d,c,p,k,log,isPred){
       html+='</div></div>';
     }
     // Quick answer
-    if(log.quickAnswer)html+='<div style="background:#F8F9FB;border-radius:10px;padding:9px 12px;margin-bottom:8px;font-size:12px;color:#5A7A8A;line-height:1.6;"><span style="font-weight:700;color:#7C5C8A;">IR asked:</span> '+log.quickAnswer+'</div>';
+    if(log.quickAnswer)html+='<div style="background:#F8F9FB;border-radius:10px;padding:9px 12px;margin-bottom:8px;font-size:12px;color:#5A7A8A;line-height:1.6;"><span style="font-weight:700;color:#9B7EC8;">IR asked:</span> '+log.quickAnswer+'</div>';
     // Own words
-    if(log.quickNote)html+='<div style="background:#F0EAF8;border-radius:10px;padding:9px 12px;margin-bottom:8px;font-size:12px;color:#3A2A5A;font-style:italic;line-height:1.65;border-left:3px solid #7C5C8A;">'+log.quickNote+'</div>';
+    if(log.quickNote)html+='<div style="background:#F0EAF8;border-radius:10px;padding:9px 12px;margin-bottom:8px;font-size:12px;color:#3A2A5A;font-style:italic;line-height:1.65;border-left:3px solid #9B7EC8;">'+log.quickNote+'</div>';
     // Energies
     if(log.energies&&log.energies.length)html+='<div style="font-size:11px;color:#4AAAC4;font-weight:600;margin-bottom:6px;">&#9889; '+log.energies.join(' · ')+'</div>';
     // Body intuition
-    if(log.bodyIntuition)html+='<div style="font-size:11px;color:#7C5C8A;font-weight:600;margin-bottom:6px;">&#10024; Needed: '+log.bodyIntuition+'</div>';
+    if(log.bodyIntuition)html+='<div style="font-size:11px;color:#9B7EC8;font-weight:600;margin-bottom:6px;">&#10024; Needed: '+log.bodyIntuition+'</div>';
     // Feelings
     if(log.feels&&log.feels.length)html+='<div style="font-size:11px;color:#5A7A8A;margin-bottom:6px;">Feelings: '+log.feels.join(' · ')+'</div>';
     // Symptoms
@@ -2939,7 +2625,7 @@ function initHome(){
     ovulation:'linear-gradient(160deg,#FFFBF0 0%,#FFF5E0 50%,#F8ECD0 100%)',
     luteal:'linear-gradient(160deg,#F8F0FF 0%,#F2E8FC 50%,#EDE0F8 100%)'
   };
-  var phaseRingStrokes={period:'#C05080',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#7C5C8A'};
+  var phaseRingStrokes={period:'#C05080',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#9B7EC8'};
   var phaseTextColors={period:'rgba(160,60,100,.55)',follicular:'rgba(40,120,160,.55)',ovulation:'rgba(160,120,40,.55)',luteal:'rgba(100,60,160,.55)'};
   var phaseLabels={period:'Period',follicular:'Follicular',ovulation:'Ovulation',luteal:'Luteal'};
 
@@ -2955,8 +2641,8 @@ function initHome(){
     var day=cd(TODAY);
     var phase=ph(day);
     if(hero)hero.style.background=phaseHeroGrads[phase]||phaseHeroGrads.luteal;
-    if(ringProgress){ringProgress.style.stroke=phaseRingStrokes[phase]||'#7C5C8A';}
-    if(ringPhase){ringPhase.style.fill=phaseRingStrokes[phase]||'#7C5C8A';ringPhase.textContent=(phaseLabels[phase]||'CYCLE').toUpperCase();}
+    if(ringProgress){ringProgress.style.stroke=phaseRingStrokes[phase]||'#9B7EC8';}
+    if(ringPhase){ringPhase.style.fill=phaseRingStrokes[phase]||'#9B7EC8';ringPhase.textContent=(phaseLabels[phase]||'CYCLE').toUpperCase();}
     if(ringDay)ringDay.textContent=day;
     // Ring fill
     var pct=day/userCycleLen;
@@ -3013,8 +2699,6 @@ function initHome(){
       var showLetter=li&&(new Date().getDate()%3===0);
       irEl.textContent=showLetter?li:getDailyMsg();
     }catch(e){irEl.textContent='Check in today so I can learn more about you.';}
-    // Support suggestions chips below IR message
-    try{buildHomeSupportChips(setup);}catch(err){}
   }
 
   // Streak pill
@@ -3218,7 +2902,7 @@ function pm(el,m){
   irTxt.innerHTML=msg.replace(/\n\n/g,'<br><br>');
 
   var phaseColors={period:'#FFF0F6',follicular:'#EEF8FF',ovulation:'#FFFAF0',luteal:'#F8F4FF'};
-  var phaseBorders={period:'#D4709A',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#7C5C8A'};
+  var phaseBorders={period:'#D4709A',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#9B7EC8'};
   var phaseText={period:'#7A1040',follicular:'#1A4A6A',ovulation:'#6A4800',luteal:'#3A2A5A'};
   irEl.style.background='linear-gradient(135deg,'+phaseColors[phase]+','+phaseColors[phase]+'88)';
   irEl.style.borderLeft='3px solid '+(phaseBorders[phase]||'#4AAAC4');
@@ -3261,7 +2945,7 @@ function closeReward(){
 function patTab(phase){
   var phaseGrads={period:'linear-gradient(160deg,#FFF0F5 0%,#FFE8F0 50%,#FFD8E8 100%)',follicular:'linear-gradient(160deg,#F0F8FF 0%,#E8F2FC 50%,#D8EAF8 100%)',ovulation:'linear-gradient(160deg,#FFFBF0 0%,#FFF5E0 50%,#F8ECD0 100%)',luteal:'linear-gradient(160deg,#F8F0FF 0%,#F2E8FC 50%,#EDE0F8 100%)'};
   var phaseBgs={period:'#FFF0F6',follicular:'#EEF8FF',ovulation:'#FFFAF0',luteal:'#F8F4FF'};
-  var phaseCols={period:'#C05080',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#7C5C8A'};
+  var phaseCols={period:'#C05080',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#9B7EC8'};
   var hero=document.getElementById('pat-hero');
   if(hero)hero.style.background=phaseGrads[phase]||phaseGrads.luteal;
   ['period','follicular','ovulation','luteal'].forEach(function(p){
@@ -3324,7 +3008,7 @@ function openBadgeSheet(){
   var noteEl=document.getElementById('sheet-ir-note');
   if(!sheet||!grid)return;
   var earnedB=JSON.parse(localStorage.getItem('ir_badges')||'[]');
-  var allB=[{id:'streak7',icon:'\ud83d\udd25',lbl:'7 Day Streak',bg:'linear-gradient(135deg,#B86000,#E8A000)',glow:'rgba(255,160,0,.4)'},{id:'streak14',icon:'\ud83d\udd25',lbl:'14 Day',bg:'linear-gradient(135deg,#B86000,#E8A000)',glow:'rgba(255,160,0,.4)'},{id:'streak30',icon:'\ud83c\udfc6',lbl:'30 Day',bg:'linear-gradient(135deg,#8A7000,#D4B000)',glow:'rgba(220,180,0,.4)'},{id:'cycle1',icon:'\ud83c\udf00',lbl:'1st Cycle',bg:'linear-gradient(135deg,#2A6A3A,#4A9A6A)',glow:'rgba(74,154,106,.4)'},{id:'cycle3',icon:'\ud83c\udf3f',lbl:'3 Cycles',bg:'linear-gradient(135deg,#2A6A3A,#4A9A6A)',glow:'rgba(74,154,106,.4)'},{id:'period_known',icon:'\ud83e\ude78',lbl:'Period Known',bg:'linear-gradient(135deg,#A02060,#D45080)',glow:'rgba(212,80,128,.4)'},{id:'follicular_known',icon:'\ud83c\udf31',lbl:'Follicular',bg:'linear-gradient(135deg,#2A8AAA,#4AAAC4)',glow:'rgba(74,170,196,.4)'},{id:'ovulation_known',icon:'\u2600\ufe0f',lbl:'Ovulation',bg:'linear-gradient(135deg,#A07000,#D4A000)',glow:'rgba(212,160,0,.4)'},{id:'luteal_known',icon:'\ud83c\udf19',lbl:'Luteal Known',bg:'linear-gradient(135deg,#5A3A90,#7C5C8A)',glow:'rgba(155,126,200,.4)'}];
+  var allB=[{id:'streak7',icon:'\ud83d\udd25',lbl:'7 Day Streak',bg:'linear-gradient(135deg,#B86000,#E8A000)',glow:'rgba(255,160,0,.4)'},{id:'streak14',icon:'\ud83d\udd25',lbl:'14 Day',bg:'linear-gradient(135deg,#B86000,#E8A000)',glow:'rgba(255,160,0,.4)'},{id:'streak30',icon:'\ud83c\udfc6',lbl:'30 Day',bg:'linear-gradient(135deg,#8A7000,#D4B000)',glow:'rgba(220,180,0,.4)'},{id:'cycle1',icon:'\ud83c\udf00',lbl:'1st Cycle',bg:'linear-gradient(135deg,#2A6A3A,#4A9A6A)',glow:'rgba(74,154,106,.4)'},{id:'cycle3',icon:'\ud83c\udf3f',lbl:'3 Cycles',bg:'linear-gradient(135deg,#2A6A3A,#4A9A6A)',glow:'rgba(74,154,106,.4)'},{id:'period_known',icon:'\ud83e\ude78',lbl:'Period Known',bg:'linear-gradient(135deg,#A02060,#D45080)',glow:'rgba(212,80,128,.4)'},{id:'follicular_known',icon:'\ud83c\udf31',lbl:'Follicular',bg:'linear-gradient(135deg,#2A8AAA,#4AAAC4)',glow:'rgba(74,170,196,.4)'},{id:'ovulation_known',icon:'\u2600\ufe0f',lbl:'Ovulation',bg:'linear-gradient(135deg,#A07000,#D4A000)',glow:'rgba(212,160,0,.4)'},{id:'luteal_known',icon:'\ud83c\udf19',lbl:'Luteal Known',bg:'linear-gradient(135deg,#5A3A90,#9B7EC8)',glow:'rgba(155,126,200,.4)'}];
   grid.innerHTML='';
   var earnedCount=0;
   allB.forEach(function(b){
@@ -3407,7 +3091,7 @@ function renderCal(){
         strip.onclick=function(){checkInDate=null;initCheckin();nav('checkin');};
       }else{
         var _s1=document.createElement('span');_s1.style.color='#A8C0CC';_s1.textContent='Nothing logged yet today \u2014 ';
-        var _s2=document.createElement('span');_s2.style.cssText='color:#7C5C8A;font-weight:700;cursor:pointer;';_s2.textContent='Log now \u2192';_s2.onclick=function(){checkInDate=null;initCheckin();nav('checkin');};
+        var _s2=document.createElement('span');_s2.style.cssText='color:#9B7EC8;font-weight:700;cursor:pointer;';_s2.textContent='Log now \u2192';_s2.onclick=function(){checkInDate=null;initCheckin();nav('checkin');};
         stripContent.innerHTML='';stripContent.appendChild(_s1);stripContent.appendChild(_s2);
         if(stripLabel)stripLabel.textContent='Today';
         strip.onclick=null;strip.style.cursor='default';
@@ -3439,7 +3123,7 @@ function buildPatterns(){
       if(heroBar){heroBar.style.width=Math.round(day/userCycleLen*100)+'%';var phBarColors={period:'rgba(192,80,128,.4)',follicular:'rgba(74,170,196,.4)',ovulation:'rgba(232,168,64,.4)',luteal:'rgba(155,126,200,.4)'};heroBar.style.background=phBarColors[phase]||'rgba(155,126,200,.4)';}
       if(todayLbl)todayLbl.textContent='TODAY \u00b7 DAY '+day;
       if(cycleEnd)cycleEnd.textContent='DAY '+userCycleLen;
-      var phaseGrads={period:'linear-gradient(160deg,#C05080,#D4709A)',follicular:'linear-gradient(160deg,#4AAAC4,#7DC8E0)',ovulation:'linear-gradient(160deg,#C07820,#E8A840)',luteal:'linear-gradient(160deg,#7C5C8A,#7B5EA8)'};
+      var phaseGrads={period:'linear-gradient(160deg,#C05080,#D4709A)',follicular:'linear-gradient(160deg,#4AAAC4,#7DC8E0)',ovulation:'linear-gradient(160deg,#C07820,#E8A840)',luteal:'linear-gradient(160deg,#9B7EC8,#7B5EA8)'};
       var hero=document.getElementById('pat-hero');
       if(hero)hero.style.background=phaseGrads[phase]||phaseGrads.luteal;
       patTab(phase);
@@ -3517,7 +3201,7 @@ function buildPatterns(){
       }
     },
     luteal:{
-      color:'#7C5C8A',bg:'#F8F4FF',
+      color:'#9B7EC8',bg:'#F8F4FF',
       logCount:phaseMoods.luteal.length,
       facts:{
         label:'About the luteal phase',
@@ -3541,7 +3225,7 @@ function buildPatterns(){
       var top=topItem(phaseMoods[p]);
       if(top&&phaseMoods[p].length>=3){
         var pName={period:'period',follicular:'follicular phase',ovulation:'ovulation',luteal:'luteal phase'}[p];
-        insights.push({color:{period:'#C05080',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#7C5C8A'}[p],title:'You often feel '+top.toLowerCase()+' in '+pName,body:'This has shown up consistently in your '+pName+' logs. Your body is telling you something real.'});
+        insights.push({color:{period:'#C05080',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#9B7EC8'}[p],title:'You often feel '+top.toLowerCase()+' in '+pName,body:'This has shown up consistently in your '+pName+' logs. Your body is telling you something real.'});
       }
     });
   }
@@ -3588,7 +3272,7 @@ function initCheckin(){
   var ir=document.getElementById('ci-ir-response');if(ir)ir.style.display='none';
   var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
   var header=document.getElementById('ci-header');
-  var phaseGrads={period:'linear-gradient(160deg,#C05080,#D4709A)',follicular:'linear-gradient(160deg,#4AAAC4,#7DC8E0)',ovulation:'linear-gradient(160deg,#C07820,#E8A840)',luteal:'linear-gradient(160deg,#7C5C8A,#7B5EA8)'};
+  var phaseGrads={period:'linear-gradient(160deg,#C05080,#D4709A)',follicular:'linear-gradient(160deg,#4AAAC4,#7DC8E0)',ovulation:'linear-gradient(160deg,#C07820,#E8A840)',luteal:'linear-gradient(160deg,#9B7EC8,#7B5EA8)'};
   if(setup.start&&header){
     var phase=ph(cd(TODAY));
     header.style.background=phaseGrads[phase]||phaseGrads.luteal;
@@ -3731,31 +3415,6 @@ function loadProfile(){
       shelf.appendChild(el);
     });
   }
-  try{loadPremiumSection();}catch(err){}
-}
-
-function loadPremiumSection(){
-  var t=getTrialStatus();
-  var msgEl=document.getElementById('trial-status-msg');
-  var barEl=document.getElementById('trial-progress-bar');
-  var daysEl=document.getElementById('trial-days-text');
-  if(msgEl)msgEl.textContent=getTrialMessage();
-  if(daysEl){
-    if(t.expired){
-      daysEl.textContent='Trial ended. Your logs and journals are always yours.';
-    }else{
-      daysEl.textContent=t.daysLeft+' days remaining in your trial';
-    }
-  }
-  if(barEl){
-    var pct=Math.min(100,Math.round((t.dayNum/60)*100));
-    setTimeout(function(){barEl.style.width=pct+'%';},200);
-  }
-}
-
-function explorePremium(){
-  // Placeholder — shows a calm info toast for now
-  toast('Plus features coming soon. Everything you have logged is yours to keep. \u2764');
 }
 
 function checkRewards(){
@@ -4008,7 +3667,7 @@ function checkTreatCard(){
 function showTreatCard(key){
   var TREATS_LOCAL={
     period_end:{bg:'linear-gradient(135deg,#D4709A,#C05080)',icon:'\ud83e\ude78',label:'You made it through',title:'Your period is over. You deserve something today.',msg:'Your body just did a lot. That deserves recognition.',chips:['\ud83d\udec1 Long hot bath','\ud83c\udf55 Order your favourite food','\ud83d\udecc Early bedtime','\ud83d\udd6f\ufe0f Cancel one obligation']},
-    luteal_end:{bg:'linear-gradient(135deg,#7B5EA8,#7C5C8A)',icon:'\ud83c\udf19',label:'Hardest phase done',title:'You got through luteal. Treat yourself today.',msg:'The fog, the heavy feeling — you showed up through all of it.',chips:['\u2615 Get your favourite order','\ud83d\udec1 Take a bath tonight','\ud83c\udf6b Buy the snack','\ud83d\udcfa Guilt-free screen time']},
+    luteal_end:{bg:'linear-gradient(135deg,#7B5EA8,#9B7EC8)',icon:'\ud83c\udf19',label:'Hardest phase done',title:'You got through luteal. Treat yourself today.',msg:'The fog, the heavy feeling — you showed up through all of it.',chips:['\u2615 Get your favourite order','\ud83d\udec1 Take a bath tonight','\ud83c\udf6b Buy the snack','\ud83d\udcfa Guilt-free screen time']},
     streak7:{bg:'linear-gradient(135deg,#B86000,#E8A000)',icon:'\ud83d\udd25',label:'7 days in a row',title:'You kept your promise to yourself. Celebrate that.',msg:'Seven consecutive days of showing up. Treat yourself like someone who follows through.',chips:['\ud83e\uddc1 Get a little treat','\ud83d\udc90 Buy yourself flowers','\u2728 Do something just for you','\ud83d\udc86 Book a massage']},
     streak14:{bg:'linear-gradient(135deg,#B86000,#E8A000)',icon:'\ud83d\udd25',label:'14 days in a row',title:'Two weeks of showing up.',msg:'Fourteen days straight. You deserve something good today.',chips:['\ud83c\udf7d\ufe0f Nice dinner tonight','\ud83d\udec1 Long bath','\ud83d\uded2 Buy something small','\ud83c\udf74 Cook your favourite meal']},
     cycle1:{bg:'linear-gradient(135deg,#2A6A3A,#4A9A6A)',icon:'\ud83c\udf00',label:'First full cycle',title:'One whole cycle. That took real commitment.',msg:'Period to period, you showed up. Do something today that feels like a proper celebration.',chips:['\ud83d\uded1 Buy something you want','\ud83c\udf7d\ufe0f Nice dinner out','\ud83e\uddd6 Book a facial or massage','\ud83c\udf89 Tell someone you did this']}
@@ -4099,7 +3758,7 @@ function buildQuickQuestion(){
     period:'linear-gradient(135deg,#C05080,#A03060)',
     follicular:'linear-gradient(135deg,#4AAAC4,#2A8AAC)',
     ovulation:'linear-gradient(135deg,#E8A840,#C07820)',
-    luteal:'linear-gradient(135deg,#7C5C8A,#7B5EA8)'
+    luteal:'linear-gradient(135deg,#9B7EC8,#7B5EA8)'
   };
   var phaseTextColor = {
     period:'rgba(140,40,80,.6)',
@@ -4213,7 +3872,7 @@ function buildQuickQuestion(){
 function renderAnswers(wrap, answers, phase){
   if(!wrap) return;
   var phaseSelBg = {period:'#FFF0F6',follicular:'#EEF8FF',ovulation:'#FFFAF0',luteal:'#F0EAF8'};
-  var phaseSelBorder = {period:'#C05080',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#7C5C8A'};
+  var phaseSelBorder = {period:'#C05080',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#9B7EC8'};
   var phaseSelText = {period:'#6A1030',follicular:'#1A4A6A',ovulation:'#6A4800',luteal:'#3A2A5A'};
   wrap.innerHTML = '';
   quickAnswer = '';
@@ -4232,9 +3891,9 @@ function renderAnswers(wrap, answers, phase){
         b.querySelector('div').style.background = '#E0E8F0';
       });
       btn.style.background = phaseSelBg[phase] || '#F0EAF8';
-      btn.style.borderColor = phaseSelBorder[phase] || '#7C5C8A';
+      btn.style.borderColor = phaseSelBorder[phase] || '#9B7EC8';
       btn.style.color = phaseSelText[phase] || '#3A2A5A';
-      dot.style.background = phaseSelBorder[phase] || '#7C5C8A';
+      dot.style.background = phaseSelBorder[phase] || '#9B7EC8';
       quickAnswer = ans;
       // Save to mood for pattern learning
       mood = ans;
@@ -4399,8 +4058,8 @@ function buildIRQuestion(){
           b.style.background='white';b.style.borderColor='#E8EEF2';b.style.color='#1A3A45';
           var d=b.querySelector('div');if(d)d.style.background='#E0E8F0';
         });
-        btn.style.background='#F0EAF8';btn.style.borderColor='#7C5C8A';btn.style.color='#3A2A5A';
-        dot.style.background='#7C5C8A';
+        btn.style.background='#F0EAF8';btn.style.borderColor='#9B7EC8';btn.style.color='#3A2A5A';
+        dot.style.background='#9B7EC8';
         quickAnswer=ans;
         window._quickQ={key:'quick',question:q.question,answer:ans};
         // Show micro-recognition moment
@@ -4443,13 +4102,13 @@ function showMicroRecognition(answer,phase,day){
     if(!existing){
       existing=document.createElement('div');
       existing.id='micro-recognition';
-      existing.style.cssText='background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-radius:14px;padding:13px 15px;border-left:3px solid #7C5C8A;margin-top:4px;margin-bottom:8px;';
+      existing.style.cssText='background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-radius:14px;padding:13px 15px;border-left:3px solid #9B7EC8;margin-top:4px;margin-bottom:8px;';
       var answerList=document.getElementById('quick-answer-list');
       if(answerList&&answerList.parentNode){
         answerList.parentNode.insertBefore(existing,answerList.nextSibling);
       }
     }
-    existing.innerHTML='<div style="display:flex;gap:8px;align-items:flex-start;"><div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#7C5C8A,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:white;flex-shrink:0;margin-top:1px;">IR</div><div style="font-size:12px;color:#3A2A5A;line-height:1.75;">'+msg+'</div></div>';
+    existing.innerHTML='<div style="display:flex;gap:8px;align-items:flex-start;"><div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:white;flex-shrink:0;margin-top:1px;">IR</div><div style="font-size:12px;color:#3A2A5A;line-height:1.75;">'+msg+'</div></div>';
     existing.style.display='block';
   }else{
     var ex=document.getElementById('micro-recognition');
@@ -4483,7 +4142,7 @@ function setDefaultQuestion(){
       btn.appendChild(dot);btn.appendChild(txt);
       btn.onclick=function(){
         document.querySelectorAll('.quick-ans-btn').forEach(function(b){b.style.background='white';b.style.borderColor='#E8EEF2';b.style.color='#1A3A45';var d=b.querySelector('div');if(d)d.style.background='#E0E8F0';});
-        btn.style.background='#F0EAF8';btn.style.borderColor='#7C5C8A';btn.style.color='#3A2A5A';dot.style.background='#7C5C8A';
+        btn.style.background='#F0EAF8';btn.style.borderColor='#9B7EC8';btn.style.color='#3A2A5A';dot.style.background='#9B7EC8';
         quickAnswer=ans;
         showMicroRecognition(ans,'luteal',14);
       };
@@ -4538,8 +4197,8 @@ function initDeepSteps(){
           b.style.background='white';b.style.borderColor='#E8EEF2';b.style.color='#1A3A45';
           var d=b.querySelector('div');if(d)d.style.background='#E0E8F0';
         });
-        btn.style.background='#F0EAF8';btn.style.borderColor='#7C5C8A';btn.style.color='#3A2A5A';
-        dot.style.background='#7C5C8A';
+        btn.style.background='#F0EAF8';btn.style.borderColor='#9B7EC8';btn.style.color='#3A2A5A';
+        dot.style.background='#9B7EC8';
         quickAnswer=ans;
         window._quickQ={key:'deep_q',question:document.getElementById('ci-ir-question')?document.getElementById('ci-ir-question').textContent:'',answer:ans};
       };
@@ -4581,6 +4240,11 @@ function updateDeepHeader(){
 
 function deepNextStep(){
   if(deepStep<deepTotal-1){
+    // Capture flow selection from current step before moving
+    if(deepStep===0){
+      var flowEls=document.querySelectorAll('.flow-opt.sel');
+      if(flowEls.length)selectedFlow=flowEls[0].dataset.flow||flowEls[0].textContent.trim();
+    }
     deepStep++;
     showDeepStep(deepStep);
     updateDeepHeader();
@@ -4610,8 +4274,8 @@ function setCiMode(mode){
 
   var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
   var phase=setup.start?ph(cd(TODAY)):'luteal';
-  var phColors={period:'#C05080',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#7C5C8A'};
-  var col=phColors[phase]||'#7C5C8A';
+  var phColors={period:'#C05080',follicular:'#4AAAC4',ovulation:'#E8A840',luteal:'#9B7EC8'};
+  var col=phColors[phase]||'#9B7EC8';
 
   if(tq&&td){
     if(mode==='quick'){
@@ -4696,7 +4360,7 @@ function applyTCUI(on){
   var knob=document.getElementById('tc-knob');
   var info=document.getElementById('tc-info');
   var fertileRow=document.getElementById('tc-fertile-row');
-  if(toggle)toggle.style.background=on?'#7C5C8A':'#E0E8F0';
+  if(toggle)toggle.style.background=on?'#9B7EC8':'#E0E8F0';
   if(knob)knob.style.left=on?'21px':'3px';
   if(info)info.style.display=on?'block':'none';
   if(fertileRow)fertileRow.style.display=on?'flex':'none';
@@ -4841,12 +4505,12 @@ function checkForCrisisLanguage(text){
   if(!existing){
     existing=document.createElement('div');
     existing.id='crisis-card';
-    existing.style.cssText='background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-radius:16px;padding:15px 16px;border-left:3px solid #7C5C8A;margin-top:12px;';
+    existing.style.cssText='background:linear-gradient(135deg,#F8F4FF,#EEE8F8);border-radius:16px;padding:15px 16px;border-left:3px solid #9B7EC8;margin-top:12px;';
     var scroll=document.getElementById('ci-scroll');
     if(scroll)scroll.insertBefore(existing,scroll.firstChild);
   }
   var h='<div style="display:flex;gap:9px;align-items:flex-start;">';
-  h+='<div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#7C5C8A,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;">IR</div>';
+  h+='<div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#9B7EC8,#7B5EA8);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;">IR</div>';
   h+='<div><div style="font-size:13px;color:#3A2A5A;line-height:1.75;margin-bottom:8px;">What you are feeling sounds really heavy. You deserve support beyond what I can offer.</div>';
   h+='<div style="font-size:12px;color:#7B5EA8;font-weight:700;">If things feel urgent: Crisis Text Line — text HOME to 741741</div></div></div>';
   existing.innerHTML=h;
@@ -5049,218 +4713,6 @@ function toggleShare(key){
   localStorage.setItem('ir_share_toggles',JSON.stringify(st));
   updatePartnerPreview();
 }
-
-var bodyLogData={syms:[],sleep:[],intimacy:[],medication:[],water:[],notes:''};
-var activeTile=null;
-
-function initLogChoice(){}
-
-function initBodyLog(){
-  logs=JSON.parse(localStorage.getItem('ir4')||'{}');
-  var k=TODAY.getFullYear()+'-'+String(TODAY.getMonth()+1).padStart(2,'0')+'-'+String(TODAY.getDate()).padStart(2,'0');
-  var ex=logs[k]||{};
-  var dl=document.getElementById('bodylog-date');
-  if(dl)dl.textContent=TODAY.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
-  bodyLogData={syms:ex.syms||[],sleep:ex.sleep||[],intimacy:ex.intimacy||[],
-               medication:ex.medication||[],water:ex.water||[],notes:ex.bodyNote||'',
-               cervical:ex.cervical||[],ovulation:ex.ovulation||[]};
-  if(ex.flow){
-    document.querySelectorAll('.flow-opt').forEach(function(el){
-      el.classList.toggle('sel',el.textContent.trim()===ex.flow);
-    });
-    selectedFlow=ex.flow;
-  }
-  updateTileStates();
-  ['syms','sleep','intimacy','medication','water'].forEach(function(key){
-    var panel=document.getElementById('panel-'+key);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    if(!panel)return;
-    panel.querySelectorAll('.bl-chip').forEach(function(chip){
-      chip.classList.toggle('sel',bodyLogData[key].indexOf(chip.textContent.trim())>-1);
-    });
-  });
-  var noteEl=document.getElementById('bodylog-note');
-  if(noteEl)noteEl.value=bodyLogData.notes||'';
-  if(activeTile){closeBodyTile(activeTile);activeTile=null;}
-}
-
-function updateTileStates(){
-  var keys={symptoms:'syms',sleep:'sleep',intimacy:'intimacy',medication:'medication',water:'water',notes:'notes',cervical:'cervical',ovulation:'ovulation'};
-  Object.keys(keys).forEach(function(t){
-    var tile=document.getElementById('tile-'+t);
-    if(!tile)return;
-    var k=keys[t];
-    var has=k==='notes'?(bodyLogData.notes&&bodyLogData.notes.length>0):(bodyLogData[k]&&bodyLogData[k].length>0);
-    tile.classList.toggle('logged',!!has);
-  });
-}
-
-function toggleBodyTile(name){
-  if(activeTile&&activeTile!==name){closeBodyTile(activeTile);}
-  var panel=document.getElementById('panel-'+name);
-  var tile=document.getElementById('tile-'+name);
-  if(!panel)return;
-  if(panel.style.display==='none'||!panel.style.display){
-    panel.style.display='block';
-    if(tile)tile.classList.add('active');
-    activeTile=name;
-    setTimeout(function(){panel.scrollIntoView({behavior:'smooth',block:'nearest'});},100);
-  }else{closeBodyTile(name);}
-}
-
-function closeBodyTile(name){
-  var panel=document.getElementById('panel-'+name);
-  var tile=document.getElementById('tile-'+name);
-  if(panel)panel.style.display='none';
-  if(tile)tile.classList.remove('active');
-  if(activeTile===name)activeTile=null;
-  if(name==='notes'){var n=document.getElementById('bodylog-note');if(n)bodyLogData.notes=n.value.trim();}
-  updateTileStates();
-}
-
-function toggleBodyChip(el,key,val){
-  el.classList.toggle('sel');
-  if(!bodyLogData[key])bodyLogData[key]=[];
-  var idx=bodyLogData[key].indexOf(val);
-  if(el.classList.contains('sel')){if(idx===-1)bodyLogData[key].push(val);}
-  else{if(idx>-1)bodyLogData[key].splice(idx,1);}
-}
-
-function logPeriodEvent(type){
-  var k=TODAY.getFullYear()+'-'+String(TODAY.getMonth()+1).padStart(2,'0')+'-'+String(TODAY.getDate()).padStart(2,'0');
-  var setup=JSON.parse(localStorage.getItem('ir_cycle_setup')||'{}');
-  if(type==='started'){
-    setup.start=k;setup._manualDate=true;
-    userLP=new Date(TODAY.getFullYear(),TODAY.getMonth(),TODAY.getDate(),12,0,0);
-    var sb=document.getElementById('btn-period-started');
-    if(sb){sb.style.background='#FFD8E8';sb.innerHTML='&#129768; Period started &#10003;';}
-    toast('Period start logged');
-  }else{
-    setup.periodEnd=k;
-    var eb=document.getElementById('btn-period-ended');
-    if(eb){eb.style.background='#7B3060';eb.textContent='Period ended \u2713';}
-    toast('Period end logged');
-  }
-  localStorage.setItem('ir_cycle_setup',JSON.stringify(setup));
-  var ex=logs[k]||{};
-  ex['period_'+type]=k;
-  if(type==='started'&&!ex.flow)ex.flow='Medium';
-  logs[k]=ex;
-  localStorage.setItem('ir4',JSON.stringify(logs));
-}
-
-function saveBodyLog(){
-  var k=TODAY.getFullYear()+'-'+String(TODAY.getMonth()+1).padStart(2,'0')+'-'+String(TODAY.getDate()).padStart(2,'0');
-  if(activeTile)closeBodyTile(activeTile);
-  var noteEl=document.getElementById('bodylog-note');
-  if(noteEl)bodyLogData.notes=noteEl.value.trim();
-  var ex=logs[k]||{};
-  if(bodyLogData.syms.length)ex.syms=bodyLogData.syms;
-  if(bodyLogData.sleep.length)ex.sleep=bodyLogData.sleep;
-  if(bodyLogData.intimacy.length)ex.intimacy=bodyLogData.intimacy;
-  if(bodyLogData.medication.length)ex.medication=bodyLogData.medication;
-  if(bodyLogData.water.length)ex.water=bodyLogData.water;
-  if(bodyLogData.notes)ex.bodyNote=bodyLogData.notes;
-  if(bodyLogData.cervical.length)ex.cervical=bodyLogData.cervical;
-  if(bodyLogData.ovulation.length)ex.ovulation=bodyLogData.ovulation;
-  if(selectedFlow)ex.flow=selectedFlow;
-  ex.ts=Date.now();
-  logs[k]=ex;
-  localStorage.setItem('ir4',JSON.stringify(logs));
-  logs=JSON.parse(localStorage.getItem('ir4')||'{}');
-  toast('Body log saved \u2713');
-  setTimeout(function(){nav('home');},600);
-}
-
-function buildHomeSupportChips(setup){
-  var el=document.getElementById('home-support-chips');
-  if(!el)return;
-  if(!setup||!setup.start){el.style.display='none';return;}
-  var day=cd(TODAY),phase=ph(day);
-  var suggestions={
-    period:[
-      ['Rest without guilt','Extra warmth','Slow the pace'],
-      ['Gentle plans only','Extra gentleness','Permission to cancel'],
-      ['Comfort food okay','Heat for cramps','Quiet time']
-    ],
-    follicular:[
-      ['Start something new','Social energy','Creative work'],
-      ['Make that plan','Clear thinking','Good energy window'],
-      ['New conversations','Physical movement','Fresh ideas']
-    ],
-    ovulation:[
-      ['Connect with people','High energy day','Bold moves okay'],
-      ['Say the hard thing','Social presence','Enjoy the spark'],
-      ['Meaningful plans','Visible energy','Express yourself']
-    ],
-    luteal:[
-      ['Solitude','Comfort','Gentle plans'],
-      ['Lower expectations','Extra patience','Quiet environment'],
-      ['Rest is productive','Fewer commitments','Reassurance okay'],
-      ['Slow down','Warmth','Less stimulation']
-    ]
-  };
-  var arr=suggestions[phase]||suggestions.luteal;
-  var chips=arr[day%arr.length];
-  el.style.display='flex';
-  el.innerHTML='';
-  chips.forEach(function(chip){
-    var d=document.createElement('div');
-    d.style.cssText='display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:5px 13px;font-size:11px;font-weight:700;color:rgba(255,255,255,.9);cursor:default;white-space:nowrap;';
-    d.textContent=chip;
-    el.appendChild(d);
-  });
-}
-t){el.style.display='none';return;}
-  var day=cd(TODAY),phase=ph(day);
-  var suggestions={
-    period:[
-      ['Rest without guilt','Extra warmth','Slow the pace'],
-      ['Gentle plans only','Extra gentleness','Permission to cancel'],
-      ['Comfort food okay','Heat for cramps','Quiet time']
-    ],
-    follicular:[
-      ['Start something new','Social energy','Creative work'],
-      ['Make that plan','Clear thinking','Good energy window'],
-      ['New conversations','Physical movement','Fresh ideas']
-    ],
-    ovulation:[
-      ['Connect with people','High energy day','Bold moves okay'],
-      ['Say the hard thing','Social presence','Enjoy the spark'],
-      ['Meaningful plans','Visible energy','Express yourself']
-    ],
-    luteal:[
-      ['Solitude','Comfort','Gentle plans'],
-      ['Lower expectations','Extra patience','Quiet environment'],
-      ['Rest is productive','Fewer commitments','Reassurance okay'],
-      ['Slow down','Warmth','Less stimulation']
-    ]
-  };
-  var arr=suggestions[phase]||suggestions.luteal;
-  var chips=arr[day%arr.length];
-  el.style.display='flex';
-  el.innerHTML='';
-  chips.forEach(function(chip){
-    var d=document.createElement('div');
-    d.style.cssText='display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:5px 13px;font-size:11px;font-weight:700;color:rgba(255,255,255,.9);cursor:default;white-space:nowrap;';
-    d.textContent=chip;
-    el.appendChild(d);
-  });
-}
 </script>
 
 
@@ -5289,5 +4741,109 @@ if('serviceWorker' in navigator){
 </script>
 
   <!-- Partner Screen -->
-    </body>
+    <div class="screen" id="screen-partner">
+    <!-- Header -->
+    <div style="background:linear-gradient(160deg,#FFF5F0 0%,#FFEEE8 50%,#FFE4D8 100%);padding:max(44px,env(safe-area-inset-top)) 20px 20px;flex-shrink:0;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button onclick="nav('settings')" style="background:rgba(192,80,100,.12);border:none;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#8592;</button>
+        <div>
+          <div style="font-family:Playfair Display,serif;font-size:20px;color:#2A1218;font-weight:700;">Partner sharing</div>
+          <div style="font-size:11px;color:rgba(120,60,70,.6);margin-top:2px;">What your partner will see</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll" style="background:#FAF4F2;border-radius:26px 26px 0 0;margin-top:-16px;padding:16px 16px max(80px,calc(env(safe-area-inset-bottom)+70px));z-index:1;position:relative;">
+
+      <!-- Partner preview card -->
+      <div style="font-size:10px;font-weight:800;color:#C08090;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;padding-left:2px;">Your partner will see this</div>
+
+      <!-- Preview — mirrors the partner.html experience -->
+      <div id="partner-preview" style="background:white;border-radius:20px;overflow:hidden;margin-bottom:16px;box-shadow:0 2px 16px rgba(180,80,80,.08);">
+
+        <!-- Preview header -->
+        <div id="prev-header" style="background:linear-gradient(135deg,#FFF0EC,#FFE4D8);padding:16px;border-bottom:0.5px solid rgba(192,80,80,.12);">
+          <div style="font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:#C05070;margin-bottom:4px;">Inner Rhythm</div>
+          <div style="font-family:Playfair Display,serif;font-size:18px;color:#2A1218;font-weight:700;margin-bottom:2px;" id="prev-title">Checking in on her</div>
+          <div style="font-size:12px;color:rgba(100,40,50,.55);" id="prev-day">Today</div>
+        </div>
+
+        <!-- Phase section -->
+        <div id="prev-phase-section" style="padding:14px 16px;border-bottom:0.5px solid #F5EAE8;">
+          <div style="font-size:10px;font-weight:800;color:#C08090;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Where she is</div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="font-size:32px;" id="prev-emoji">&#127769;</div>
+            <div>
+              <div style="font-size:16px;font-weight:700;color:#2A1218;font-family:Playfair Display,serif;" id="prev-phase-name">Luteal phase</div>
+              <div style="font-size:12px;color:#9A6070;margin-top:2px;" id="prev-phase-desc">The week before her period</div>
+            </div>
+          </div>
+          <div style="font-size:13px;color:#5A3040;line-height:1.75;margin-top:10px;" id="prev-phase-context">Her emotional sensitivity is heightened right now. Small things can feel bigger than they look from the outside. This is hormonal, not personal.</div>
+        </div>
+
+        <!-- Mood section (if shared) -->
+        <div id="prev-mood-section" style="padding:14px 16px;border-bottom:0.5px solid #F5EAE8;display:none;">
+          <div style="font-size:10px;font-weight:800;color:#C08090;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">How she is feeling today</div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="font-size:26px;" id="prev-mood-emoji">&#128522;</div>
+            <div style="font-size:14px;font-weight:700;color:#2A1218;" id="prev-mood-text">Good</div>
+          </div>
+        </div>
+
+        <!-- Needs section (if shared) -->
+        <div id="prev-needs-section" style="padding:14px 16px;border-bottom:0.5px solid #F5EAE8;display:none;">
+          <div style="font-size:10px;font-weight:800;color:#C08090;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">What she needs right now</div>
+          <div style="font-size:14px;font-weight:700;color:#2A1218;" id="prev-needs-text">Permission to rest</div>
+        </div>
+
+        <!-- Partner guidance — always shown, phase-specific -->
+        <div style="padding:14px 16px;background:linear-gradient(135deg,#FFF8F6,#FFF2EE);">
+          <div style="font-size:10px;font-weight:800;color:#C08090;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">How you can help</div>
+          <div style="font-size:13px;color:#5A3040;line-height:1.75;" id="prev-help-text">Quiet presence matters more than solutions right now. Check in gently without expecting much back.</div>
+          <div style="margin-top:10px;padding:10px 12px;background:rgba(192,80,100,.06);border-radius:10px;border-left:3px solid rgba(192,80,100,.3);">
+            <div style="font-size:12px;color:#9A4050;line-height:1.7;" id="prev-avoid-text">Not picking a fight today lands bigger than you would expect.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Share controls -->
+      <div style="font-size:10px;font-weight:800;color:#C08090;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;padding-left:2px;">What to include</div>
+      <div style="background:white;border-radius:16px;overflow:hidden;margin-bottom:14px;box-shadow:0 1px 8px rgba(180,80,80,.06);">
+
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:0.5px solid #F5EAE8;" onclick="toggleShare('phase');updatePartnerPreview();">
+          <div><div style="font-size:13px;font-weight:700;color:#2A1218;">Phase &amp; cycle day</div><div style="font-size:11px;color:#B09098;margin-top:1px;">Always included for context</div></div>
+          <div id="stog-phase" style="width:40px;height:24px;border-radius:12px;background:#C05070;position:relative;flex-shrink:0;pointer-events:none;"><div style="position:absolute;top:3px;left:19px;width:18px;height:18px;border-radius:50%;background:white;box-shadow:0 1px 3px rgba(0,0,0,.2);"></div></div>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:0.5px solid #F5EAE8;" onclick="toggleShare('mood');updatePartnerPreview();">
+          <div><div style="font-size:13px;font-weight:700;color:#2A1218;">How she is feeling</div><div style="font-size:11px;color:#B09098;margin-top:1px;">General mood, not the details</div></div>
+          <div id="stog-mood" style="width:40px;height:24px;border-radius:12px;background:#C05070;position:relative;flex-shrink:0;pointer-events:none;"><div style="position:absolute;top:3px;left:19px;width:18px;height:18px;border-radius:50%;background:white;box-shadow:0 1px 3px rgba(0,0,0,.2);"></div></div>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:0.5px solid #F5EAE8;" onclick="toggleShare('needs');updatePartnerPreview();">
+          <div><div style="font-size:13px;font-weight:700;color:#2A1218;">What she needs</div><div style="font-size:11px;color:#B09098;margin-top:1px;">Rest, space, connection etc.</div></div>
+          <div id="stog-needs" style="width:40px;height:24px;border-radius:12px;background:#C05070;position:relative;flex-shrink:0;pointer-events:none;"><div style="position:absolute;top:3px;left:19px;width:18px;height:18px;border-radius:50%;background:white;box-shadow:0 1px 3px rgba(0,0,0,.2);"></div></div>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:0.5px solid #F5EAE8;" onclick="toggleShare('syms');updatePartnerPreview();">
+          <div><div style="font-size:13px;font-weight:700;color:#2A1218;">Physical symptoms</div><div style="font-size:11px;color:#B09098;margin-top:1px;">Cramps, fatigue, headaches</div></div>
+          <div id="stog-syms" style="width:40px;height:24px;border-radius:12px;background:#D0C0C4;position:relative;flex-shrink:0;pointer-events:none;"><div style="position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:white;box-shadow:0 1px 3px rgba(0,0,0,.2);"></div></div>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;" onclick="toggleShare('notes');updatePartnerPreview();">
+          <div><div style="font-size:13px;font-weight:700;color:#2A1218;">Personal notes</div><div style="font-size:11px;color:#B09098;margin-top:1px;">Her private journal entries</div></div>
+          <div id="stog-notes" style="width:40px;height:24px;border-radius:12px;background:#D0C0C4;position:relative;flex-shrink:0;pointer-events:none;"><div style="position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:white;box-shadow:0 1px 3px rgba(0,0,0,.2);"></div></div>
+        </div>
+      </div>
+
+      <!-- Share button -->
+      <button onclick="generatePartnerLink()" style="width:100%;background:linear-gradient(135deg,#C05070,#A03050);border:none;border-radius:16px;padding:16px;font-family:Nunito,sans-serif;font-size:15px;font-weight:800;color:white;cursor:pointer;margin-bottom:10px;letter-spacing:.3px;">Share link with partner &#8594;</button>
+
+      <div style="text-align:center;font-size:11px;color:#B09098;line-height:1.6;padding:0 10px;">The link opens a private page just for them. Only what you choose above is shared.</div>
+    </div>
+  </div>
+
+<!-- About Screen -->
+  </body>
 </html>
